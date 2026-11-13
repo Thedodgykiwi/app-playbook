@@ -115,10 +115,27 @@ def rollbacks(repo):
     return out
 
 
-def recent_changes(repo):
-    log = git(repo, "log", "--no-merges", "-n", "15", f"--format=%h{FS}%cI{FS}%s")
-    return [dict(zip(("sha", "date", "title"), l.split(FS, 2)))
-            for l in log.splitlines() if l]
+def is_housekeeping(files):
+    """Commits that only touch issue screenshots/workflows (.github/) or
+    documents (*.md) don't change the app, so Dev doesn't list them."""
+    return bool(files) and all(f.startswith(".github/") or f.endswith(".md") for f in files)
+
+
+def recent_changes(repo, limit=15):
+    log = git(repo, "log", "--no-merges", "-n", "60", "--name-only",
+              f"--format={RS}%h{FS}%cI{FS}%s")
+    out = []
+    for entry in log.split(RS):
+        lines = [l for l in entry.strip("\n").splitlines() if l.strip()]
+        if not lines:
+            continue
+        sha, date, title = lines[0].split(FS, 2)
+        if is_housekeeping(lines[1:]):
+            continue
+        out.append({"sha": sha, "date": date, "title": title})
+        if len(out) == limit:
+            break
+    return out
 
 
 def issue_labels(notes_texts):
