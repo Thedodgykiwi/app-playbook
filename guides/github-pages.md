@@ -35,5 +35,9 @@ secrets out.
   `[hidden] { display: none !important; }` to the stylesheet, and check UI
   changes from a **screenshot**, not by reading element state.
 - Deploys are cancelled if a newer one starts (`concurrency: pages`), so
-  two quick pushes give one deploy of the latest.
+  two quick pushes give one deploy of the latest. On GitHub's commit list
+  the older commit then shows a red ✗ (e.g. "2 / 3": a step was
+  *cancelled*, not failed). Harmless if a later run succeeded; only a ✗ on
+  the **latest** commit needs looking at. Avoid starting a manual run while
+  a deploy is still going.
 - Local preview: `python3 -m http.server 8080` from the repo root.
