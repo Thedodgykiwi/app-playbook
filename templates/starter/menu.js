@@ -8,7 +8,8 @@
 // (index.html applies them before the page draws, so there's no flash.)
 (() => {
   const PREFS_KEY = `prefs:${location.pathname.split('/')[1] || 'app'}`;
-  const DEFAULTS = { theme: 'auto', textSize: 'standard' };
+  // The app's default accent is the data-accent on <html> in index.html.
+  const DEFAULTS = { theme: 'auto', textSize: 'standard', accent: document.documentElement.dataset.accent || 'blue' };
   const load = () => { try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') }; } catch { return { ...DEFAULTS }; } };
   const prefs = load();
   const root = document.documentElement;
@@ -20,7 +21,8 @@
   function applyPrefs() {
     root.dataset.theme = prefs.theme;
     root.dataset.textSize = prefs.textSize;
-    document.querySelectorAll('.seg[data-pref]').forEach((group) => {
+    root.dataset.accent = prefs.accent;
+    document.querySelectorAll('[data-pref]').forEach((group) => {
       group.querySelectorAll('[data-value]').forEach((b) => {
         const on = b.dataset.value === prefs[group.dataset.pref];
         b.setAttribute('aria-checked', on);
@@ -28,7 +30,7 @@
       });
     });
   }
-  document.querySelectorAll('.seg[data-pref]').forEach((group) => {
+  document.querySelectorAll('[data-pref]').forEach((group) => {
     const pick = (b) => {
       prefs[group.dataset.pref] = b.dataset.value;
       try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch { /* storage blocked */ }
@@ -61,6 +63,7 @@
   document.querySelectorAll('dialog.sheet').forEach((d) => {
     d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
   });
+  $('styleguide-link').hidden = STAGE === 'main';
   $('open-settings').addEventListener('click', () => { setMenu(false); $('settings').showModal(); });
 
   // ---- Version + What's new (releases.json, written per stage by the deploy) --

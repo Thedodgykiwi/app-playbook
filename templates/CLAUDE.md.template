@@ -87,9 +87,19 @@ Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
 
 - Browser storage is shared by all stages **and all apps** on `<user>.github.io`
   (one web address): key it per app and stage.
-- Theme: use the colour variables in `style.css` (`--bg`, `--surface`, `--text`,
-  `--muted`, `--line`, `--accent`…) rather than fixed colours, so Light / Dark /
-  Auto keep working. Size things in rem/em so the Large text setting works.
+- **Look and building blocks:** use the style kit in `style.css` (buttons
+  `.btn primary|secondary|outline|ghost|danger`, `.field`/`.input`/`.select`,
+  `.check`, `.card`, `.badge`, `.list`, `.notice`, `.empty-state`…). Live
+  examples with copy-ready HTML: `styleguide.html` (linked from Settings on
+  test stages). Don't invent new button or field styles.
+- Colours only via the variables (`--bg`, `--surface`, `--text`, `--muted`,
+  `--line`, `--accent`, `--accent-fg`…), so Light / Dark / Auto and the accent
+  colour keep working. Size things in rem/em so Large text works.
+- The app's default accent colour: `data-accent` on `<html>` in `index.html`
+  (blue, purple, green, teal, orange, pink); people can change it in Settings.
+- Icons: **Phosphor Regular** only, in `icons.js` (`icon('name')` or
+  `<span data-icon="name"></span>`); copy new ones from
+  `@phosphor-icons/core` `assets/regular/<name>.svg`.
 - Works offline (`sw.js`, registered by `pwa.js`): the page is fetched
   network-first, files the deploy stamps with `?v=` are kept offline. New
   files the app loads are stamped automatically if linked from `index.html`

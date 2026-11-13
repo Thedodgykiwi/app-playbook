@@ -71,6 +71,18 @@ nobody mistakes them for the real app.
   flashes the wrong theme on load.
 - **iPhone underlines emails/phone numbers** shown as text (Safari data
   detectors): add `<meta name="format-detection" content="telephone=no, email=no, address=no">`.
+- **Style kit (starter, chosen from 3 mock-ups: "B", neutral + accent):**
+  shadcn/ui-like look in plain CSS (no Tailwind/React: they need a build
+  step or a CDN). Tokens as CSS variables; components `.btn`, `.input`,
+  `.select`, `.check` (checkbox/radio/switch), `.card`, `.badge`, `.list`,
+  `.notice`, `.empty-state`; `styleguide.html` shows each with copy-ready
+  HTML. The global `button` rule is a plain reset, so nothing leaks.
+- **Accent colour setting:** six accents (blue, purple, green, teal, orange,
+  pink), each with a light value (white text, ≥4.5:1) and a lighter dark-mode
+  value with dark text. Theme rules pick `--a-l` or `--a-d`, so accents and
+  themes combine without extra rules. Green had to be darkened (#237032) to
+  pass contrast.
+- **Icons for new apps: Phosphor Regular** (outline). test-app keeps duotone.
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.

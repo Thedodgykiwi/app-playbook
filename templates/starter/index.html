@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-accent="blue"><!-- the app's default accent colour: blue, purple, green, teal, orange or pink -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,6 +21,7 @@
       const p = JSON.parse(localStorage.getItem(`prefs:${location.pathname.split('/')[1] || 'app'}`) || '{}');
       document.documentElement.dataset.theme = p.theme || 'auto';
       document.documentElement.dataset.textSize = p.textSize || 'standard';
+      document.documentElement.dataset.accent = p.accent || document.documentElement.dataset.accent;
     } catch { /* storage blocked: defaults */ }
   </script>
 </head>
@@ -73,12 +74,24 @@
   <dialog id="settings" class="sheet" aria-labelledby="settings-title">
     <header><h2 id="settings-title">Settings</h2><button type="button" class="close-btn" data-close aria-label="Close"><span data-icon="x"></span></button></header>
     <section class="setting">
+      <p class="setting-name" id="accent-label">Accent colour</p>
+      <div class="swatches" role="radiogroup" aria-labelledby="accent-label" data-pref="accent">
+        <button type="button" role="radio" data-value="blue" style="--sw:#3b5bdb" aria-label="Blue" title="Blue"></button>
+        <button type="button" role="radio" data-value="purple" style="--sw:#7048e8" aria-label="Purple" title="Purple"></button>
+        <button type="button" role="radio" data-value="green" style="--sw:#237032" aria-label="Green" title="Green"></button>
+        <button type="button" role="radio" data-value="teal" style="--sw:#0b7285" aria-label="Teal" title="Teal"></button>
+        <button type="button" role="radio" data-value="orange" style="--sw:#c2410c" aria-label="Orange" title="Orange"></button>
+        <button type="button" role="radio" data-value="pink" style="--sw:#c2255c" aria-label="Pink" title="Pink"></button>
+      </div>
+    </section>
+    <section class="setting">
       <p class="setting-name" id="text-size-label">Text size</p>
       <div class="seg" role="radiogroup" aria-labelledby="text-size-label" data-pref="textSize">
         <button type="button" role="radio" data-value="standard">Standard</button>
         <button type="button" role="radio" data-value="large">Large</button>
       </div>
     </section>
+      <p id="styleguide-link" class="setting-foot" hidden><a href="styleguide.html">Style guide</a> (building blocks for this app; not shown on Production)</p>
   </dialog>
 
   <!-- What's new panel (menu.js): this stage's release notes from releases.json, made by the deploy. -->

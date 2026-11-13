@@ -37,7 +37,7 @@ something that changed), add it to the right guide in the same session; see
 |---|---|
 | `templates/CLAUDE.md.template` | Starter instructions for a new app's repo |
 | `templates/.github/workflows/deploy.yml` | The small deploy file each app keeps: it just calls the shared deploy below |
-| `templates/starter/` | The blank starting point every new app gets: an empty placeholder box, the coloured stage banner with a Pipeline link, a menu with theme (light/dark/auto), Settings and version / What's new, works offline and installs to the home screen, and dormant sign-in (copied once; it's the app's own code after that) |
+| `templates/starter/` | The blank starting point every new app gets: an empty placeholder box, the coloured stage banner with a Pipeline link, a ready-made look (style kit + style guide page, accent colour setting), a menu with theme (light/dark/auto), Settings and version / What's new, works offline and installs to the home screen, and dormant sign-in (copied once; it's the app's own code after that) |
 | `templates/firebase/` | Firebase config, rules, rules tests, `sync.js` sign-in + sync module |
 
 ## Starting a new app
