@@ -38,7 +38,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from release_notes import git, promotions  # noqa: E402  (same folder)
+from release_notes import git, promotions, rollbacks  # noqa: E402  (same folder)
 
 
 def tag_for(sha, repo):
@@ -96,6 +96,77 @@ def close_issues(slug, nums, tag, site):
                   "(the app's deploy.yml needs 'issues: write').")
 
 
+def gh(*args):
+    return subprocess.run(["gh", *args], capture_output=True, text=True)
+
+
+def handle_rollbacks(repo, slug, site, dry):
+    """For each Production rollback: open a 'rollback' issue with the reason,
+    reopen the issues the rolled-back release had closed, and mark that GitHub
+    release as rolled back (the previous one becomes "Latest" again)."""
+    rbs = rollbacks(repo)
+    if not rbs:
+        return
+    res = gh("issue", "list", "--repo", slug, "--label", "rollback", "--state", "all",
+             "--limit", "200", "--json", "body")
+    bodies = " ".join(i["body"] for i in json.loads(res.stdout)) if res.returncode == 0 else ""
+    if res.returncode != 0 and not dry:
+        print(f"::warning::Rollbacks: couldn't list issues ({res.stderr.strip()}); skipping.")
+        return
+    for rb in reversed(rbs):                      # oldest first
+        marker = f"<!-- rollback-commit: {rb['sha']} -->"
+        if marker in bodies:
+            continue
+        tag, bad = rb["rolled_back_release"], rb["rolled_back_commit"]
+        reason = rb["body"].split("Reason:", 1)[-1].split("Changes undone:", 1)[0].strip() or "(no reason given)"
+        changes = rb["body"].split("Changes undone:", 1)[-1].split("\n\nRolled-back-", 1)[0].strip()
+        reopened = issues_in(repo, bad) if bad else []
+        prev = None
+        if bad:                                   # the release just before the rolled-back one
+            fulls = [git(repo, "rev-parse", p["sha"]).strip() for p in promotions(repo)]
+            if bad in fulls and fulls.index(bad) + 1 < len(fulls):
+                prev = tag_for(fulls[fulls.index(bad) + 1], repo)
+        title = f"Rollback: Production {tag or bad[:7] if bad else ''} rolled back".replace("  ", " ")
+        body = (f"↩️ **Production was rolled back** on {rb['date'][:10]}"
+                f"{f' from **{tag}**' if tag else ''}{f' to **{prev}**' if prev else ''}.\n\n"
+                f"**Why**\n{reason}\n\n"
+                f"**What was undone**\n{changes}\n\n"
+                + (f"**Issues reopened**\n{', '.join(f'#{n}' for n in reopened)}\n\n" if reopened else "")
+                + "**Next steps**\n"
+                "- [x] Production rolled back to the previous version\n"
+                "- [x] Same changes undone on Dev\n"
+                "- [ ] Promote Dev → Alpha → Staging → Production so every stage agrees\n"
+                "- [ ] Fix the problem on Dev (commit with `Issue #<this number>`) and release it: "
+                "this issue then closes automatically\n\n"
+                f"{marker}\n\n---\n_Created automatically by the rollback._")
+        print(f"{'Would create' if dry else 'Creating'} rollback issue: {title}"
+              + (f"; reopening {', '.join(f'#{n}' for n in reopened)}" if reopened else ""))
+        if dry:
+            continue
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
+            f.write(body)
+        res = gh("issue", "create", "--repo", slug, "--title", title, "--label", "bug",
+                 "--label", "rollback", "--body-file", f.name)
+        if res.returncode != 0:
+            print(f"::warning::Couldn't create the rollback issue: {(res.stderr or res.stdout).strip()}")
+            continue
+        url = res.stdout.strip().splitlines()[-1]
+        num = url.rstrip("/").rsplit("/", 1)[-1]
+        print(f"Rollbacks: created issue #{num}")
+        for n in reopened:
+            v = gh("issue", "view", str(n), "--repo", slug, "--json", "state")
+            if v.returncode != 0 or json.loads(v.stdout).get("state") != "CLOSED":
+                continue
+            gh("issue", "reopen", str(n), "--repo", slug, "--comment",
+               f"↩️ Reopened: the release that fixed this{f' ({tag})' if tag else ''} was rolled back "
+               f"in Production. Details in #{num}.")
+            print(f"Rollbacks: reopened #{n}")
+        if tag:
+            gh("release", "edit", tag, "--repo", slug, "--title", f"{tag} (Production, rolled back)")
+            if prev:
+                gh("release", "edit", prev, "--repo", slug, "--latest")
+
+
 def existing_releases(slug):
     """Tag names that already have a GitHub release (empty if gh isn't available)."""
     res = subprocess.run(["gh", "api", f"repos/{slug}/releases", "--paginate",
@@ -122,6 +193,7 @@ def main():
         n = per_day[day]
         plan.append((f"v{day}" if n == 1 else f"v{day}.{n}", full, r))
 
+    handle_rollbacks(repo, slug, site, dry)
     have_release = set() if dry else existing_releases(slug)
     actions, skipped = [], []
     for tag, sha, r in plan:

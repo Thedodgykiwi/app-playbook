@@ -156,6 +156,39 @@ The script works on whichever repo the current directory belongs to.
    URL. Remind them a hard refresh (Ctrl+Shift+R) may be needed for up to
    10 minutes, because GitHub Pages caches pages.
 
+## Rolling back Production (emergency undo)
+
+Use when a Production release has a problem and the user wants the previous
+version back now. It's the only time `main` changes without a promotion.
+
+1. **Ask why** (one sentence is enough) and **confirm**: rolling back
+   always needs the user's explicit "yes", like any Production change. Save
+   the reason, in their words, to a file in your scratchpad.
+2. **Preview:** `<skill-dir>/promote.sh rollback --dry-run`: shows what's
+   live, what it goes back to, and which changes will be undone. Tell the
+   user in plain words.
+3. **Roll back:** `<skill-dir>/promote.sh rollback --reason-file <file>`
+   (timeout ≥ 12 minutes). It reverses the last release on `main` (reason
+   recorded in the commit), waits for the deploy, then undoes the same
+   changes on `dev` (so later promotions can't silently skip them) and
+   waits for that deploy too.
+4. **Automatic on GitHub** (shared deploy, a minute later): an issue
+   "Rollback: Production vX rolled back" (labels `bug`, `rollback`) with the
+   reason, what was undone and a checklist; issues the release had closed
+   are **reopened**; the GitHub release is renamed "(Production, rolled
+   back)" and the previous one marked Latest; "What's new" shows a "↩️ Rolled
+   back" entry (no reason: that stays on the issue). Check the issue exists.
+5. **Bring the stages in line:** promote dev → alpha → staging → main as
+   usual (release notes: a "🔧 Behind the scenes" bullet like "Brings the
+   test versions in line after a rollback"; **no issue numbers** in those
+   notes or commits, or the rollback issue would close too early).
+6. **Fix forward** on `dev`: commit the fix with `Issue #<rollback issue>`
+   (and the original issue numbers, e.g. `Issue #3`), then release
+   normally. Both close automatically when the fix reaches Production.
+
+If undoing on `dev` hits a conflict, Production is already safe: the script
+says which changes to undo on `dev` by hand.
+
 ## When things go wrong
 
 - **"Working tree has uncommitted changes"** — don't stash or discard them.

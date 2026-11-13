@@ -24,6 +24,7 @@ every app has them (needs `issues: write` in the app's `deploy.yml`).
 | `performance` | Something is slow: loading, opening, saving |
 | `priority: high` | Do soon: it affects people now |
 | `priority: low` | Nice to have, no rush |
+| `rollback` | Created automatically when Production is rolled back (with `bug`): why, and what needs fixing |
 
 One type label per issue; add a priority only if the user gives one (or it's
 clearly urgent, e.g. people can't sign in). GitHub's default labels

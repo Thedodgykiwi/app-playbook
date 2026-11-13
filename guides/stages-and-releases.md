@@ -81,6 +81,30 @@ with its notes). Nobody has to do anything: the shared deploy creates them.
 - Script: `.github/scripts/make_releases.py` (test with `--dry-run` on a
   clone of the app's `main`).
 
+## Rolling back Production
+
+Emergency undo of the last Production release, with the promote skill:
+`promote.sh rollback --reason-file <file>` (the skill asks the user why and
+for their "yes" first). In order:
+
+1. `main`: one commit reverses the whole release (`git revert -m 1` of the
+   "Promote staging → main" merge); its message holds the reason and
+   `Rolled-back-release:` / `Rolled-back-commit:` lines. Deploys in ~30 s.
+2. `dev`: the same changes are undone. **Why:** after a revert, Git thinks
+   those commits are already in `main`, so promoting them again would
+   silently do nothing. Undoing them on `dev` too keeps every stage honest;
+   the real fix is then a new change.
+3. Shared deploy (automatic): opens a `rollback` issue with the reason and a
+   checklist, reopens the issues the release had closed, renames the GitHub
+   release "(Production, rolled back)" and marks the previous one Latest,
+   and adds a "↩️ Rolled back" entry to "What's new" (the reason stays on
+   the issue, not in the app).
+4. Promote dev → alpha → staging → main so all stages agree (no issue
+   numbers in those notes/commits), then fix forward with
+   `Issue #<rollback issue>` and release: the issue closes itself.
+
+Rehearse it once on a test app before relying on it.
+
 ## Gotchas
 
 - **Branches look "behind" `main`** on GitHub because of promotion merge

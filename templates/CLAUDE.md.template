@@ -33,6 +33,8 @@ Any push to one of these branches redeploys the site (`.github/workflows/deploy.
 - **Never commit or push directly to `alpha`, `staging` or `main`.** Changes
   reach them only through the `promote` skill, one stage at a time.
 - **Production (`main`) needs the user's explicit "yes"** for each release.
+- **Rollbacks** (undo the last Production release) only with the promote
+  skill's `rollback` command, after the user's "yes" and their reason.
 - Hotfixes only when the user asks: branch from `main`, release, merge back into `dev`.
 
 ## Issues (bugs, requests, tweaks)

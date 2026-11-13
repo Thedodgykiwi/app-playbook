@@ -6,6 +6,10 @@
 #       --notes-file  release notes to use (required for alpha: dev has none)
 #       --intro-file  optional extra paragraph placed above reused notes
 #   Past alpha, notes are reused automatically from the previous stage.
+#   promote.sh rollback --reason-file FILE [--dry-run]
+#       Emergency undo of the last Production release: reverses it on main
+#       (reason recorded in the commit), waits for the deploy, then undoes
+#       the same changes on dev so every stage can be brought back in line.
 set -euo pipefail
 
 STAGES=(dev alpha staging main)
@@ -43,6 +47,110 @@ pending() {  # commits in $1 not yet in $2 (ignoring promotion merge commits)
 }
 
 git fetch -q "$REMOTE" "${STAGES[@]}"
+
+wait_for_deploy() {  # branch sha -> returns when the deploy for that commit succeeded
+  local branch=$1 sha=$2 api status conclusion url
+  api="https://api.github.com/repos/$(repo_slug)/actions/runs?branch=$branch&head_sha=$sha&per_page=1"
+  for _ in $(seq 1 36); do  # up to ~6 minutes
+    sleep 10
+    read -r status conclusion url < <(curl -fsS "$api" 2>/dev/null | python3 -c '
+import json, sys
+runs = json.load(sys.stdin).get("workflow_runs", [])
+r = runs[0] if runs else {}
+print(r.get("status", "none"), r.get("conclusion") or "-", r.get("html_url", "-"))' 2>/dev/null || echo "unreachable - -")
+    if [[ $status == completed ]]; then
+      [[ $conclusion == success ]] && { echo "Deploy succeeded: $(stage_url "$branch")"; return 0; }
+      die "Deploy finished with '$conclusion': $url"
+    fi
+  done
+  die "Timed out waiting for the deploy. Check the Actions tab on GitHub."
+}
+
+push_branch() {  # branch -> push HEAD and check it landed
+  local branch=$1 sha; sha=$(git rev-parse HEAD)
+  git push -q "$REMOTE" "$branch" 2>&1 | grep -v '^remote:' || true
+  [[ $(git ls-remote "$REMOTE" "refs/heads/$branch" | cut -f1) == "$sha" ]] || die "Push to $branch failed."
+  echo "Pushed $branch at ${sha:0:7}. Waiting for deploy…"
+}
+
+rollback() {
+  local reason_file= dry_run=false
+  while (( $# )); do
+    case $1 in
+      --dry-run) dry_run=true ;;
+      --reason-file) reason_file=${2:?--reason-file needs a path}; shift ;;
+      *) die "Unknown option '$1'" ;;
+    esac
+    shift
+  done
+  [[ -s $reason_file || $dry_run == true ]] || die "Say why: pass --reason-file with the reason for the rollback."
+  git fetch -q --tags "$REMOTE"
+
+  # Releases already rolled back (recorded in earlier rollback commits).
+  local undone; undone=$(git log --first-parent --format=%B "$REMOTE/main" | sed -n 's/^Rolled-back-commit: //p')
+  # Newest Production release (promotion or PR merge into main) not yet rolled back.
+  local last= c
+  for c in $(git rev-list --first-parent --merges "$REMOTE/main"); do
+    grep -qx "$c" <<<"$undone" && continue
+    last=$c; break
+  done
+  [[ -n $last ]] || die "No Production release found to roll back."
+  local tag prev prevtag
+  tag=$(git tag --points-at "$last" --list 'v[0-9]*' | head -1)
+  prev=$(git rev-list --first-parent --merges "$last^1" | while read -r c; do grep -qx "$c" <<<"$undone" || { echo "$c"; break; }; done)
+  prevtag=${prev:+$(git tag --points-at "$prev" --list 'v[0-9]*' | head -1)}
+  local changes; changes=$(git log --no-merges --reverse --format='%H %s' "$last^1..$last")
+  echo "Live now:      ${tag:-release ${last:0:7}} ($(git log -1 --format=%cs "$last"))"
+  echo "Going back to: ${prevtag:-the version before it}${prev:+ (${prev:0:7})}"
+  echo "Changes that will be undone:"; sed 's/^[0-9a-f]* /  - /' <<<"$changes"
+  $dry_run && { echo "(dry run: nothing changed)"; exit 0; }
+
+  [[ -z $(git status --porcelain) ]] || die "Working tree has uncommitted changes; commit or stash them first."
+  local start_branch; start_branch=$(git branch --show-current)
+  trap 'git checkout -q "$start_branch" 2>/dev/null || true' EXIT
+
+  # 1. Production: reverse the whole release in one commit.
+  git checkout -q -B main "$REMOTE/main"
+  git revert -m 1 --no-commit "$last" || { git revert --abort; die "Couldn't reverse ${last:0:7} cleanly."; }
+  local msg; msg=$(mktemp)
+  {
+    echo "Roll back Production: undo ${tag:-${last:0:7}}"
+    echo
+    echo "Reason:"; cat "$reason_file"; echo
+    echo "Changes undone:"; sed 's/^[0-9a-f]* /  - /' <<<"$changes"
+    echo
+    echo "Rolled-back-release: ${tag:-none}"
+    echo "Rolled-back-commit: $last"
+  } > "$msg"
+  git commit -q -F "$msg"
+  push_branch main; wait_for_deploy main "$(git rev-parse HEAD)"
+
+  # 2. Dev: undo the same changes, so later promotions can't bring them back
+  #    by accident (and so the fix can be made on top of a working Dev).
+  #    The message deliberately has no "#" numbers: it mustn't close issues.
+  git checkout -q -B dev "$REMOTE/dev"
+  local shas; shas=$(cut -d' ' -f1 <<<"$changes" | tac)
+  if ! git revert --no-commit $shas; then
+    git revert --abort
+    echo "⚠️  Production is rolled back, but undoing the same changes on dev hit a conflict."
+    echo "   Undo them on dev by hand (oldest last): $(tr '\n' ' ' <<<"$shas")"
+    exit 1
+  fi
+  {
+    echo "Undo on Dev what was rolled back in Production (${tag:-${last:0:7}})"
+    echo
+    echo "Brings Dev back to the working version after the Production rollback,"
+    echo "so the change can be fixed and re-released properly. Undoes:"
+    sed 's/^[0-9a-f]* /  - /' <<<"$changes"
+  } > "$msg"
+  git commit -q -F "$msg"
+  push_branch dev; wait_for_deploy dev "$(git rev-parse HEAD)"
+  echo
+  echo "Rolled back. Next: promote dev → alpha → staging → main so every stage agrees;"
+  echo "then fix on dev and release as usual."
+}
+
+if [[ ${1:-} == rollback ]]; then shift; rollback "$@"; exit 0; fi
 
 if [[ ${1:-} == status || -z ${1:-} ]]; then
   for ((i=0; i<${#STAGES[@]}-1; i++)); do
@@ -116,19 +224,4 @@ git push -q "$REMOTE" "$target" 2>&1 | grep -v '^remote:' || true
 [[ $(git ls-remote "$REMOTE" "refs/heads/$target" | cut -f1) == "$sha" ]] || die "Push to $target failed."
 echo "Pushed $target at ${sha:0:7}. Waiting for deploy…"
 
-api="https://api.github.com/repos/$(repo_slug)/actions/runs?branch=$target&head_sha=$sha&per_page=1"
-for _ in $(seq 1 36); do  # up to ~6 minutes
-  sleep 10
-  read -r status conclusion url < <(curl -fsS "$api" 2>/dev/null | python3 -c '
-import json, sys
-runs = json.load(sys.stdin).get("workflow_runs", [])
-r = runs[0] if runs else {}
-print(r.get("status", "none"), r.get("conclusion") or "-", r.get("html_url", "-"))' 2>/dev/null || echo "unreachable - -")
-  if [[ $status == completed ]]; then
-    if [[ $conclusion == success ]]; then
-      echo "Deploy succeeded: $(stage_url "$target")"; exit 0
-    fi
-    die "Deploy finished with '$conclusion': $url"
-  fi
-done
-die "Timed out waiting for the deploy. Check the Actions tab on GitHub."
+wait_for_deploy "$target" "$sha"

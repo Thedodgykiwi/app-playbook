@@ -73,6 +73,27 @@ def promotions(repo):
     return releases
 
 
+def rollbacks(repo):
+    """Emergency rollbacks of Production ("Roll back Production: ..." commits on
+    main, made by the promote skill's rollback command)."""
+    log = git(repo, "log", "--first-parent", "--no-merges", "-n", "50",
+              f"--format=%H{FS}%cI{FS}%B{RS}")
+    out = []
+    for entry in log.split(RS):
+        entry = entry.strip("\n")
+        if not entry:
+            continue
+        sha, date, body = entry.split(FS, 2)
+        if not body.startswith("Roll back Production"):
+            continue
+        m = re.search(r"^Rolled-back-commit: ([0-9a-f]{40})", body, re.M)
+        t = re.search(r"^Rolled-back-release: (\S+)", body, re.M)
+        out.append({"sha": sha, "date": date, "body": body,
+                    "rolled_back_commit": m.group(1) if m else None,
+                    "rolled_back_release": t.group(1) if t and t.group(1) != "none" else None})
+    return out
+
+
 def recent_changes(repo):
     log = git(repo, "log", "--no-merges", "-n", "15", f"--format=%h{FS}%cI{FS}%s")
     return [dict(zip(("sha", "date", "title"), l.split(FS, 2)))
@@ -110,7 +131,20 @@ def main():
     if stage == "dev":
         data["recent"] = recent_changes(repo)
     else:
-        data["releases"] = promotions(repo)
+        releases = promotions(repo)
+        rbs = rollbacks(repo)
+        undone = {rb["rolled_back_commit"] for rb in rbs}
+        for r in releases:
+            full = git(repo, "rev-parse", r["sha"]).strip()
+            if full in undone:
+                r["rolled_back"] = True
+        for rb in rbs:   # shown in "What's new"; the reason stays on the GitHub issue
+            releases.append({"sha": rb["sha"][:7], "date": rb["date"], "from": "rollback",
+                             "notes": "## ↩️ Rolled back\n\nThe previous update was undone while we "
+                                      "fix a problem, so everything is back as it was before it. "
+                                      "It will return once it's fixed."})
+        releases.sort(key=lambda r: r["date"], reverse=True)
+        data["releases"] = releases
         data["issues"] = issue_labels(r["notes"] for r in data["releases"])
     with open(out, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
