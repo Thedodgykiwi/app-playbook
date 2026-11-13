@@ -47,8 +47,10 @@ self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim(
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // Connection checks (pwa.js) must really reach the server: never answer them from the saved copy.
+  if (url.searchParams.has('connection-check')) return;
+  if (req.method !== 'GET') return;
   const own = url.href.startsWith(SCOPE);
   // Production's scope contains the test stages: leave their requests alone.
   if (own && OTHER_STAGES.test(url.pathname.slice(new URL(SCOPE).pathname.length - 1))) return;

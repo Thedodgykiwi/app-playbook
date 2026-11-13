@@ -57,6 +57,12 @@ once dismissed or installed.
   (pwa.js messages it), the menu shows "✓ Ready to use offline" once saved,
   and an offline navigation with nothing saved gets a short built-in
   "You're offline" page instead of a blank one.
+- **Don't trust `navigator.onLine` alone:** an iPhone Home Screen app in
+  Airplane mode loaded from the offline copy but showed no offline strip.
+  pwa.js also sends a tiny `HEAD ./?connection-check=<time>` (the worker
+  never answers it from the saved copy) on load, when the app comes back
+  into view, and every 30 s while offline. Remember Airplane mode can leave
+  Wi-Fi on.
 - **Testing:** build a local copy shaped like the deploy (Production folder
   with `dev/` inside, files stamped `?v=`), then in Playwright: reload while
   `context.setOffline(true)`, change the stamp to see the update bar, and use

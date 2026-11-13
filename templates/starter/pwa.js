@@ -28,21 +28,39 @@
       try {
         await navigator.serviceWorker.register('sw.js');
         const reg = await navigator.serviceWorker.ready;
-        if (navigator.onLine) reg.active?.postMessage('save-for-offline');
+        if (!offline) reg.active?.postMessage('save-for-offline');
         else $('offline-ready').hidden = false;   // offline and still running: it's saved
       } catch (err) { console.warn('Offline mode unavailable:', err); }
     });
   }
 
   // ---- Offline strip ----------------------------------------------------------
+  // navigator.onLine alone isn't trustworthy (iPhone Home Screen apps can say
+  // "online" in Airplane mode), so also ask the server with a tiny request the
+  // service worker always lets through.
   const strip = $('offline-strip');
-  const showOnline = () => {
-    strip.hidden = navigator.onLine;
-    document.body.classList.toggle('is-offline', !navigator.onLine);
-  };
-  addEventListener('online', showOnline);
-  addEventListener('offline', showOnline);
-  showOnline();
+  let offline = !navigator.onLine, timer;
+  function setOffline(off) {
+    offline = off;
+    strip.hidden = !off;
+    document.body.classList.toggle('is-offline', off);
+    clearTimeout(timer);
+    if (off) timer = setTimeout(checkConnection, 30000);   // keep checking while offline
+  }
+  async function checkConnection() {
+    if (!navigator.onLine) return setOffline(true);
+    try {
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 6000);
+      await fetch(`./?connection-check=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: ctrl.signal });
+      clearTimeout(t);
+      setOffline(false);
+    } catch { setOffline(true); }
+  }
+  addEventListener('online', checkConnection);
+  addEventListener('offline', () => setOffline(true));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkConnection(); });
+  setOffline(offline);
+  checkConnection();
 
   // ---- New version check --------------------------------------------------------
   // The deploy stamps this build's files with ?v=<build>. Look at the live page
@@ -50,7 +68,7 @@
   // carry a different build, offer a reload.
   const myBuild = new URL(document.currentScript.src).searchParams.get('v');
   async function checkForUpdate() {
-    if (!myBuild || !navigator.onLine) return;   // local copies have no build number
+    if (!myBuild || offline) return;   // local copies have no build number
     try {
       const html = await (await fetch('./', { cache: 'no-store' })).text();
       const live = html.match(/pwa\.js\?v=([\w-]+)/)?.[1];
