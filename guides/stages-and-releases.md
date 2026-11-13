@@ -62,6 +62,14 @@ with its notes). Nobody has to do anything: the shared deploy creates them.
   (the template has it). Without it, the deploy still works and the run
   just shows a warning.
 - Alpha and Staging don't get GitHub releases: they're test stages.
+- **Back-filling older versions is limited:** GitHub won't let the
+  deploy's automatic token create a tag on an older version whose workflow
+  files differ from today's (it answers `403 Resource not accessible by
+  integration`, even with `contents: write`). Those are skipped with a note.
+  Someone with full access can push the tag (e.g. `git tag v2026.11.12 <sha>`
+  and `git push origin v2026.11.12`, or create it on GitHub's Releases page);
+  the next deploy then adds the release. Claude cloud sessions can't push
+  tags. New releases are never affected: they're always on the current version.
 - Script: `.github/scripts/make_releases.py` (test with `--dry-run` on a
   clone of the app's `main`).
 

@@ -55,6 +55,15 @@ def next_tag(day, taken):
     return f"{base}.{n}"
 
 
+def same_workflows(repo, sha):
+    """True if this commit's .github/workflows folder matches main's current one."""
+    def tree(rev):
+        r = subprocess.run(["git", "-C", repo, "rev-parse", f"{rev}:.github/workflows"],
+                           capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else None
+    return tree(sha) == tree("HEAD")
+
+
 def existing_releases(slug):
     """Tag names that already have a GitHub release (empty if gh isn't available)."""
     res = subprocess.run(["gh", "api", f"repos/{slug}/releases", "--paginate",
@@ -71,21 +80,31 @@ def main():
 
     have_release = set() if dry else existing_releases(slug)
     taken = release_tags(repo) | have_release
-    todo = []
+    todo, skipped = [], []
     for r in reversed(promotions(repo)):          # oldest first
         full = git(repo, "rev-parse", r["sha"]).strip()
         tag = tag_for(full, repo)                 # tag already on this commit?
         if tag and tag in have_release:
             continue
         new_tag = tag is None
+        if new_tag and not same_workflows(repo, full):
+            # GitHub won't let the deploy's token create a tag on an older
+            # version whose workflow files differ from today's. Someone with
+            # full access can push the tag; this script then adds the release.
+            skipped.append(r["sha"])
+            continue
         if new_tag:
             day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
             tag = next_tag(day, taken)
             taken.add(tag)
         todo.append((tag, full, r, new_tag))
 
+    if skipped:
+        print(f"Releases: skipped {len(skipped)} older version(s) without a tag "
+              f"({', '.join(skipped)}): their workflow files differ from today's, so "
+              "the deploy can't tag them. Push a tag for one to have its release added.")
     if not todo:
-        print("Releases: every Production release already has a GitHub release.")
+        print("Releases: nothing new to create.")
         return
     failed = []
     for tag, sha, r, new_tag in todo:
@@ -111,7 +130,7 @@ def main():
     if failed:
         print(f"::warning::{len(failed)} release(s) not created: {', '.join(failed)}. "
               "If GitHub said 403, check the app's deploy.yml has 'contents: write'. "
-              "Older versions may need their tag pushed first (see the playbook guide).")
+              "(see the playbook's stages-and-releases guide).")
 
 
 if __name__ == "__main__":
