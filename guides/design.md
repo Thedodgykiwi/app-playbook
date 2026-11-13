@@ -98,6 +98,12 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Hover sticks on phones:** after a tap, iPhone Safari keeps a button's
+  `:hover` look until you tap elsewhere (e.g. a grey box stayed behind
+  "Medium" on test-app's priority flag). For buttons tapped repeatedly in
+  place (toggles, cycling flags), put the hover style inside
+  `@media (hover: hover) { … }` so only mouse devices get it.
+
 - **One-line text (`white-space: nowrap` + ellipsis) can push a whole page
   off-screen** when it sits in a CSS grid or flex column: the column grows to
   fit the text. Give the column `grid-template-columns: minmax(0, 1fr)` (or
