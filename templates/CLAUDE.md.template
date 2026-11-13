@@ -1,0 +1,73 @@
+# <app-name>
+
+<One or two sentences: what the app does and who it's for.>
+Plain HTML/CSS/JS, no build step, hosted on GitHub Pages.
+
+## Playbook
+
+General processes and gotchas live in https://github.com/Thedodgykiwi/app-playbook.
+Before setting up anything it covers (new app, stages, deploys, Firebase,
+icons), attach that repo to the session and read its README and the relevant
+guide. Add anything new you learn back to the playbook.
+
+## Stages and branches
+
+| Branch    | Stage      | URL                                              |
+|-----------|------------|--------------------------------------------------|
+| `dev`     | Dev        | https://<user>.github.io/<repo>/dev/             |
+| `alpha`   | Alpha      | https://<user>.github.io/<repo>/alpha/           |
+| `staging` | Staging    | https://<user>.github.io/<repo>/staging/         |
+| `main`    | Production | https://<user>.github.io/<repo>/                 |
+
+Any push to one of these branches redeploys the site (`.github/workflows/deploy.yml`).
+
+## Rules
+
+- **All new work happens on `dev`.** Start with `git checkout dev && git pull`.
+- **Never commit or push directly to `alpha`, `staging` or `main`.** Changes
+  reach them only through the `promote` skill, one stage at a time.
+- **Production (`main`) needs the user's explicit "yes"** for each release.
+- Hotfixes only when the user asks: branch from `main`, release, merge back into `dev`.
+
+## Concept first (for bigger ideas)
+
+Before a new feature or noticeable change to how the app looks or works,
+offer a concept mock-up once (Claude artifact, 2–3 options, not in the repo).
+Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
+
+## Working on a change
+
+1. Make the change on `dev`.
+2. Preview: `python3 -m http.server 8080` from the repo root (banner says "LOCAL").
+3. Commit with a clear message, push to `dev`, confirm the deploy succeeded.
+4. Ask the user to try it on the Dev URL. Promote only when they're happy.
+
+## Working with the user
+
+- Plain English; briefly define technical terms.
+- Screenshot visual changes before pushing.
+- Ambiguous → make a sensible choice and say so. Ask first for anything hard to undo.
+- Report honestly what was and wasn't tested.
+- End with status: what changed, committed/pushed, where to see it.
+
+## Quality checklist (before pushing)
+
+- No errors in the browser console.
+- Existing features still work: <list the app's key features here>.
+- Works at ~375px wide and on desktop.
+- Labelled buttons/inputs, good contrast, keyboard works.
+- One feature or fix per commit, clear message.
+
+## Guardrails
+
+- **No secrets or personal data in the repo** (it's public).
+- **Ask before adding** libraries, third-party services, tracking/analytics,
+  or anything that costs money or needs an account.
+- **Don't delete or reset user data** without asking; migrate formats.
+- Plain HTML/CSS/JS with no build step unless the user agrees otherwise.
+- Never edit `stage.js` by hand for deploys.
+
+## Notes
+
+- Browser storage is shared by all stages (one web address): key it per stage.
+- <App-specific notes, setup facts (e.g. Firebase project, Firestore location), quirks.>
