@@ -43,4 +43,7 @@ Never put concept code in the repo.
 - [ ] Accessibility: labelled buttons and inputs, good contrast, works
       with the keyboard (Tab, Enter, Escape closes menus).
 - [ ] Small, focused commits: one feature or fix each, message says what and why.
-- [ ] After pushing: the deploy run succeeded; ask the user to try it on Dev.
+- [ ] After pushing: the deploy run succeeded; **try the change on the live
+      Dev site straight after the page loads** (not only after waiting):
+      start-up work such as a sign-in check can redraw the page and expose
+      bugs a slow local test misses. Then ask the user to try it on Dev.

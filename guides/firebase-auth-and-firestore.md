@@ -276,6 +276,14 @@ saves would fail if the app ships first. Order (done this way on test-app):
 - Firestore location is permanent; ask first. Turn on delete protection.
 - `measurementId` = Analytics; leave it out unless the user wants tracking.
 - `firebase_deploy` is asynchronous; poll `firebase_deploy_status`.
+- **Edits must target the current record, not a captured copy.** Lists get
+  re-read (sign-in check after load, live updates from other devices), which
+  replaces the objects in memory. An editor that keeps a reference to "the
+  to-do being edited" will save to a stale copy and lose the change: look it
+  up again by id when saving.
+- The emulator's fake sign-in pop-up is sometimes slow to finish in cloud
+  sessions: in Playwright, poll for the signed-in state for up to a minute
+  instead of a single short wait, and retry once before suspecting the app.
 - In a new session the Firebase sign-in may still be valid, but there's no
   active project: `firebase_deploy` fails with "requires an active project".
   Call `firebase_update_environment` with `project_dir` (the app repo) and
