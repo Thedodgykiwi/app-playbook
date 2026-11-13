@@ -55,7 +55,7 @@ async function start() {
     box: $('account'), signIn: $('sign-in'), button: $('account-btn'), avatar: $('avatar'),
     avatarImg: $('avatar-img'), who: $('who'), whoImg: $('who-img'), whoLetter: $('who-letter'),
     dot: $('sync-dot'), name: $('account-name'), email: $('account-email'),
-    status: $('sync-status'), signOut: $('sign-out'),
+    status: $('sync-status'), signOut: $('sign-out'), label: $('avatar-label'),
   };
   // The menu itself (open/close, theme, Settings, version) is menu.js.
   const setMenu = () => window.AppMenu?.close();
@@ -140,11 +140,13 @@ async function start() {
       showPhoto(ui.avatarImg, ui.avatar, user.photoURL, letter);
       showPhoto(ui.whoImg, ui.whoLetter, user.photoURL, letter);
       ui.avatar.classList.add('letter');
+      ui.label.textContent = 'My account';
       error = '';
       showStatus();
     } else {
       ui.avatarImg.hidden = true; ui.avatar.hidden = false;
       ui.avatar.innerHTML = signedOutAvatar; ui.avatar.classList.remove('letter');
+      ui.label.textContent = 'Menu';
       ui.status.hidden = ui.dot.hidden = true;
       ui.button.setAttribute('aria-label', 'Menu'); ui.button.title = 'Menu';
       if (localStorage.getItem(SIGNED_IN_KEY)) toast('Signed out.');

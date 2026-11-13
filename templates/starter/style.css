@@ -68,16 +68,21 @@ body.has-banner { padding-top: 3rem; }
 }
 
 /* App menu (menu.js) + Google sign-in (account.js): top-right corner */
-.account { position: fixed; top: 1rem; right: 1rem; z-index: 5; display: flex; align-items: center; gap: .5rem; }
-body.has-banner .account { top: 3rem; }
+.account { position: fixed; top: .8rem; right: .8rem; z-index: 5; display: flex; align-items: flex-start; gap: .5rem; }
+body.has-banner .account { top: 2.8rem; }
 .sign-in {
   padding: .35rem .7rem; font-size: .85rem; font-weight: 600;
   background: #fff; color: #1f1f1f; border: 1px solid #c7cad1;
 }
 .sign-in:hover { background: #f6f7f9; }
 .sign-in .ic { color: #4285f4; }
-.avatar-btn { position: relative; padding: 0; width: 36px; height: 36px; border-radius: 50%; background: none; }
+/* Photo/icon with a small label underneath ("My account" / "Menu") */
+.avatar-btn { flex-direction: column; gap: .15rem; padding: .1rem .2rem; border-radius: 10px; background: none; color: var(--text); }
 .avatar-btn:hover { background: none; }
+.avatar-wrap { position: relative; display: block; }
+.avatar-label { font-size: .7rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.avatar-btn:hover .avatar-label { color: var(--text); }
+.sign-in { margin-top: .2rem; }
 .avatar {
   width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; object-fit: cover;
   background: var(--surface); color: var(--muted); border: 1px solid var(--line);

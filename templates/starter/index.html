@@ -28,9 +28,12 @@
   <div id="account" class="account">
     <button type="button" id="sign-in" class="sign-in" hidden><span data-icon="google-logo"></span>Sign in</button>
     <button type="button" id="account-btn" class="avatar-btn" aria-expanded="false" aria-controls="account-menu" aria-label="Menu" title="Menu">
-      <img id="avatar-img" class="avatar" alt="" referrerpolicy="no-referrer" hidden>
-      <span id="avatar" class="avatar" aria-hidden="true"><span data-icon="user"></span></span>
-      <span id="sync-dot" class="sync-dot" aria-hidden="true" hidden></span>
+      <span class="avatar-wrap">
+        <img id="avatar-img" class="avatar" alt="" referrerpolicy="no-referrer" hidden>
+        <span id="avatar" class="avatar" aria-hidden="true"><span data-icon="user"></span></span>
+        <span id="sync-dot" class="sync-dot" aria-hidden="true" hidden></span>
+      </span>
+      <span id="avatar-label" class="avatar-label" aria-hidden="true">Menu</span>
     </button>
     <div id="account-menu" class="account-menu" hidden>
       <div id="who" class="who" hidden>
