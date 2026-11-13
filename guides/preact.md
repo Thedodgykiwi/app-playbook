@@ -63,3 +63,19 @@ line!), update the table in `vendor/README.md` and the licence in
 When an app needs React-only libraries (e.g. shadcn/ui, complex data grids),
 TypeScript everywhere, or a team that expects a standard React project. The
 components carry over: swap `html\`…\`` for JSX, `preact` for `react`.
+
+## Moving an existing plain-JS screen to Preact (done in test-app, Nov 2026)
+
+1. **Split data from screen first:** move the list, loading flag and saving
+   into a `store.js` of signals with the *same* storage keys, data format and
+   hooks other code uses (test-app's `window.TodoApp` for `sync.js`). Replace
+   arrays/objects instead of changing them in place.
+2. Rebuild the screen as components reading those signals; keep ids and
+   classes the CSS and tests use.
+3. **Load order:** module scripts run in page order, so put the store's module
+   before any module that needs its hooks (`app/main.js` before `sync.js`).
+4. **Keyboard focus:** a ticked row moves to another list, so its element is
+   new: remember a selector and focus it in an effect after the next draw.
+   Don't give a button a changing `key` to replay an animation (it remounts and
+   loses focus); restart the CSS animation with a class instead.
+5. Re-test with **old saved data**, signed in (emulators), keyboard, offline.
