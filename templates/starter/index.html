@@ -15,6 +15,19 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="{{SHORT_NAME}} Local" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Libraries for the app's screens (vendor/, see vendor/README.md), imported by name -->
+  <script type="importmap">
+    {
+      "imports": {
+        "preact": "./vendor/preact.js",
+        "preact/hooks": "./vendor/preact-hooks.js",
+        "htm": "./vendor/htm.js",
+        "htm/preact": "./vendor/htm-preact.js",
+        "@preact/signals": "./vendor/signals.js",
+        "@preact/signals-core": "./vendor/signals-core.js"
+      }
+    }
+  </script>
   <!-- Apply the saved theme and text size before the page draws (no flash). See menu.js. -->
   <script>
     try {
@@ -100,8 +113,8 @@
     <div id="whats-new-body"></div>
   </dialog>
 
-  <!-- The app goes here. -->
-  <main id="app" class="placeholder" aria-label="{{APP_NAME}}"></main>
+  <!-- The app's screens: drawn by app/main.js (Preact components). -->
+  <main id="app" aria-label="{{APP_NAME}}"></main>
 
   <!-- iPhone/iPad: how to add the app to the Home Screen (pwa.js; Safari can't install from a button) -->
   <dialog id="ios-install" class="sheet" aria-labelledby="ios-install-title">
@@ -134,5 +147,6 @@
   <script src="pwa.js"></script>
   <script src="app.js"></script>
   <script type="module" src="account.js"></script>
+  <script type="module" src="app/main.js"></script>
 </body>
 </html>

@@ -28,7 +28,8 @@
       try {
         await navigator.serviceWorker.register('sw.js');
         const reg = await navigator.serviceWorker.ready;
-        if (!offline) reg.active?.postMessage('save-for-offline');
+        const urls = performance.getEntriesByType('resource').map((r) => r.name.split('#')[0]);
+        if (!offline) reg.active?.postMessage({ type: 'save-for-offline', urls });
         else $('offline-ready').hidden = false;   // offline and still running: it's saved
       } catch (err) { console.warn('Offline mode unavailable:', err); }
     });

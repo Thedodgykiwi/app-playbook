@@ -37,8 +37,16 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data !== 'save-for-offline') return;
+  const msg = event.data || {};
+  if (msg !== 'save-for-offline' && msg.type !== 'save-for-offline') return;
+  // Also save the files the page actually loaded (e.g. vendor/ and app/ modules,
+  // which are imported by name rather than linked from the HTML).
+  const extra = (msg.urls || []).filter((u) => u.startsWith(SCOPE) && !OTHER_STAGES.test(u.slice(SCOPE.length - 1)));
   event.waitUntil(saveForOffline().catch(() => false).then(async (ok) => {
+    const cache = await caches.open(CACHE);
+    await Promise.all(extra.map(async (u) => { if (!(await cache.match(u))) await cache.add(u).catch(() => {}); }));
+    return ok;
+  }).then(async (ok) => {
     event.source?.postMessage({ type: 'offline-ready', ok: ok && !!(await (await caches.open(CACHE)).match(SCOPE)) });
   }));
 });

@@ -298,3 +298,14 @@ body.has-banner.is-offline .account { top: 5rem; }
 .swatches button { width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--sw); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
 .swatches button[aria-checked="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--sw); }
 .swatches button[aria-checked="true"]::after { content: ""; width: .35rem; height: .7rem; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg) translate(-1px, -1px); }
+
+/* Helpers for app screens */
+#app { width: min(560px, 100%); }
+.grow { flex: 1; min-width: 0; }
+.full { flex-basis: 100%; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.done-text { text-decoration: line-through; color: var(--muted); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; background: var(--secondary); padding: .05rem .3rem; border-radius: 4px; }
+.example h2 { margin: 0; font-size: 1.15rem; }
+.example-form { align-items: flex-start; }
+.example-form .btn { flex: none; }

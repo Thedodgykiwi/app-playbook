@@ -12,7 +12,7 @@ hosted on GitHub Pages, released through stages). Worked example:
    **"set up this repo as a new app"**. Claude asks the app's name, one
    sentence about it, and whether it needs sign-in, then runs
    `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`
-   (a blank page with an empty placeholder box, the coloured stage banner
+   (a page with a small live example to delete (Preact components), the coloured stage banner
    with a subtle "Pipeline ↗" link, a top-right menu with theme, Settings
    and version / What's new, and dormant sign-in; nothing app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
    The first deploy also creates the issue labels.

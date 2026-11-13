@@ -87,6 +87,11 @@ Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
 
 - Browser storage is shared by all stages **and all apps** on `<user>.github.io`
   (one web address): key it per app and stage.
+- **App screens: Preact + htm + Signals** (React-style, no build step;
+  libraries in `vendor/`, imported by name via the import map). Entry:
+  `app/main.js`. `app/example.js` is the starter's demo: **delete it and its
+  import when building the first real screen.** Patterns: playbook
+  `preact.md`; live examples: the style guide's "Components" section.
 - **Look and building blocks:** use the style kit in `style.css` (buttons
   `.btn primary|secondary|outline|ghost|danger`, `.field`/`.input`/`.select`,
   `.check`, `.card`, `.badge`, `.list`, `.notice`, `.empty-state`…). Live

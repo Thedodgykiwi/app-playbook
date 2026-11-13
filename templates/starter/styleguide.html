@@ -6,6 +6,19 @@
   <meta name="robots" content="noindex" />
   <title>Style guide · {{APP_NAME}}</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Libraries for the app's screens (vendor/, see vendor/README.md), imported by name -->
+  <script type="importmap">
+    {
+      "imports": {
+        "preact": "./vendor/preact.js",
+        "preact/hooks": "./vendor/preact-hooks.js",
+        "htm": "./vendor/htm.js",
+        "htm/preact": "./vendor/htm-preact.js",
+        "@preact/signals": "./vendor/signals.js",
+        "@preact/signals-core": "./vendor/signals-core.js"
+      }
+    }
+  </script>
   <script>
     // Same saved theme / accent / text size as the app (see menu.js).
     try {
@@ -130,6 +143,17 @@
       </div>
     </section>
 
+    <section><h2>Components (Preact)</h2>
+      <p class="muted" style="margin:.2rem 0 .8rem">React-style building blocks for the app's screens (Preact + htm + signals, in <code>vendor/</code>). Each example works; its code is underneath. The starter's <code>app/example.js</code> uses the same patterns.</p>
+      <div style="display:grid;gap:1rem">
+        <div><h3 class="field-label">A component with its own state</h3><div class="example demo"><div data-demo="counter"></div></div></div>
+        <div><h3 class="field-label">Shared data between components (signals)</h3><div class="example demo"><div data-demo="shared"></div></div></div>
+        <div><h3 class="field-label">A reusable component with props</h3><div class="example demo"><div data-demo="field"></div></div></div>
+        <div><h3 class="field-label">Lists, conditions and loading</h3><div class="example demo"><div data-demo="loading"></div></div></div>
+        <div><h3 class="field-label">A dialog</h3><div class="example demo"><div data-demo="dialog"></div></div></div>
+      </div>
+    </section>
+
     <section><h2>Messages and empty state</h2>
       <div class="example">
         <div class="notice"><span data-icon="info"></span><div><strong>Heads up.</strong> Changes save to your account automatically.</div></div>
@@ -146,7 +170,7 @@
 
   <script>
     // Show each example's HTML (before icons are drawn) under it, ready to copy.
-    document.querySelectorAll('.example').forEach((ex) => {
+    document.querySelectorAll('.example:not(.demo)').forEach((ex) => {
       const lines = ex.innerHTML.replace(/^\n+|\s+$/g, '').split('\n');
       const indent = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length));
       const d = document.createElement('details'); d.className = 'code';
@@ -156,6 +180,7 @@
     });
   </script>
   <script src="icons.js"></script>
+  <script type="module" src="styleguide-components.js"></script>
   <script>
     // Preview controls: same saved preferences as the app's Settings.
     const KEY = `prefs:${location.pathname.split('/')[1] || 'app'}`;

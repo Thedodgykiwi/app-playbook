@@ -80,7 +80,8 @@ page from then on.
 7. **Wrap up:** suggest the cloud environment / setup script if this account
    doesn't have them yet (`guides/cloud-sessions.md`), and say what to do
    next: describe the first feature ("log it", concept mock-up, build on Dev).
-   The starter is deliberately blank: an empty box, the coloured stage
+   The starter's page holds a small live example (`app/example.js`, Preact
+   components) to delete when building the first real screen; plus the coloured stage
    banner (Dev/Alpha/Staging/LOCAL, none on Production) with a subtle
    "Pipeline ↗" link, and the top-right menu (`menu.js`): Google photo when
    signed in, Light/Auto/Dark theme, Settings (text size; add the app's own
