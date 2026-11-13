@@ -10,7 +10,7 @@
 //   window.addEventListener('account:change', (e) => e.detail.user)  // signed in (user) or out (null)
 //   await window.AppAccount.ready   // { auth, authLib, db, fs } once Firebase has loaded (null if off)
 //   window.AppAccount.user          // current user or null
-//   window.AppAccount.setStatus({ saving, error })   // updates the account menu's sync status
+//   window.AppAccount.setStatus({ saving, error })   // shows/updates the menu's sync status (hidden until first called)
 // Store each user's data per stage, e.g. users/{uid}/stages/{stage}/...,
 // because all stages share one web address and one sign-in.
 //
@@ -82,6 +82,9 @@ async function start() {
   ui.signOut.addEventListener('click', () => { setMenu(false); authLib.signOut(auth); });
 
   // ---- Sync status (the app reports saving/errors via AppAccount.setStatus) ----
+  // Hidden until the app first reports saving (setStatus), so an app that
+  // stores nothing doesn't claim "All changes saved".
+  let used = false;
   let saving = false;
   let error = '';
   const STATUS = {
@@ -91,6 +94,12 @@ async function start() {
     error: () => `Couldn't sync: ${error}`,
   };
   function showStatus() {
+    ui.status.hidden = ui.dot.hidden = !used;
+    if (!used) {
+      ui.button.setAttribute('aria-label', `Account: ${ui.name.textContent}`);
+      ui.button.title = ui.name.textContent;
+      return;
+    }
     const state = error ? 'error' : !navigator.onLine ? 'offline' : saving ? 'saving' : 'synced';
     const text = typeof STATUS[state] === 'function' ? STATUS[state]() : STATUS[state];
     ui.status.className = `sync-status ${state}`;
@@ -100,6 +109,7 @@ async function start() {
     ui.button.title = text;
   }
   window.AppAccount.setStatus = (s = {}) => {
+    used = true;
     if ('saving' in s) saving = !!s.saving;
     if ('error' in s) error = s.error ? (s.error.code === 'permission-denied' ? 'not allowed' : (s.error.code || s.error.message || String(s.error))) : '';
     showStatus();
