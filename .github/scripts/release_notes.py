@@ -133,8 +133,8 @@ def commit_issues(message):
     return nums
 
 
-def recent_changes(repo, limit=20):
-    log = git(repo, "log", "--no-merges", "-n", "60", "--name-only",
+def recent_changes(repo, limit=200):   # older days fold away in "What's new", so keep plenty
+    log = git(repo, "log", "--no-merges", "-n", "600", "--name-only",
               f"--format={RS}%h{FS}%cI{FS}%s")
     out = []
     for entry in log.split(RS):
