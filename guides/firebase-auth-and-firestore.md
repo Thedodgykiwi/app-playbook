@@ -252,6 +252,22 @@ All GitHub Pages stages live on one web address (`<username>.github.io`), so:
   `users/{uid}/stages/{stage}/...`, with stage names whitelisted in the
   rules. Otherwise testing on Dev changes real Production data.
 
+## Adding a field to stored data (e.g. a "done at" time)
+
+Strict rules (`keys().hasOnly([...])`) reject any new field, so signed-in
+saves would fail if the app ships first. Order (done this way on test-app):
+
+1. Make the field **optional** in the rules (allow absent/null, validate type
+   and range) and add it to `onlyChanges([...])` if it changes on update.
+2. Add rules tests for it (valid, null, wrong type, out of range, other
+   user), run them, and loosen the rule once to prove they fail.
+3. Test the app against the emulators **signed in** (save, reload, it comes
+   back).
+4. **Deploy the rules first**, check them live (`firebase_get_security_rules`),
+   then push the app change. Old app versions keep working with the new rules.
+5. Existing records without the field: handle "missing" in the app (e.g. show
+   under "Older") rather than inventing values.
+
 ## Gotchas (quick list)
 
 - Network: `apis.google.com` is needed for the sign-in pop-up; `<username>.github.io` to check the live site.
@@ -260,6 +276,10 @@ All GitHub Pages stages live on one web address (`<username>.github.io`), so:
 - Firestore location is permanent; ask first. Turn on delete protection.
 - `measurementId` = Analytics; leave it out unless the user wants tracking.
 - `firebase_deploy` is asynchronous; poll `firebase_deploy_status`.
+- In a new session the Firebase sign-in may still be valid, but there's no
+  active project: `firebase_deploy` fails with "requires an active project".
+  Call `firebase_update_environment` with `project_dir` (the app repo) and
+  `active_project` first.
 - Emulator project IDs must start with `demo-` so nothing reaches the real project.
 - `[hidden]` can be overridden by CSS `display`; add `[hidden] { display: none !important; }`.
 - Never delete users' device or cloud data without asking; migrate formats instead.
