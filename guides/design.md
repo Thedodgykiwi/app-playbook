@@ -98,6 +98,13 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **One-line text (`white-space: nowrap` + ellipsis) can push a whole page
+  off-screen** when it sits in a CSS grid or flex column: the column grows to
+  fit the text. Give the column `grid-template-columns: minmax(0, 1fr)` (or
+  `min-width: 0` on flex children). Test with the **longest real content**
+  (e.g. a long release headline), not just sample data: found on a real
+  iPhone in test-app.
+
 - **Global element styles leak into new components.** test-app has
   `button:hover { background: <blue> }`; a new button styled with
   `.news-open { all: unset }` still turned solid blue on hover, because
