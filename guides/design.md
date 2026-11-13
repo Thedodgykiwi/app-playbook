@@ -83,6 +83,9 @@ nobody mistakes them for the real app.
   themes combine without extra rules. Green had to be darkened (#237032) to
   pass contrast.
 - **Icons: Phosphor Regular** (outline) for new apps and test-app (since its new look; its home-screen icons stay duotone).
+- **Groups inside a collapsible section:** don't nest another row of toggle
+  headings (feels like a menu inside a menu). Use centred divider labels
+  ("─── Today · 2 ⌃ ───") that hide/show their own items (test-app's Done).
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.
