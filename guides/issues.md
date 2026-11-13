@@ -5,6 +5,27 @@ small tweaks and slowness reports, logged as they come in and worked on
 later. Claude creates, lists, updates and closes issues with the GitHub
 tools (`issue_write`, `list_issues`, `issue_read`, `add_issue_comment`).
 
+## The choice card: how every request starts
+
+Whenever the user raises a **feature, fix, tweak or idea** for an app, Claude
+first shows a **choice card** (the AskUserQuestion tool: tappable options in
+the Claude app), one card per request, with these options and the
+recommended one first, marked "(Recommended)":
+
+1. **Log it, build later**: create the issue only.
+2. **Log it + mock-up first**: create the issue, then a clickable mock-up
+   (2–3 options, `working-with-the-user.md`) before building. Recommend for
+   new features or noticeable changes with more than one reasonable design.
+3. **Build it now**: create the issue, build on Dev, commit with
+   `Issue #<n>`. Recommend for small tweaks and clear bug fixes.
+
+Say in the card's question what the request is in one line (the card may be
+all the user sees). Skip the card only when the user already said which
+(e.g. "log it", "mock it up", "just do it", "promote …"), for questions that
+change nothing, and for follow-ups inside work already chosen (they go on the
+same issue). Every option creates an issue. Test-bench apps and the playbook
+itself don't use issues: there the card offers mock-up first / build now.
+
 ## Every change gets an issue (automatically)
 
 In an app, **every bug the user reports and every change they ask for gets

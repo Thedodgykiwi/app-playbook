@@ -40,6 +40,9 @@ Any push to one of these branches redeploys the site (`.github/workflows/deploy.
 ## Issues (bugs, requests, tweaks)
 
 The repo's GitHub Issues are the to-do list (playbook `issues.md`).
+**Every request starts with a choice card** (playbook `issues.md`): for any
+feature, fix, tweak or idea, show the AskUserQuestion card with "Log it,
+build later" / "Log it + mock-up first" / "Build it now", recommended first.
 **Every bug reported or change asked for gets an issue, automatically**
 (no need to say "log it"): create it with the right label before starting,
 commit with `Issue #<n>`. **"Log it" means record only:** create the issue,
@@ -50,9 +53,9 @@ issues (public repo = public issues).
 
 ## Concept first (for bigger ideas)
 
-Before a new feature or noticeable change to how the app looks or works,
-offer a concept mock-up once (Claude artifact, 2–3 options, not in the repo).
-Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
+Offered through the choice card ("Log it + mock-up first", recommended for new
+features or noticeable changes with more than one reasonable design): a Claude
+artifact with 2–3 options, not in the repo. Details: playbook `working-with-the-user.md`.
 
 ## Working on a change
 

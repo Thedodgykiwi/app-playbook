@@ -14,9 +14,10 @@
 
 ## Concept first (bigger ideas)
 
-Before building a **new feature or noticeable change** to how the app looks
-or works, offer a concept mock-up once (only when there's more than one
-reasonable design or the request is vague; not for small tweaks or fixes).
+Offered through the **choice card** every request starts with (`issues.md`):
+"Log it + mock-up first" is the recommended option for a **new feature or
+noticeable change** to how the app looks or works with more than one
+reasonable design or a vague request; not for small tweaks or fixes.
 
 If yes: a clickable mock-up as a **Claude artifact** (not in the repo), 2–3
 options side by side with sample data and a short "Good / Watch out" note
