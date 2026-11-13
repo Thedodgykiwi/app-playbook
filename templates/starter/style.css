@@ -84,7 +84,8 @@ body.has-banner { padding-top: 3rem; }
 }
 
 /* App menu (menu.js) + Google sign-in (account.js): top-right corner */
-.account { position: fixed; top: .8rem; right: .8rem; z-index: 5; display: flex; align-items: flex-start; gap: .5rem; }
+.account { position: absolute; top: .8rem; right: .8rem; z-index: 5;   /* scrolls away with the page header, never covers the list */
+  display: flex; align-items: flex-start; gap: .5rem; }
 body.has-banner .account { top: 2.8rem; }
 .sign-in {
   padding: .35rem .7rem; font-size: .85rem; font-weight: 600;
