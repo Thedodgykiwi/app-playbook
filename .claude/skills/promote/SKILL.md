@@ -149,7 +149,9 @@ The script works on whichever repo the current directory belongs to.
    notes and the list of commits included. It pushes it, and waits for the deploy
    workflow run for that exact commit. Give it a timeout of at least 6 minutes.
 
-6. **Report.** Tell the user whether the deploy succeeded, repeat the release
+6. **Report.** End with the **full, clickable address of every stage
+   promoted** in this run (one line each, e.g. "Alpha:
+   https://<user>.github.io/<repo>/alpha/"). Tell the user whether the deploy succeeded, repeat the release
    notes, mention they can also read them under **📋 What's new** on that
    stage's site (built from these promotions by
    the playbook's shared deploy workflow on every deploy), and give the stage

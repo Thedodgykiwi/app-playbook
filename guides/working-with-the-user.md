@@ -8,6 +8,12 @@
   chose. **Ask first** for anything hard to undo (data deletion, database
   location, production releases, paid services).
 - Report honestly: what was tested, what wasn't, what failed.
+- **Every deploy ends with a link.** Whenever something is pushed to Dev or
+  promoted to Alpha, Staging or Production, the message ends with the full,
+  clickable address of **each** stage that changed (e.g.
+  `https://<user>.github.io/<repo>/dev/`), plus one line on what to look at
+  there. Never just "it's on Dev". (Added after several updates went out
+  without links, Nov 2026.)
 - End each piece of work with its status: what changed, committed/pushed or
   not, where to see it.
 - For visual changes, show a screenshot before pushing.
