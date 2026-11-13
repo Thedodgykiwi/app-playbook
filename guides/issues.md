@@ -61,8 +61,14 @@ or propose code in the issue unless asked: it's a record, not a plan.
 1. Read it (`issue_read`), work on `dev` as usual.
 2. Mention it in the commit message: **`Fixes #12`** (or `Closes #12`).
    GitHub closes the issue automatically when that commit reaches the
-   default branch, `main`, i.e. **when the fix is live in Production**,
-   not when it's only on Dev. Until then it stays open.
+   repo's **default branch**. With the default set to **`main`** (see
+   `new-app-setup.md`), that's **when the fix is live in Production**, not
+   when it's only on Dev.
+   ⚠️ If the default branch is `dev`, GitHub closes the issue as soon as the
+   fix is pushed to Dev (this happened on test-app, Nov 2026). Check with
+   `curl -s https://api.github.com/repos/<owner>/<repo> | grep default_branch`;
+   if it's not `main`, ask the user to change it, and reopen any issue that
+   closed early.
 3. If you need to say something on the issue (a question, "done on Dev,
    waiting for release"), add a comment.
 4. If it won't be done, close it with a comment saying why

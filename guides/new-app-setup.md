@@ -40,6 +40,10 @@ The app itself needs, at minimum:
 
 ## 3. One-time GitHub settings (the user does these)
 
+- **Settings → General → Default branch:** `main` (switch with the ⇄ button).
+  Then issues close only when their fix reaches Production, and pull
+  requests on GitHub target Production's branch by default.
+
 - **Settings → Pages → Source:** GitHub Actions.
 - **Settings → Environments → github-pages → Deployment branches:** allow
   `main`, `staging`, `dev`, `alpha` (otherwise non-main deploys are refused).
