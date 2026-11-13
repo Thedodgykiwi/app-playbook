@@ -46,8 +46,9 @@ page from then on.
    1. **Pages** (`/settings/pages`): Build and deployment → Source:
       **GitHub Actions**.
    2. **Environments** (`/settings/environments`) → `github-pages` →
-      Deployment branches and tags → **Selected branches and tags** → add
-      `main`, `staging`, `alpha`, `dev`. (If `github-pages` isn't listed
+      Deployment branches and tags → choose **No restriction** (one tap,
+      saves itself; fine when only the owner can push). GitHub starts it on
+      "Selected branches" with only `main`, which blocks the other stages. (If `github-pages` isn't listed
       yet, do step 1 first and refresh.)
    3. **General** (`/settings`) → Default branch → switch to **`dev`** (so new
       Claude sessions start where the work happens).

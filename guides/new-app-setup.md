@@ -66,8 +66,10 @@ The app itself needs, at minimum:
   "Fixes #n", see `issues.md`.)
 
 - **Settings → Pages → Source:** GitHub Actions.
-- **Settings → Environments → github-pages → Deployment branches:** allow
-  `main`, `staging`, `dev`, `alpha` (otherwise non-main deploys are refused).
+- **Settings → Environments → github-pages → Deployment branches:** choose
+  **No restriction** (or list `main`, `staging`, `alpha`, `dev`). GitHub
+  starts it on "Selected branches" with only `main`, which refuses the other
+  stages' deploys.
 
 ## 4. Cloud session environment
 
