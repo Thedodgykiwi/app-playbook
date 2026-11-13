@@ -5,6 +5,23 @@ small tweaks and slowness reports, logged as they come in and worked on
 later. Claude creates, lists, updates and closes issues with the GitHub
 tools (`issue_write`, `list_issues`, `issue_read`, `add_issue_comment`).
 
+## Every change gets an issue (automatically)
+
+In an app, **every bug the user reports and every change they ask for gets
+an issue, without being asked**: create it (label `bug`, `feature`, `tweak`
+or `performance`) **before** starting work, then commit with `Issue #<n>`.
+That gives each change a record, a pill in the release notes, and an
+automatic close on the Production release. Small follow-ups during the same
+piece of work ("move it 2px") go on the same issue.
+
+Not for: the playbook itself, or a test-bench app like Playbook Trial
+(starter work is recorded in the playbook's commits).
+
+If work was done without one, log it afterwards ("Logged after the fact",
+with the commits) and link it with a later commit that says `Issue #<n>`
+(e.g. the commit that records the rule or a note), so the release still
+closes it. (Found in test-app, Nov 2026: three changes had no issues.)
+
 ## The golden rule: "log it" means record only
 
 When the user says **"log it"** (or "add an issue", "note that down"),

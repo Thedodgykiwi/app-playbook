@@ -40,7 +40,10 @@ Any push to one of these branches redeploys the site (`.github/workflows/deploy.
 ## Issues (bugs, requests, tweaks)
 
 The repo's GitHub Issues are the to-do list (playbook `issues.md`).
-**"Log it" means record only:** create the issue, don't change code. Fix
+**Every bug reported or change asked for gets an issue, automatically**
+(no need to say "log it"): create it with the right label before starting,
+commit with `Issue #<n>`. **"Log it" means record only:** create the issue,
+don't change code. Fix
 later on `dev` with `Issue #<n>` (not "Fixes") in the commit message; the
 Production release closes the issue automatically. No client names or private details in
 issues (public repo = public issues).
