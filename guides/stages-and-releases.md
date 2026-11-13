@@ -51,7 +51,11 @@ dated bookmark of that exact version, listed on the repo's Releases page
 with its notes). Nobody has to do anything: the shared deploy creates them.
 
 - **Names are dates:** `v2026.11.13` for the first release that day,
-  `v2026.11.13.2` for a second the same day, then `.3`, and so on.
+  `v2026.11.13.2` for a second the same day, then `.3`, and so on. The
+  number is the release's **position in the day**, worked out from `main`'s
+  history, never "the next free name" (that went wrong once when an earlier
+  release that day had no tag). A release found under the wrong name is
+  renamed automatically.
 - **Notes** are the same plain-English release notes as "What's new".
 - **Self-healing:** each deploy checks `main`'s whole history and fills in
   any Production release that has no GitHub release yet (that's also how

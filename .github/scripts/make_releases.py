@@ -10,8 +10,9 @@ pull request merged into main) is one Production release. Each gets a tag
 named after its date, and a release whose notes are the same plain-English
 release notes the app shows under "What's new":
 
-    v2026.11.13      first release that day
-    v2026.11.13.2    second release the same day, then .3, .4 ...
+    v2026.11.13      1st Production release that day
+    v2026.11.13.2    2nd the same day, then .3, .4 ... (by position in the day,
+                     so names never depend on which other releases exist)
 
 It looks at the whole history every time, so a release that was missed (or
 releases made before this existed) is filled in on the next run. Releases
@@ -33,26 +34,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from release_notes import git, promotions  # noqa: E402  (same folder)
 
 
-def release_tags(repo):
-    """Tags that look like ours: vYYYY.MM.DD or vYYYY.MM.DD.N."""
-    out = git(repo, "tag", "--list", "v[0-9][0-9][0-9][0-9].[0-9][0-9].[0-9][0-9]*")
-    return set(out.split())
-
-
 def tag_for(sha, repo):
     """The release tag already on this commit, if any."""
     out = git(repo, "tag", "--points-at", sha, "--list", "v[0-9][0-9][0-9][0-9].*")
     return out.split()[0] if out.split() else None
-
-
-def next_tag(day, taken):
-    base = f"v{day}"
-    if base not in taken:
-        return base
-    n = 2
-    while f"{base}.{n}" in taken:
-        n += 1
-    return f"{base}.{n}"
 
 
 def same_workflows(repo, sha):
@@ -78,58 +63,72 @@ def main():
     owner, name = slug.split("/", 1)
     site = f"https://{owner.lower()}.github.io/{name}/"
 
-    have_release = set() if dry else existing_releases(slug)
-    taken = release_tags(repo) | have_release
-    todo, skipped = [], []
+    # A release's name comes only from its position in the day, so it never
+    # depends on which other releases happen to exist:
+    #   1st Production release of a day -> v2026.11.13, 2nd -> v2026.11.13.2 ...
+    per_day = {}
+    plan = []                                     # (canonical tag, sha, release info)
     for r in reversed(promotions(repo)):          # oldest first
         full = git(repo, "rev-parse", r["sha"]).strip()
-        tag = tag_for(full, repo)                 # tag already on this commit?
-        if tag and tag in have_release:
-            continue
-        new_tag = tag is None
-        if new_tag and not same_workflows(repo, full):
+        day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
+        per_day[day] = per_day.get(day, 0) + 1
+        n = per_day[day]
+        plan.append((f"v{day}" if n == 1 else f"v{day}.{n}", full, r))
+
+    have_release = set() if dry else existing_releases(slug)
+    actions, skipped = [], []
+    for tag, sha, r in plan:
+        current = tag_for(sha, repo)              # our tag already on this commit?
+        if current == tag and tag in have_release:
+            continue                              # all good
+        if current and current != tag and current in have_release:
+            actions.append(("rename", current, tag, sha, r))
+        elif current == tag:
+            actions.append(("release", tag, tag, sha, r))   # tag exists, no release yet
+        elif same_workflows(repo, sha):
+            actions.append(("create", None, tag, sha, r))
+        else:
             # GitHub won't let the deploy's token create a tag on an older
             # version whose workflow files differ from today's. Someone with
             # full access can push the tag; this script then adds the release.
-            skipped.append(r["sha"])
-            continue
-        if new_tag:
-            day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
-            tag = next_tag(day, taken)
-            taken.add(tag)
-        todo.append((tag, full, r, new_tag))
+            skipped.append(f"{r['sha']} ({tag})")
 
     if skipped:
-        print(f"Releases: skipped {len(skipped)} older version(s) without a tag "
-              f"({', '.join(skipped)}): their workflow files differ from today's, so "
-              "the deploy can't tag them. Push a tag for one to have its release added.")
-    if not todo:
+        print(f"Releases: skipped {len(skipped)} older version(s) the deploy can't tag: "
+              f"{', '.join(skipped)}. Push that tag to have its release added.")
+    if not actions:
         print("Releases: nothing new to create.")
         return
+
     failed = []
-    for tag, sha, r, new_tag in todo:
-        body = (r["notes"].strip() + f"\n\n---\nLive at {site}\n")
-        title = f"{tag} (Production)"
-        print(f"{'Would create' if dry else 'Creating'} {tag} -> {sha[:7]} ({r['date']})"
-              + ("" if new_tag else " [tag already exists]"))
+    for kind, old, tag, sha, r in actions:
+        label = {"create": f"Creating {tag}", "release": f"Adding release for existing tag {tag}",
+                 "rename": f"Renaming {old} -> {tag}"}[kind]
+        print(f"{'Would do: ' if dry else ''}{label} ({sha[:7]}, {r['date']})")
         if dry:
             continue
-        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
-            f.write(body)
-        cmd = ["gh", "release", "create", tag, "--repo", slug, "--title", title,
-               "--notes-file", f.name]
-        if new_tag:
-            cmd += ["--target", sha]
+        if kind == "rename":
+            cmds = [["gh", "release", "edit", old, "--repo", slug, "--tag", tag,
+                     "--title", f"{tag} (Production)"],
+                    ["gh", "api", "-X", "DELETE", f"repos/{slug}/git/refs/tags/{old}"]]
         else:
-            cmd += ["--verify-tag"]
-        res = subprocess.run(cmd, capture_output=True, text=True)
-        if res.returncode != 0:
-            msg = (res.stderr or res.stdout).strip()
-            print(f"::warning::Couldn't create release {tag} for {sha[:7]}: {msg}")
-            failed.append(tag)
+            body = r["notes"].strip() + f"\n\n---\nLive at {site}\n"
+            with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
+                f.write(body)
+            cmd = ["gh", "release", "create", tag, "--repo", slug,
+                   "--title", f"{tag} (Production)", "--notes-file", f.name]
+            cmd += ["--target", sha] if kind == "create" else ["--verify-tag"]
+            cmds = [cmd]
+        for cmd in cmds:
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode != 0:
+                msg = (res.stderr or res.stdout).strip()
+                print(f"::warning::{label} failed: {msg}")
+                failed.append(tag)
+                break
     if failed:
-        print(f"::warning::{len(failed)} release(s) not created: {', '.join(failed)}. "
-              "If GitHub said 403, check the app's deploy.yml has 'contents: write'. "
+        print(f"::warning::{len(failed)} release step(s) failed: {', '.join(failed)}. "
+              "If GitHub said 403, check the app's deploy.yml has 'contents: write' "
               "(see the playbook's stages-and-releases guide).")
 
 
