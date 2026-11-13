@@ -38,7 +38,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from release_notes import git, promotions, rollbacks  # noqa: E402  (same folder)
+from release_notes import git, promotions, release_names, rollbacks  # noqa: E402  (same folder)
 
 
 def tag_for(sha, repo):
@@ -181,17 +181,13 @@ def main():
     owner, name = slug.split("/", 1)
     site = f"https://{owner.lower()}.github.io/{name}/"
 
-    # A release's name comes only from its position in the day, so it never
-    # depends on which other releases happen to exist:
-    #   1st Production release of a day -> v2026.11.13, 2nd -> v2026.11.13.2 ...
-    per_day = {}
+    # Names come from release_notes.release_names (the one shared rule:
+    # date + position in the day), so GitHub and "What's new" always agree.
+    names = release_names(repo, tz.key)
     plan = []                                     # (canonical tag, sha, release info)
-    for r in reversed(promotions(repo)):          # oldest first
+    for r in reversed(promotions(repo, limit=None)):   # oldest first
         full = git(repo, "rev-parse", r["sha"]).strip()
-        day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
-        per_day[day] = per_day.get(day, 0) + 1
-        n = per_day[day]
-        plan.append((f"v{day}" if n == 1 else f"v{day}.{n}", full, r))
+        plan.append((names[full], full, r))
 
     handle_rollbacks(repo, slug, site, dry)
     have_release = set() if dry else existing_releases(slug)

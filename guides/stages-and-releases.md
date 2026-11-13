@@ -50,6 +50,11 @@ Every Production release also becomes a **GitHub release** (a named,
 dated bookmark of that exact version, listed on the repo's Releases page
 with its notes). Nobody has to do anything: the shared deploy creates them.
 
+- **Shown in the app:** Production's "What's new" shows each release's
+  version in the grey line after the date. The name is worked out by
+  `release_notes.release_names()`, the one shared rule also used to name the
+  GitHub releases, so the two always match (even for the newest release,
+  whose tag is only created after the site is built).
 - **Names are dates:** `v2026.11.13` for the first release that day,
   `v2026.11.13.2` for a second the same day, then `.3`, and so on. The
   number is the release's **position in the day**, worked out from `main`'s

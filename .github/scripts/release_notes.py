@@ -43,8 +43,8 @@ def bullets_from_changes(text):
     return "\n".join(out)
 
 
-def promotions(repo):
-    log = git(repo, "log", "--first-parent", "--merges", "-n", "50",
+def promotions(repo, limit=50):
+    log = git(repo, "log", "--first-parent", "--merges", *(["-n", str(limit)] if limit else []),
               f"--format=%h{FS}%cI{FS}%B{RS}")
     releases = []
     for entry in log.split(RS):
@@ -71,6 +71,27 @@ def promotions(repo):
             releases.append({"sha": sha, "date": date, "from": pr.group(2),
                              "pr": int(pr.group(1)), "notes": notes})
     return releases
+
+
+def release_names(repo, tz_name=None):
+    """{full commit sha: "v2026.11.13.2"} for every Production release on main.
+
+    The ONE place release names are decided (used for GitHub releases and for
+    the version shown in "What's new"): the date of the release (RELEASE_TZ,
+    default UTC) plus its position that day: 1st -> v2026.11.13, 2nd ->
+    v2026.11.13.2 ... Worked out from history, so it never depends on which
+    tags or GitHub releases happen to exist."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    tz = ZoneInfo(tz_name or os.environ.get("RELEASE_TZ") or "UTC")
+    per_day, names = {}, {}
+    for r in reversed(promotions(repo, limit=None)):      # oldest first, whole history
+        full = git(repo, "rev-parse", r["sha"]).strip()
+        day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
+        per_day[day] = per_day.get(day, 0) + 1
+        n = per_day[day]
+        names[full] = f"v{day}" if n == 1 else f"v{day}.{n}"
+    return names
 
 
 def rollbacks(repo):
@@ -132,6 +153,10 @@ def main():
         data["recent"] = recent_changes(repo)
     else:
         releases = promotions(repo)
+        if stage == "main":                       # Production releases have version names
+            names = release_names(repo)
+            for r in releases:
+                r["version"] = names.get(git(repo, "rev-parse", r["sha"]).strip())
         rbs = rollbacks(repo)
         undone = {rb["rolled_back_commit"] for rb in rbs}
         for r in releases:
