@@ -88,6 +88,24 @@ The sign-in lasts for the cloud session only. The token is stored in
 `~/.config/configstore/firebase-tools.json`, which is useful for REST calls the
 MCP tools don't cover (step 5).
 
+### 1b. Point the tools at THIS app's project first
+
+Before any other Firebase tool, add `.firebaserc` (`{"projects":{"default":"<project-id>"}}`)
+and `firebase.json` (template) to the app's repo, then
+`firebase_update_environment` (project_dir + active_project) and **check
+`firebase_get_environment` shows the right Active Project ID**. Without a
+`firebase.json` the tools silently keep the *previous* app's project, so
+`firebase_create_app` registered a web app in the wrong project (found on
+the second app). If that happens, remove it in that project's console:
+Project settings → Your apps → the app → Remove this app.
+
+**New project made by Claude (`firebase_create_project`):** the Cloud
+Firestore API starts switched off, so `firestore_create_database` fails with
+"API has not been used". Either the user creates the database in the console
+(Build → Firestore Database → Create database: Standard, location, start in
+production mode), or opens the "enable it" link from the error, then Claude
+retries.
+
 ### 2. Register the web app → `firebase-config.js`
 
 - `firebase_create_app` (platform `web`, display name e.g. "My App (web)").
