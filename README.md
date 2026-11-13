@@ -35,10 +35,22 @@ something that changed), add it to the right guide in the same session; see
 | Path | What it is |
 |---|---|
 | `templates/CLAUDE.md.template` | Starter instructions for a new app's repo |
-| `templates/.github/workflows/deploy.yml` | Multi-stage GitHub Pages deploy |
-| `templates/.github/scripts/release_notes.py` | Builds "What's new" from promotions |
-| `templates/.claude/skills/promote/` | The promote skill (dev → alpha → staging → main) |
+| `templates/.github/workflows/deploy.yml` | The small deploy file each app keeps: it just calls the shared deploy below |
 | `templates/firebase/` | Firebase config, rules, rules tests, `sync.js` sign-in + sync module |
+
+## Shared by every app (one copy only)
+
+These are **used directly from this repo**, never copied into apps, so they
+can't drift apart. Improve them here and every app gets the change.
+
+| Path | What it is |
+|---|---|
+| `.claude/skills/promote/` | The **promote** skill (dev → alpha → staging → main, release notes). Available in any session that has this repo attached |
+| `.github/workflows/deploy-stages.yml` | The multi-stage GitHub Pages deploy. Apps call it from their small `deploy.yml` |
+| `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |
+
+Changing a shared file changes **every** app's next deploy or promotion:
+test the change on one app's `dev` first.
 
 ## Pointing a new app at this playbook
 

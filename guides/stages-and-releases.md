@@ -19,7 +19,11 @@
 - **Hotfixes** (urgent production fixes) only when the user asks: branch
   from `main`, fix, release, then merge the fix back into `dev`.
 
-## The promote skill (`templates/.claude/skills/promote/`)
+## The promote skill (shared: `.claude/skills/promote/` in this repo)
+
+There's **one copy**, here in the playbook, used by every app; apps don't
+keep their own. It loads in any session that has the playbook attached, and
+is run from the app repo's root (see the skill's instructions).
 
 - `promote.sh status` shows what's waiting at each step.
 - `promote.sh <target> --dry-run` previews.
@@ -28,7 +32,7 @@
   Production. So bullets must not name a stage ("each stage has its own
   colour", not "Alpha is pink"); only the heading may.
 - The promotion is a merge commit "Promote <from> → <to>" with the notes
-  in its message; `release_notes.py` turns those into `releases.json` for
+  in its message; the shared deploy's `release_notes.py` turns those into `releases.json` for
   the app's "What's new" panel on every deploy.
 - The script waits for the deploy by polling the public GitHub API
   (`api.github.com`, no login). That only works for **public** repos and

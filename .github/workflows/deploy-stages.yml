@@ -1,0 +1,106 @@
+name: Deploy stages to GitHub Pages (shared)
+
+# The ONE copy of the multi-stage deploy, shared by every app. Apps call it
+# from a small .github/workflows/deploy.yml (see templates/). Changing this
+# file changes every app's next deploy, so test it on one app's dev first.
+#
+# Each run rebuilds the whole site from the latest commit of all four branches:
+#   main    -> https://<owner>.github.io/<repo>/
+#   staging -> https://<owner>.github.io/<repo>/staging/
+#   alpha   -> https://<owner>.github.io/<repo>/alpha/
+#   dev     -> https://<owner>.github.io/<repo>/dev/
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: 'Full app name, e.g. "Test App". Repo files say "<app_name> Local".'
+        required: true
+        type: string
+      short_name:
+        description: 'Short name prefix for test stages, e.g. "Test" -> "Test Dev" (repo files say "<short_name> Local"). Production uses app_name. Defaults to app_name.'
+        required: false
+        type: string
+        default: ''
+      color_main:    { type: string, required: false, default: '#3b5bdb' }
+      color_staging: { type: string, required: false, default: '#e67700' }
+      color_alpha:   { type: string, required: false, default: '#c2255c' }
+      color_dev:     { type: string, required: false, default: '#7048e8' }
+      color_local:
+        description: Theme colour used in the repo's files (replaced per stage)
+        type: string
+        required: false
+        default: '#495057'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out shared deploy scripts (app-playbook)
+        uses: actions/checkout@v4
+        with:
+          repository: Thedodgykiwi/app-playbook
+          ref: main
+          path: _tools
+          sparse-checkout: .github/scripts
+      - name: Assemble site from all stage branches
+        env:
+          REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          APP: ${{ inputs.app_name }}
+          SHORT_IN: ${{ inputs.short_name }}
+          C_MAIN: ${{ inputs.color_main }}
+          C_STAGING: ${{ inputs.color_staging }}
+          C_ALPHA: ${{ inputs.color_alpha }}
+          C_DEV: ${{ inputs.color_dev }}
+          C_LOCAL: ${{ inputs.color_local }}
+        run: |
+          set -e
+          SHORT=${SHORT_IN:-$APP}
+          mkdir _site
+          for stage in main staging dev alpha; do
+            if [ "$stage" = main ]; then dest=_site; else dest=_site/$stage; fi
+            if git ls-remote --exit-code --heads "$REPO_URL" "$stage" >/dev/null; then
+              tmp=$(mktemp -d)
+              # Full history (small repos) so release notes can be read from it
+              git clone -q --branch "$stage" "$REPO_URL" "$tmp"
+              sha=$(git -C "$tmp" rev-parse --short HEAD)
+              python3 _tools/.github/scripts/release_notes.py "$tmp" "$stage" "$tmp/releases.json"
+              rm -rf "$tmp/.git" "$tmp/.github"
+              # Cache-busting: make browsers fetch fresh CSS/JS after each deploy
+              # (also icons and the manifest, so phones don't keep stale home-screen icons)
+              [ -f "$tmp/index.html" ] && sed -i -E "s/(href|src)=\"([^\":]+\.(css|js|png|svg|webmanifest))\"/\1=\"\2?v=$sha\"/g" "$tmp/index.html"
+              [ -f "$tmp/manifest.webmanifest" ] && sed -i -E "s/(\"src\": \"[^\"]+\.png)\"/\1?v=$sha\"/g" "$tmp/manifest.webmanifest"
+              # Home-screen app: this stage's icons, name and colour
+              case $stage in
+                main)    name="$APP";         short="$APP";           color="$C_MAIN" ;;
+                staging) name="$APP Staging"; short="$SHORT Staging"; color="$C_STAGING" ;;
+                alpha)   name="$APP Alpha";   short="$SHORT Alpha";   color="$C_ALPHA" ;;
+                dev)     name="$APP Dev";     short="$SHORT Dev";     color="$C_DEV" ;;
+              esac
+              for f in "$tmp/index.html" "$tmp/manifest.webmanifest"; do
+                [ -f "$f" ] || continue
+                sed -i "s#icons/app/local/#icons/app/$stage/#g; s#$APP Local#$name#g; s#$SHORT Local#$short#g; s/$C_LOCAL/$color/g" "$f"
+              done
+              # iOS 27 won't download a linked home-screen icon (shows a letter instead),
+              # so embed this stage's icon directly in the page as a data URI.
+              touch_icon="$tmp/icons/app/$stage/apple-touch-icon.png"
+              if [ -f "$touch_icon" ] && [ -f "$tmp/index.html" ]; then
+                data=$(base64 -w0 "$touch_icon")
+                sed -i "s#href=\"icons/app/$stage/apple-touch-icon\.png[^\"]*\"#href=\"data:image/png;base64,$data\"#" "$tmp/index.html"
+              fi
+              mkdir -p "$dest"
+              cp -r "$tmp"/. "$dest"/
+              echo "window.STAGE = '$stage';" > "$dest/stage.js"
+              echo "Deployed $stage -> $dest"
+            else
+              echo "Branch $stage does not exist yet, skipping"
+            fi
+          done
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

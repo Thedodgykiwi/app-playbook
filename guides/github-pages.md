@@ -1,7 +1,9 @@
 # Hosting on GitHub Pages (several stages, one site)
 
-The deploy workflow (`templates/.github/workflows/deploy.yml`) runs on a
-push to any stage branch. It checks out **all four** stage branches and
+Each app has a small `.github/workflows/deploy.yml` (from
+`templates/`) that runs on a push to any stage branch and calls the
+playbook's **shared** deploy, `.github/workflows/deploy-stages.yml`. The
+shared deploy is the only copy of the steps, so improve it there. It checks out **all four** stage branches and
 rebuilds the whole site: `main` at the root, the others in sub-folders.
 Per stage it:
 

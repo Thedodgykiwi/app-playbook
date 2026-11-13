@@ -12,14 +12,24 @@ directly to alpha, staging or main except through this skill.
 Each stage deploys to GitHub Pages via `.github/workflows/deploy.yml`:
 - dev → `/dev/`, alpha → `/alpha/`, staging → `/staging/`, main → `/` (root)
 
-All mechanical work is done by `promote.sh` in this directory. Run it from
-the repository root.
+This skill lives in the **app-playbook** repo and is shared by every app, so
+there is only one copy. Use it on an **app** repo, never on the playbook
+itself.
+
+All mechanical work is done by `promote.sh` in this skill's directory
+(`<skill-dir>` below: the "Base directory for this skill" shown when the
+skill loads, normally `/home/user/app-playbook/.claude/skills/promote`). Run
+it from the **app repository's root**, e.g.
+
+    cd /home/user/<app-repo> && /home/user/app-playbook/.claude/skills/promote/promote.sh status
+
+The script works on whichever repo the current directory belongs to.
 
 ## Steps
 
 1. **Show what's pending.** Run:
 
-       .claude/skills/promote/promote.sh status
+       <skill-dir>/promote.sh status
 
    Tell the user which commits are waiting at each step, in plain language.
 
@@ -30,7 +40,7 @@ the repository root.
 
 3. **Preview.** Run:
 
-       .claude/skills/promote/promote.sh <target> --dry-run
+       <skill-dir>/promote.sh <target> --dry-run
 
    Summarise the commits that will move. Then:
    - **Target `alpha`:** write release notes (step 4) and show the draft.
@@ -126,8 +136,8 @@ the repository root.
 
 5. **Promote.** Run one of:
 
-       .claude/skills/promote/promote.sh alpha --notes-file <notes file>
-       .claude/skills/promote/promote.sh <staging|main> [--intro-file <intro file>]
+       <skill-dir>/promote.sh alpha --notes-file <notes file>
+       <skill-dir>/promote.sh <staging|main> [--intro-file <intro file>]
 
    The script merges the previous stage into the target with a merge commit
    whose message is "Promote <source> → <target>", followed by your release
@@ -137,7 +147,7 @@ the repository root.
 6. **Report.** Tell the user whether the deploy succeeded, repeat the release
    notes, mention they can also read them under **📋 What's new** on that
    stage's site (built from these promotions by
-   `.github/scripts/release_notes.py` on every deploy), and give the stage
+   the playbook's shared deploy workflow on every deploy), and give the stage
    URL. Remind them a hard refresh (Ctrl+Shift+R) may be needed for up to
    10 minutes, because GitHub Pages caches pages.
 

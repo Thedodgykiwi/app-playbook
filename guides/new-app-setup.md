@@ -20,9 +20,11 @@ From `templates/` in this repo:
 | Template | Goes to | Change |
 |---|---|---|
 | `CLAUDE.md.template` | `CLAUDE.md` | app name, URLs, features to keep working |
-| `.github/workflows/deploy.yml` | same path | "My App" names and stage colours |
-| `.github/scripts/release_notes.py` | same path | nothing |
-| `.claude/skills/promote/` | same path | nothing |
+| `.github/workflows/deploy.yml` | same path | `app_name` / `short_name` (and colours if wanted) |
+
+**Don't copy** the promote skill, the release-notes script or the deploy
+steps: apps use the playbook's shared copies (see the README), so there's
+only ever one version of each.
 
 The app itself needs, at minimum:
 

@@ -17,6 +17,13 @@ Claude here for how to do common things.
   anything surprising.
 - Put a "Last verified" date on guides with version-specific steps and
   update it when you re-verify.
+- **One copy of anything shared.** Things every app uses unchanged (the
+  promote skill, the deploy steps, the release-notes script) live once in
+  this repo and are used from here, never copied into apps. Only files an
+  app must own (e.g. its small `deploy.yml`, CLAUDE.md, Firebase rules) are
+  templates. If you find an app with its own copy of a shared file, remove it
+  and point it here.
+- Changing a shared file changes every app: test on one app's `dev` first.
 - Keep templates **generic** ("My App", `YOUR-PROJECT-ID`), and keep them
   in step with the worked example (`Thedodgykiwi/test-app`) when it improves.
 - Write so someone who isn't a developer can follow the gist.

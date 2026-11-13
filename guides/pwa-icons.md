@@ -21,7 +21,7 @@ different per stage so testers can tell Dev from Production.
 Add to Home Screen **ignores linked icon files and manifest icons** and
 shows a letter tile. Workaround: the deploy embeds the stage's
 `apple-touch-icon.png` into `index.html` as a `data:` URI (step in
-`templates/.github/workflows/deploy.yml`). Keep it until Apple fixes this.
+the playbook's shared `.github/workflows/deploy-stages.yml`). Keep it until Apple fixes this.
 
 After any icon change, the user must **delete and re-add** the home-screen
 shortcut to see it; iOS doesn't refresh existing ones.
