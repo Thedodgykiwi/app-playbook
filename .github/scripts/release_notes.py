@@ -121,7 +121,19 @@ def is_housekeeping(files):
     return bool(files) and all(f.startswith(".github/") or f.endswith(".md") for f in files)
 
 
-def recent_changes(repo, limit=15):
+COMMIT_ISSUE = re.compile(r"\b(?:issues?|fix(?:es|ed)?|close[sd]?|resolve[sd]?)\s*:?\s*#(\d+)", re.I)
+
+
+def commit_issues(message):
+    """Issue numbers a commit message mentions, including "Issue #3, #4" lists."""
+    nums = []
+    for line in message.splitlines():
+        if COMMIT_ISSUE.search(line):
+            nums += [int(n) for n in re.findall(r"#(\d+)", line) if int(n) not in nums]
+    return nums
+
+
+def recent_changes(repo, limit=20):
     log = git(repo, "log", "--no-merges", "-n", "60", "--name-only",
               f"--format={RS}%h{FS}%cI{FS}%s")
     out = []
@@ -132,7 +144,12 @@ def recent_changes(repo, limit=15):
         sha, date, title = lines[0].split(FS, 2)
         if is_housekeeping(lines[1:]):
             continue
-        out.append({"sha": sha, "date": date, "title": title})
+        item = {"sha": sha, "date": date, "title": title}
+        # Issues the change mentions ("Issue #12", "Fixes #3, #4"), for Dev's pills.
+        nums = commit_issues(git(repo, "show", "-s", "--format=%B", sha))
+        if nums:
+            item["issues"] = nums
+        out.append(item)
         if len(out) == limit:
             break
     return out
@@ -169,6 +186,8 @@ def main():
     data = {"stage": stage, "releases": [], "recent": []}
     if stage == "dev":
         data["recent"] = recent_changes(repo)
+        # Type and colour of the issues they mention (Dev's pills and emoji).
+        data["issues"] = issue_labels([], [n for c in data["recent"] for n in c.get("issues", [])])
     else:
         releases = promotions(repo)
         if stage == "main":                       # Production releases have version names
