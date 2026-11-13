@@ -39,10 +39,10 @@ Do it in this order; each step depends on the one before.
 
 ### 0. Cloud session network (Claude Code on the web)
 
-A cloud session's network blocks Firebase by default. Before anything else,
-get the session onto an environment that allows these hosts (see
-`cloud-sessions.md` for how). Don't put them on the user's *Default*
-environment; make a personal environment named after the repo.
+A cloud session's network blocks Firebase by default. The user's
+**Default** environment should already allow these hosts (they chose to
+allow Firebase for all apps, since most will use it). If a session is on an
+environment that doesn't, ask to add them (see `cloud-sessions.md`).
 
 ```
 auth.firebase.tools             # Firebase CLI / MCP sign-in
@@ -65,7 +65,9 @@ storage.googleapis.com          # emulator downloads
 ```
 
 `apis.google.com` and `<username>.github.io` were the two we missed the
-first time. Without `apis.google.com`, `signInWithPopup` fails with
+first time. The sign-in pop-up on the **live** site also loads
+`<project-id>.firebaseapp.com`; it isn't needed, because a real Google sign-in
+can't be completed from a cloud session anyway (the user tests that). Without `apis.google.com`, `signInWithPopup` fails with
 `auth/internal-error` even against the local emulator.
 
 ### 1. Sign Claude in to Firebase

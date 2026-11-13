@@ -7,7 +7,10 @@ Notes for Claude when running in a claude.ai/code cloud container.
 - The network is **limited by default**. A blocked host shows up as
   `CONNECT tunnel failed, response 403` / `ERR_TUNNEL_CONNECTION_FAILED`.
   `curl -sS "$HTTPS_PROXY/__agentproxy/status"` lists recent refusals.
-- Don't add app-specific hosts to the user's **Default** environment.
+- The user's **Default** environment allows the Firebase hosts and
+  `<username>.github.io` for every app (their choice, Nov 2026); the list is
+  in `firebase-auth-and-firestore.md`. Hosts only one app needs still don't
+  belong on Default:
   Create a **personal environment named after the repo** (`create_environment`
   with `switch_session: network_only`, `repositories: ["owner/repo"]`), and add
   hosts to it later with `update_environment`. The user approves each change.
