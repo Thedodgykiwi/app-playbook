@@ -28,6 +28,8 @@ page from then on.
    - the app's **name** (shown in the app and stage banner) and a short
      name for home-screen icons (default: same);
    - **one sentence** saying what it's for;
+   - an **icon idea** for the home screen (any Phosphor icon, e.g. "a
+     calendar", "a shopping cart"; default: the starter's neutral app tiles);
    - does it need **Google sign-in / cloud-saved data**? (Default: not now;
      the module ships dormant either way, see step 6.)
 
@@ -40,6 +42,10 @@ page from then on.
    It copies the starter, fills in the names, pushes `main`, creates
    `staging`, `alpha`, `dev`, and reports the first deploy (which is
    **expected to fail** until Pages is switched on) and the issue labels.
+
+   If they gave an icon idea, pick the matching Phosphor icon, make the icons
+   on `dev` with `tools/make-app-icons.js` (see `guides/pwa-icons.md`), show
+   them a picture of the five stage icons, commit and push.
 
 4. **Give the user the three GitHub settings**, with direct links
    (`https://github.com/<owner>/<repo>/settings/...`), in this order:

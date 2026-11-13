@@ -10,8 +10,17 @@ different per stage so testers can tell Dev from Production.
 - In `index.html`: `<link rel="manifest">`, `<link rel="apple-touch-icon"
   sizes="180x180">`, favicons, `<meta name="theme-color">`.
 - One icon set per stage in `icons/app/<stage>/` (plus `local/`), one
-  colour per stage. test-app generates them with `tools/make-app-icons.js`
-  (Playwright renders an SVG glyph on a gradient to PNGs).
+  colour per stage, made by the playbook's **shared** `tools/make-app-icons.js`
+  (Playwright renders a white Phosphor glyph on the stage's gradient: 192,
+  512, maskable 512, 180 apple-touch, favicons). Each app picks its own glyph:
+
+      npm pack @phosphor-icons/core   # then: tar xzf phosphor-icons-core-*.tgz
+      node <playbook>/tools/make-app-icons.js --phosphor package \
+           --glyph <name> --weight bold --out <app>/icons/app
+
+  The starter ships a neutral `squares-four` (bold). Bold reads best at
+  home-screen size; Regular lines are too thin there. (test-app's tick came
+  from its own older copy of this tool.)
 - Files in the repo point at `icons/app/local/` and say "<App> Local"; the
   deploy swaps in each stage's folder, name and theme colour. Don't
   hand-edit per stage.
