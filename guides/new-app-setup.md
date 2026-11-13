@@ -11,8 +11,9 @@ hosted on GitHub Pages, released through stages). Worked example:
 2. Start a session with that repo (and the playbook) attached and say
    **"set up this repo as a new app"**. Claude asks the app's name, one
    sentence about it, and whether it needs sign-in, then runs
-   `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`,
-   fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
+   `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`
+   (a blank page with an empty placeholder box and dormant sign-in; nothing
+   app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
    The first deploy also creates the issue labels.
 3. **You:** three settings clicks (Pages source, deployment branches,
    default branch `dev`); Claude gives exact links, then re-runs the deploy

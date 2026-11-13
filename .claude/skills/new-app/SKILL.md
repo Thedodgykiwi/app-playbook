@@ -56,7 +56,7 @@ page from then on.
    - re-run the deploy on `dev` (GitHub tools: `actions_run_trigger`,
      `run_workflow`, workflow `deploy.yml`, ref `dev`) and wait for success;
    - the app answers at `/`, `/dev/`, `/alpha/`, `/staging/` and `/pipeline/`
-     (each stage shows its banner, Production none);
+     (each shows the empty placeholder page, no errors);
    - the labels exist (`bug`, `feature`, `tweak`, `performance`,
      `priority: high/low`, `rollback`);
    - default branch is `dev` (`curl -s https://api.github.com/repos/<owner>/<repo> | grep default_branch`).
@@ -72,6 +72,10 @@ page from then on.
 7. **Wrap up:** suggest the cloud environment / setup script if this account
    doesn't have them yet (`guides/cloud-sessions.md`), and say what to do
    next: describe the first feature ("log it", concept mock-up, build on Dev).
+   The starter is deliberately blank (just an empty box). Optional extras from
+   test-app, only when asked: the stage banner (Dev/Alpha/Staging visibly
+   labelled), the "What's new" panel and news bar, the Pipeline link
+   (`guides/design.md`, `guides/github-pages.md`).
 
 ## Updating this skill or the starter
 

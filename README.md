@@ -37,15 +37,15 @@ something that changed), add it to the right guide in the same session; see
 |---|---|
 | `templates/CLAUDE.md.template` | Starter instructions for a new app's repo |
 | `templates/.github/workflows/deploy.yml` | The small deploy file each app keeps: it just calls the shared deploy below |
-| `templates/starter/` | The app skeleton every new app starts from (copied once; it's the app's own code after that) |
+| `templates/starter/` | The blank starting point every new app gets: an empty placeholder box and dormant sign-in (copied once; it's the app's own code after that) |
 | `templates/firebase/` | Firebase config, rules, rules tests, `sync.js` sign-in + sync module |
 
 ## Starting a new app
 
 Create an empty repo on GitHub, attach it and this playbook to a session, and
 say **"set up this repo as a new app"**: the `new-app` skill copies
-`templates/starter/` (a working app skeleton with stage banner, What's new,
-news bar, Pipeline link and dormant Google sign-in), creates the four stage
+`templates/starter/` (a blank page with an empty placeholder box, plus Google
+sign-in that stays dormant until switched on), creates the four stage
 branches and walks you through the three GitHub settings. See
 [new-app-setup.md](guides/new-app-setup.md).
 

@@ -4,61 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{APP_NAME}}</title>
-  <!-- The deploy swaps this colour per stage (see the playbook's shared deploy). -->
   <meta name="theme-color" content="#495057" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="stage-banner" hidden></div>
-  <main class="card">
-    <!-- Google sign-in (account.js). Hidden until Firebase is set up: see firebase-config.js. -->
-    <div id="account" class="account" hidden>
-      <button type="button" id="sign-in" class="sign-in" hidden><span data-icon="google-logo"></span>Sign in</button>
-      <button type="button" id="account-btn" class="avatar-btn" aria-expanded="false" aria-controls="account-menu" hidden>
-        <span id="avatar" class="avatar" aria-hidden="true"></span><span id="sync-dot" class="sync-dot" aria-hidden="true"></span>
-      </button>
-      <div id="account-menu" class="account-menu" hidden>
-        <p class="who"><strong id="account-name"></strong><span id="account-email"></span></p>
-        <p id="sync-status" class="sync-status"></p>
-        <button type="button" id="sign-out" class="plain-btn"><span data-icon="sign-out"></span>Sign out</button>
-      </div>
+  <!-- Google sign-in (account.js). Hidden until Firebase is set up: see firebase-config.js. -->
+  <div id="account" class="account" hidden>
+    <button type="button" id="sign-in" class="sign-in" hidden><span data-icon="google-logo"></span>Sign in</button>
+    <button type="button" id="account-btn" class="avatar-btn" aria-expanded="false" aria-controls="account-menu" hidden>
+      <span id="avatar" class="avatar" aria-hidden="true"></span><span id="sync-dot" class="sync-dot" aria-hidden="true"></span>
+    </button>
+    <div id="account-menu" class="account-menu" hidden>
+      <p class="who"><strong id="account-name"></strong><span id="account-email"></span></p>
+      <p id="sync-status" class="sync-status"></p>
+      <button type="button" id="sign-out" class="plain-btn"><span data-icon="sign-out"></span>Sign out</button>
     </div>
-    <h1><span data-icon="hand-waving" class="wave"></span>{{APP_NAME}}</h1>
-    <p>{{DESCRIPTION}}</p>
-    <!-- Latest release headline (whats-new.js); hidden until there is one, and after × until the next release -->
-    <div id="news" class="news" hidden>
-      <button type="button" id="news-open" class="news-open"><span data-icon="sparkle"></span><span class="news-text"><span id="news-label">New:</span> <b id="news-headline"></b></span></button>
-      <button type="button" id="news-dismiss" class="news-x" aria-label="Dismiss what's new"><span data-icon="x"></span></button>
-    </div>
+  </div>
 
-    <!-- Your app goes here. -->
-    <section id="app" aria-label="{{APP_NAME}}">
-      <p class="app-placeholder">This is the starting point for {{APP_NAME}}. Ask Claude to build the first feature here.</p>
-    </section>
+  <!-- The app goes here. -->
+  <main id="app" class="placeholder" aria-label="{{APP_NAME}}"></main>
 
-    <footer>
-      <span>Build: <span id="build">local</span></span>
-      <span class="footer-links">
-        <!-- Pipeline page (built by the shared deploy): hidden on local copies, where it doesn't exist -->
-        <a id="pipeline-link" class="link-btn" href="pipeline/" hidden><span data-icon="kanban"></span>Pipeline</a>
-        <button type="button" id="whats-new-btn" class="link-btn"><span data-icon="sparkle"></span>What's new</button>
-      </span>
-    </footer>
-  </main>
-
-  <dialog id="whats-new" aria-labelledby="whats-new-title">
-    <header>
-      <h2 id="whats-new-title"><span data-icon="sparkle"></span><span id="whats-new-title-text">What's new</span></h2>
-      <button type="button" id="whats-new-close" class="close-btn" aria-label="Close"><span data-icon="x"></span></button>
-    </header>
-    <div id="whats-new-body"></div>
-  </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script src="stage.js"></script>
   <script src="icons.js"></script>
   <script src="firebase-config.js"></script>
   <script src="app.js"></script>
-  <script src="whats-new.js"></script>
   <script type="module" src="account.js"></script>
 </body>
 </html>

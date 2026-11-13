@@ -88,7 +88,7 @@ for p in pathlib.Path(".").rglob("*"):
         t = (t.replace("# <app-name>", "# " + v["NAME"], 1)
               .replace("<One or two sentences: what the app does and who it's for.>", v["DESC"])
               .replace("<user>", v["OWNER_LC"]).replace("<repo>", v["REPO"])
-              .replace("<list the app's key features here>", "the page loads with its stage banner, \"What's new\" and the Pipeline link"))
+              .replace("<list the app's key features here>", "the page loads without errors"))
     if p.as_posix() == ".github/workflows/deploy.yml":
         t = re.sub(r"app_name: .*", f'app_name: {v["NAME"]}', t)
         t = re.sub(r"short_name: .*", f'short_name: {v["SHORT"]}', t)
@@ -100,8 +100,8 @@ grep -rl '{{' --include='*.html' --include='*.js' --include='*.md' . 2>/dev/null
 git add -A
 git commit -q -m "Set up $name from the app starter
 
-App skeleton (stage banner, What's new, news bar, Pipeline link, dormant
-Google sign-in), the small deploy.yml that calls the shared playbook
+Blank starting page (an empty placeholder box) with dormant Google
+sign-in, the small deploy.yml that calls the shared playbook
 deploy, and CLAUDE.md from the playbook template.
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
