@@ -106,7 +106,7 @@ rollback() {
   $dry_run && { echo "(dry run: nothing changed)"; exit 0; }
 
   [[ -z $(git status --porcelain) ]] || die "Working tree has uncommitted changes; commit or stash them first."
-  local start_branch; start_branch=$(git branch --show-current)
+  start_branch=$(git branch --show-current)   # global: the EXIT trap runs after this function returns
   trap 'git checkout -q "$start_branch" 2>/dev/null || true' EXIT
 
   # 1. Production: reverse the whole release in one commit.
