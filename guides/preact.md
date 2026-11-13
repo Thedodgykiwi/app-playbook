@@ -78,4 +78,8 @@ components carry over: swap `html\`…\`` for JSX, `preact` for `react`.
    new: remember a selector and focus it in an effect after the next draw.
    Don't give a button a changing `key` to replay an animation (it remounts and
    loses focus); restart the CSS animation with a class instead.
-5. Re-test with **old saved data**, signed in (emulators), keyboard, offline.
+5. **Animations that end in a save:** look the item up again by its key when
+   the animation finishes; don't save the object you had when it started. The
+   list can be re-read meanwhile (test-app: sign-in finishing just after the
+   page opens replaced every to-do, so a tick made in that moment was lost).
+6. Re-test with **old saved data**, signed in (emulators), keyboard, offline.
