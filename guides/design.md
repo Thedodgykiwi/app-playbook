@@ -67,6 +67,16 @@ nobody mistakes them for the real app.
   quiet reference that a reported issue was dealt with. Code:
   test-app's `whats-new.js` (`pill()`).
 
+## Gotchas
+
+- **Global element styles leak into new components.** test-app has
+  `button:hover { background: <blue> }`; a new button styled with
+  `.news-open { all: unset }` still turned solid blue on hover, because
+  `button:hover` is more specific than a single class. When adding a
+  component made of buttons/links, give it its own `:hover` and
+  `:focus-visible` rules, and **check hover and focus in the browser**
+  (Playwright `hover()`, then screenshot), not just the resting state.
+
 ## Wording
 
 - Plain, friendly, short. Say what the user can do or see.
