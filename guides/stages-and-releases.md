@@ -56,10 +56,11 @@ with its notes). Nobody has to do anything: the shared deploy creates them.
   history, never "the next free name" (that went wrong once when an earlier
   release that day had no tag). A release found under the wrong name is
   renamed automatically.
-- **Notes** are the same plain-English release notes as "What's new",
-  plus "Issues resolved: #n" for any issue mentioned in the released
-  changes (`Issue #n` in a commit message). Those issues are **closed**
-  with a comment naming the release (needs `issues: write`).
+- **Notes** are exactly the plain-English release notes from "What's new":
+  no issue numbers or technical lists (keep them reader-friendly).
+- **Issues close on release:** any issue mentioned in the released changes
+  (`Issue #n` in a commit message) is **closed** with a comment on the
+  issue naming the release (needs `issues: write`).
 - **Self-healing:** each deploy checks `main`'s whole history and fills in
   any Production release that has no GitHub release yet (that's also how
   older releases were back-filled). Existing ones are never changed.

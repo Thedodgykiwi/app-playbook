@@ -66,9 +66,9 @@ or propose code in the issue unless asked: it's a record, not a plan.
    reaches the default branch, i.e. on Dev (this happened on test-app,
    Nov 2026).
 3. The issue stays open through Dev, Alpha and Staging. When the fix is
-   released to **Production**, the shared deploy's release step lists it
-   under "Issues resolved" in the GitHub release and **closes it** with a
-   comment naming the release (e.g. "Released to Production in
+   released to **Production**, the shared deploy's release step **closes
+   it** with a comment naming the release (the release notes themselves
+   never list issue numbers: they stay plain English) (e.g. "Released to Production in
    v2026.11.13.4"). It also recognises `Fixes`/`Closes`, as a safety net.
 4. If you need to say something on the issue (a question, "done on Dev,
    waiting for release"), add a comment.

@@ -15,7 +15,8 @@ release notes the app shows under "What's new":
                      so names never depend on which other releases exist)
 
 Issues mentioned in the release's changes ("Issue #12", "Fixes #12") are
-listed in the release notes and closed with a comment naming the release,
+closed with a comment naming the release (the notes themselves stay plain
+English, with no issue numbers),
 so they close when the fix is live in Production, whatever the repo's
 default branch is.
 
@@ -160,9 +161,9 @@ def main():
                      "--title", f"{tag} (Production)"],
                     ["gh", "api", "-X", "DELETE", f"repos/{slug}/git/refs/tags/{old}"]]
         else:
-            nums = issues_in(repo, sha)
-            fixed = (f"\n\n**Issues resolved:** {', '.join(f'#{n}' for n in nums)}" if nums else "")
-            body = r["notes"].strip() + fixed + f"\n\n---\nLive at {site}\n"
+            # Notes stay exactly the plain-English release notes: issue
+            # numbers go on the issues (closing comment), not in the notes.
+            body = r["notes"].strip() + f"\n\n---\nLive at {site}\n"
             with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
                 f.write(body)
             cmd = ["gh", "release", "create", tag, "--repo", slug,
