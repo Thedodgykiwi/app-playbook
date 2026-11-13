@@ -30,7 +30,10 @@ deploy, `pipeline_page.py`):
   (only `.github/` or `*.md`) is left out. Issue pills as in "What's new".
 - **Production:** the live version (same name as the GitHub release), when
   it was released, its headlines, a link to the release; rollbacks shown.
-- **Open issues** underneath. Each stage links to its live site.
+- **Open issues** underneath, fetched fresh from GitHub when the page is
+  opened (the page is built before the release step closes issues, so a
+  built-in list would lag one deploy behind); the built-in list is the
+  fallback. Each stage links to its live site.
 - Public like the app (only shows titles/issue numbers already public), and
   marked `noindex` so search engines skip it. Never blocks a deploy: if it
   can't be built, the run shows a warning and the site still publishes.

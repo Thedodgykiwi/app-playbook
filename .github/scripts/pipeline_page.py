@@ -231,9 +231,20 @@ D.stages.forEach((s,idx)=>{const el=document.createElement('section');el.classNa
  const mb=el.querySelector('.more');if(mb)mb.addEventListener('click',()=>{const l=el.querySelector('.morelist');l.hidden=!l.hidden;mb.setAttribute('aria-expanded',!l.hidden);mb.textContent=(l.hidden?'▸':'▾')+mb.textContent.slice(1);});
  lanes.append(el);});
 document.getElementById('updated').textContent='Updated '+ago(D.updated)+' · '+fmt(D.updated);
-if(!D.open.length)document.getElementById('issues').hidden=true;
-document.getElementById('opencount').textContent=D.open.length;
-document.getElementById('open').innerHTML=D.open.map(o=>`<li><a href="https://github.com/${esc(D.slug)}/issues/${o.n}"><span class="num">#${o.n}</span>${esc(o.t)}</a> ${D.labels[o.n]?pill(o.n,false):''}</li>`).join('');
+function showOpen(list){document.getElementById('issues').hidden=!list.length;
+ document.getElementById('opencount').textContent=list.length;
+ document.getElementById('open').innerHTML=list.map(o=>`<li><a href="https://github.com/${esc(D.slug)}/issues/${o.n}"><span class="num">#${o.n}</span>${esc(o.t)}</a> ${D.labels[o.n]?pill(o.n,false):''}</li>`).join('');}
+showOpen(D.open);
+// Open issues change after the page is built (e.g. the release closes them a
+// minute later), so fetch the current list when the page is opened; keep the
+// built-in list if GitHub can't be reached.
+const TYPES=['bug','feature','tweak','performance'];
+fetch(`https://api.github.com/repos/${D.slug}/issues?state=open&per_page=50`,{headers:{Accept:'application/vnd.github+json'}})
+ .then(r=>r.ok?r.json():Promise.reject(r.status)).then(items=>{
+  const list=items.filter(i=>!i.pull_request).map(i=>{const by=Object.fromEntries(i.labels.map(l=>[l.name,l]));
+   const pick=TYPES.map(t=>by[t]).find(Boolean)||i.labels.find(l=>!l.name.startsWith('priority'));
+   if(pick)D.labels[i.number]=[pick.name,pick.color];return {n:i.number,t:i.title};});
+  showOpen(list);}).catch(()=>{});
 </script></body></html>
 """
 
