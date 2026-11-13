@@ -28,6 +28,7 @@ something that changed), add it to the right guide in the same session; see
 | [pwa-icons.md](guides/pwa-icons.md) | Home-screen icons (including the iOS workaround) |
 | [cloud-sessions.md](guides/cloud-sessions.md) | Claude running in a cloud session: network, logins, files that vanish |
 | [working-with-the-user.md](guides/working-with-the-user.md) | How to communicate, concept mock-ups, guardrails, pre-push checklist |
+| [design.md](guides/design.md) | Look and feel, stage colours, icons, UI patterns that worked |
 
 ## Templates
 
@@ -46,8 +47,14 @@ Add this near the top of the new app's `CLAUDE.md` (the template already has it)
 ```markdown
 ## Playbook
 
-General processes and gotchas live in https://github.com/Thedodgykiwi/app-playbook.
-Before setting up anything it covers (new app, stages, deploys, Firebase,
-icons), attach that repo to the session and read its README and the relevant
-guide. Add anything new you learn back to the playbook.
+General processes, design patterns and gotchas live in
+https://github.com/Thedodgykiwi/app-playbook. Before setting up anything it
+covers (new app, stages, deploys, Firebase, icons, design), attach that repo
+to the session and read its README and the relevant guide.
+
+**Keep the playbook growing.** Whenever work on this app teaches something
+that would help *any* app (a gotcha, a missing or wrong step, a setup
+process, a design or wording pattern that worked), update the right guide
+in the playbook in the same session, commit it to the playbook's `main`, and
+tell the user what was added. App-specific facts stay in this file instead.
 ```
