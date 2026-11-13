@@ -37,7 +37,17 @@ something that changed), add it to the right guide in the same session; see
 |---|---|
 | `templates/CLAUDE.md.template` | Starter instructions for a new app's repo |
 | `templates/.github/workflows/deploy.yml` | The small deploy file each app keeps: it just calls the shared deploy below |
+| `templates/starter/` | The app skeleton every new app starts from (copied once; it's the app's own code after that) |
 | `templates/firebase/` | Firebase config, rules, rules tests, `sync.js` sign-in + sync module |
+
+## Starting a new app
+
+Create an empty repo on GitHub, attach it and this playbook to a session, and
+say **"set up this repo as a new app"**: the `new-app` skill copies
+`templates/starter/` (a working app skeleton with stage banner, What's new,
+news bar, Pipeline link and dormant Google sign-in), creates the four stage
+branches and walks you through the three GitHub settings. See
+[new-app-setup.md](guides/new-app-setup.md).
 
 ## Shared by every app (one copy only)
 
@@ -46,6 +56,7 @@ can't drift apart. Improve them here and every app gets the change.
 
 | Path | What it is |
 |---|---|
+| `.claude/skills/new-app/` | The **new-app** skill: sets up an empty repo as an app from `templates/starter/` |
 | `.claude/skills/promote/` | The **promote** skill (dev → alpha → staging → main, release notes). Available in any session that has this repo attached |
 | `.github/workflows/deploy-stages.yml` | The multi-stage GitHub Pages deploy. Apps call it from their small `deploy.yml` |
 | `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |

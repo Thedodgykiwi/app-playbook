@@ -87,3 +87,11 @@ Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
 
 - Browser storage is shared by all stages (one web address): key it per stage.
 - <App-specific notes, setup facts (e.g. Firebase project, Firestore location), quirks.>
+
+## Sign-in and cloud data (optional, off until set up)
+
+`account.js` provides Google sign-in and Firestore access, dormant while
+`firebase-config.js` is `null`. To switch it on, follow the playbook's
+`firebase-auth-and-firestore.md` (Firebase project, database location, rules
+for this app's data with tests, deployed before the app, emulator testing).
+The app listens for `account:change` and saves its own data per stage.

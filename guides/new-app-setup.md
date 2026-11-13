@@ -4,6 +4,23 @@ Checklist for a new small web app (plain HTML/CSS/JS, no build step,
 hosted on GitHub Pages, released through stages). Worked example:
 `Thedodgykiwi/test-app`.
 
+## The quick way: the `new-app` skill
+
+1. **You:** create an **empty** repo on GitHub (a README is fine). Claude
+   can't create repos from a cloud session.
+2. Start a session with that repo (and the playbook) attached and say
+   **"set up this repo as a new app"**. Claude asks the app's name, one
+   sentence about it, and whether it needs sign-in, then runs
+   `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`,
+   fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
+   The first deploy also creates the issue labels.
+3. **You:** three settings clicks (Pages source, deployment branches,
+   default branch `dev`); Claude gives exact links, then re-runs the deploy
+   and checks every stage address, the pipeline page and the labels.
+
+The rest of this guide is what the skill does, for reference or for setting
+up by hand.
+
 ## 1. Repo and branches
 
 - [ ] User creates the repo on GitHub (Claude can't create repos from a
