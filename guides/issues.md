@@ -19,6 +19,12 @@ recommended one first, marked "(Recommended)":
 3. **Build it now**: create the issue, build on Dev, commit with
    `Issue #<n>`. Recommend for small tweaks and clear bug fixes.
 
+**Every issue uses the layout in "Writing a good issue" below** (What's
+happening / what's wanted, Where, Expected, Reported by, Notes), however it
+was created: from the card, logged after the fact, or by "log it". (Found in
+test-app: issues #10–#16 were first written in a looser style and had to be
+rewritten.)
+
 Say in the card's question what the request is in one line (the card may be
 all the user sees). Skip the card only when the user already said which
 (e.g. "log it", "mock it up", "just do it", "promote …"), for questions that
