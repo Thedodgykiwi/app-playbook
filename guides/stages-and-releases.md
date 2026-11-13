@@ -103,7 +103,17 @@ for their "yes" first). In order:
    numbers in those notes/commits), then fix forward with
    `Issue #<rollback issue>` and release: the issue closes itself.
 
-Rehearse it once on a test app before relying on it.
+Rehearsed end to end on test-app (Nov 2026): rollback → stages back in
+line → fix forward; the rollback issue and the reopened issue both closed
+themselves on the fix-forward release.
+
+- **Whole commits are undone**, including side changes in them (e.g. a
+  CLAUDE.md checklist edit made in the same commit). Expected; the fix
+  forward brings them back.
+- **False alarm / nothing to change?** Fix forward by reversing the "Undo on
+  Dev…" commit on `dev` (`git revert --no-commit <sha>`), commit with
+  `Issue #<rollback issue>` plus the original issue numbers, and release.
+- After each step, check every stage (the page itself, not just the deploy).
 
 ## Gotchas
 
