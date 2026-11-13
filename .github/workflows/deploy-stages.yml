@@ -105,6 +105,24 @@ jobs:
               echo "Branch $stage does not exist yet, skipping"
             fi
           done
+      - name: Build the pipeline page (what's in each stage and what's waiting)
+        env:
+          REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          GH_TOKEN: ${{ github.token }}
+          APP: ${{ inputs.app_name }}
+          C_MAIN: ${{ inputs.color_main }}
+          C_STAGING: ${{ inputs.color_staging }}
+          C_ALPHA: ${{ inputs.color_alpha }}
+          C_DEV: ${{ inputs.color_dev }}
+          RELEASE_TZ: ${{ inputs.release_timezone }}
+        # Never blocks the deploy: if it fails the site still publishes, with a warning.
+        run: |
+          if git clone -q --bare "$REPO_URL" _pipeline.git \
+             && python3 _tools/.github/scripts/pipeline_page.py _pipeline.git "${{ github.repository }}" _site/pipeline/index.html; then
+            :
+          else
+            echo "::warning::Pipeline page not built this time (the site itself is unaffected)."
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -19,6 +19,23 @@
 - **Hotfixes** (urgent production fixes) only when the user asks: branch
   from `main`, fix, release, then merge the fix back into `dev`.
 
+## Pipeline page (what's where, at a glance)
+
+Every deploy rebuilds `https://<user>.github.io/<repo>/pipeline/` (shared
+deploy, `pipeline_page.py`):
+
+- **Dev, Alpha, Staging:** what's **waiting to move on** to the next stage.
+  Release-note headlines once changes have notes (Alpha onwards), otherwise
+  change titles; other changes fold under "+ n smaller"; housekeeping
+  (only `.github/` or `*.md`) is left out. Issue pills as in "What's new".
+- **Production:** the live version (same name as the GitHub release), when
+  it was released, its headlines, a link to the release; rollbacks shown.
+- **Open issues** underneath. Each stage links to its live site.
+- Public like the app (only shows titles/issue numbers already public), and
+  marked `noindex` so search engines skip it. Never blocks a deploy: if it
+  can't be built, the run shows a warning and the site still publishes.
+- Apps can link to it, e.g. a "Pipeline" link in the footer.
+
 ## The promote skill (shared: `.claude/skills/promote/` in this repo)
 
 There's **one copy**, here in the playbook, used by every app; apps don't

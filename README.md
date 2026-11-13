@@ -50,6 +50,7 @@ can't drift apart. Improve them here and every app gets the change.
 | `.github/workflows/deploy-stages.yml` | The multi-stage GitHub Pages deploy. Apps call it from their small `deploy.yml` |
 | `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |
 | `.github/labels.json` + `.github/scripts/sync_labels.py` | The shared issue labels (bug, feature, tweak, performance, priorities), kept in place in every app by the shared deploy |
+| `.github/scripts/pipeline_page.py` | Builds each app's **Pipeline page** (`…/<repo>/pipeline/`): what's live, what's waiting at each stage, open issues. Rebuilt by the shared deploy |
 | `.github/scripts/make_releases.py` | Creates a dated GitHub release (`v2026.11.13`, `v2026.11.13.2` …) for every Production release (used by the shared deploy) |
 
 Changing a shared file changes **every** app's next deploy or promotion:

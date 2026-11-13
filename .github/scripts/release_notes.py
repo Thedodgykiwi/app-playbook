@@ -43,9 +43,9 @@ def bullets_from_changes(text):
     return "\n".join(out)
 
 
-def promotions(repo, limit=50):
+def promotions(repo, limit=50, ref="HEAD"):
     log = git(repo, "log", "--first-parent", "--merges", *(["-n", str(limit)] if limit else []),
-              f"--format=%h{FS}%cI{FS}%B{RS}")
+              f"--format=%h{FS}%cI{FS}%B{RS}", ref)
     releases = []
     for entry in log.split(RS):
         entry = entry.strip("\n")
@@ -73,7 +73,7 @@ def promotions(repo, limit=50):
     return releases
 
 
-def release_names(repo, tz_name=None):
+def release_names(repo, tz_name=None, ref="HEAD"):
     """{full commit sha: "v2026.11.13.2"} for every Production release on main.
 
     The ONE place release names are decided (used for GitHub releases and for
@@ -85,7 +85,7 @@ def release_names(repo, tz_name=None):
     from zoneinfo import ZoneInfo
     tz = ZoneInfo(tz_name or os.environ.get("RELEASE_TZ") or "UTC")
     per_day, names = {}, {}
-    for r in reversed(promotions(repo, limit=None)):      # oldest first, whole history
+    for r in reversed(promotions(repo, limit=None, ref=ref)):  # oldest first, whole history
         full = git(repo, "rev-parse", r["sha"]).strip()
         day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
         per_day[day] = per_day.get(day, 0) + 1
@@ -94,11 +94,11 @@ def release_names(repo, tz_name=None):
     return names
 
 
-def rollbacks(repo):
+def rollbacks(repo, ref="HEAD"):
     """Emergency rollbacks of Production ("Roll back Production: ..." commits on
     main, made by the promote skill's rollback command)."""
     log = git(repo, "log", "--first-parent", "--no-merges", "-n", "50",
-              f"--format=%H{FS}%cI{FS}%B{RS}")
+              f"--format=%H{FS}%cI{FS}%B{RS}", ref)
     out = []
     for entry in log.split(RS):
         entry = entry.strip("\n")
@@ -138,10 +138,11 @@ def recent_changes(repo, limit=15):
     return out
 
 
-def issue_labels(notes_texts):
-    """{"12": {"label": "tweak", "color": "c5def5"}} for every "(#12)" in the notes."""
+def issue_labels(notes_texts, numbers=()):
+    """{"12": {"label": "tweak", "color": "c5def5"}} for every "(#12)" in the notes
+    (plus any extra issue numbers passed in `numbers`)."""
     slug = os.environ.get("GITHUB_REPOSITORY")
-    nums = sorted({n for t in notes_texts for n in ISSUE_PILL.findall(t)}, key=int)
+    nums = sorted({n for t in notes_texts for n in ISSUE_PILL.findall(t)} | {str(n) for n in numbers}, key=int)
     if not slug or not nums:
         return {}
     headers = {"Accept": "application/vnd.github+json", "User-Agent": "app-playbook-deploy"}
