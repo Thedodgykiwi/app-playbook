@@ -50,19 +50,20 @@ once dismissed or installed.
   button**: show a how-to (Share → Add to Home Screen → Add). Hide
   everything once `display-mode: standalone` (or `navigator.standalone`).
 - Keys in browser storage include app **and** stage (`pwa:<app>:<stage>`).
-- **iPhone Home Screen apps have their own storage**, separate from Safari:
-  the installed app must be opened from its icon **online** once to save its
-  offline copy. Otherwise, offline it shows a **blank white screen** (found
-  on a real iPhone). So: the worker re-saves the page on every online visit
-  (pwa.js messages it), the menu shows "✓ Ready to use offline" once saved,
-  and an offline navigation with nothing saved gets a short built-in
-  "You're offline" page instead of a blank one.
-- **Don't trust `navigator.onLine` alone:** an iPhone Home Screen app in
-  Airplane mode loaded from the offline copy but showed no offline strip.
+- **iPhone Home Screen apps have their own storage**, separate from Safari
+  (you sign in again there, too): the installed app must be opened from its
+  icon **online** once to save its own offline copy. Safeguards in the
+  starter: the worker re-saves the page on every online visit (pwa.js
+  messages it), the menu shows "✓ Ready to use offline" once saved, and an
+  offline open with nothing saved gets a short "You're offline" page (iPhone
+  Home Screen apps would otherwise show an empty screen).
+- **Don't trust `navigator.onLine` alone**, and remember **Airplane mode
+  can leave Wi-Fi on**: on a real iPhone the offline test first showed no
+  offline strip because Wi-Fi was still connected; with Wi-Fi off too it
+  worked.
   pwa.js also sends a tiny `HEAD ./?connection-check=<time>` (the worker
   never answers it from the saved copy) on load, when the app comes back
-  into view, and every 30 s while offline. Remember Airplane mode can leave
-  Wi-Fi on.
+  into view, and every 30 s while offline. Tested on a real iPhone, Nov 2026.
 - **Testing:** build a local copy shaped like the deploy (Production folder
   with `dev/` inside, files stamped `?v=`), then in Playwright: reload while
   `context.setOffline(true)`, change the stamp to see the update bar, and use
