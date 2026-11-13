@@ -51,3 +51,27 @@ Notes for Claude when running in a claude.ai/code cloud container.
 - Screenshots for the user at `deviceScaleFactor: 2`; for your own checks, 1.
 - Real third-party sign-ins (Google etc.) can't be completed here; test
   with emulators and have the user try the real thing on Dev.
+
+## Instructions that apply to every session
+
+Cloud sessions don't read `~/.claude/CLAUDE.md` from the user's computer,
+and the personal-preferences box in Claude's chat settings isn't documented
+to reach them. To give Claude standing instructions in **every** cloud
+session (e.g. "use the app-playbook"), add a **setup script** to the cloud
+environment that writes the file:
+
+```bash
+#!/bin/bash
+mkdir -p ~/.claude
+cat > ~/.claude/CLAUDE.md <<'EOT'
+<instructions>
+EOT
+```
+
+- Put it on **each** environment the user uses (the Default one too:
+  that's where brand-new apps start). Claude can only change the environment
+  the current session runs on (`update_environment`); the user adds it to
+  others under the environment's settings (Edit → Setup script).
+- It runs when a fresh container starts, not on a resume. Check with
+  `/context` that `/root/.claude/CLAUDE.md` appears under Memory files.
+- It's visible to anyone who can use the environment: no secrets.
