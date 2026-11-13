@@ -90,6 +90,10 @@ Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
 - Theme: use the colour variables in `style.css` (`--bg`, `--surface`, `--text`,
   `--muted`, `--line`, `--accent`…) rather than fixed colours, so Light / Dark /
   Auto keep working. Size things in rem/em so the Large text setting works.
+- Works offline (`sw.js`, registered by `pwa.js`): the page is fetched
+  network-first, files the deploy stamps with `?v=` are kept offline. New
+  files the app loads are stamped automatically if linked from `index.html`
+  with `href`/`src`. Test offline with the browser's network set to Offline.
 - App settings go in the Settings panel (`#settings` in `index.html`, saved by
   `menu.js` with the theme and text size).
 - <App-specific notes, setup facts (e.g. Firebase project, Firestore location), quirks.>

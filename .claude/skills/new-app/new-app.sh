@@ -82,7 +82,7 @@ for p in pathlib.Path(".").rglob("*"):
     if not p.is_file() or ".git" in p.parts or p.suffix in skip:
         continue
     s = p.read_text(encoding="utf-8")
-    t = (s.replace("{{APP_NAME}}", v["NAME"]).replace("{{DESCRIPTION}}", v["DESC"])
+    t = (s.replace("{{APP_NAME}}", v["NAME"]).replace("{{SHORT_NAME}}", v["SHORT"]).replace("{{DESCRIPTION}}", v["DESC"])
           .replace("{{OWNER_LC}}", v["OWNER_LC"]).replace("{{REPO}}", v["REPO"]))
     if p.name == "CLAUDE.md":
         t = (t.replace("# <app-name>", "# " + v["NAME"], 1)
@@ -95,7 +95,7 @@ for p in pathlib.Path(".").rglob("*"):
     if t != s:
         p.write_text(t, encoding="utf-8")
 PY
-grep -rl '{{' --include='*.html' --include='*.js' --include='*.md' . 2>/dev/null | grep -v '^./.git/' && die "Some placeholders weren't filled in (see above)."
+grep -rl '{{' --include='*.html' --include='*.js' --include='*.md' --include='*.webmanifest' . 2>/dev/null | grep -v '^./.git/' && die "Some placeholders weren't filled in (see above)."
 
 git add -A
 git commit -q -m "Set up $name from the app starter

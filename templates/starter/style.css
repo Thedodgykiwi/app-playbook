@@ -159,6 +159,37 @@ dialog.sheet h2 { font-size: 1.15rem; margin: 0; flex: 1; }
 .recent small { color: var(--muted); }
 .issue-pill { font-size: .72rem; border: 1px solid var(--line); border-radius: 99px; padding: 0 .4rem; color: var(--muted); white-space: nowrap; }
 
+/* Works offline + install (pwa.js) */
+.offline-strip {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 9; padding: .4rem 1rem; text-align: center;
+  font-size: .82rem; font-weight: 600; background: #fff4e6; color: #8a4400; border-bottom: 1px solid #ffd8a8;
+}
+body.has-banner .offline-strip { top: 2.15rem; }
+body.is-offline { padding-top: 4.5rem; }
+body.is-offline .account { top: 3.2rem; }
+body.has-banner.is-offline { padding-top: 6rem; }
+body.has-banner.is-offline .account { top: 5rem; }
+:root[data-theme="dark"] .offline-strip { background: #3d2a12; color: #ffd8a8; border-color: #5c3d14; }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .offline-strip { background: #3d2a12; color: #ffd8a8; border-color: #5c3d14; } }
+.install-btn { color: var(--accent); font-weight: 600; }
+.steps { margin: .4rem 0 .8rem; padding-left: 1.3rem; line-height: 1.7; }
+.steps .ic { vertical-align: -.2em; color: var(--accent); }
+.install-tip, .update-bar {
+  position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 8;
+  width: min(440px, calc(100vw - 1.5rem)); display: flex; align-items: center; gap: .6rem;
+  padding: .7rem .8rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.3); font-size: .88rem;
+}
+.install-tip { background: #1d1f23; color: #fff; }
+.install-tip p { margin: 0; display: grid; gap: .1rem; flex: 1; }
+.install-tip p span { color: #ced4da; font-size: .8rem; }
+.install-tip-go { background: #74c0fc; color: #04213d; font-weight: 700; padding: .4rem .8rem; white-space: nowrap; }
+.install-tip-go:hover { background: #a5d8ff; }
+.install-tip-x { background: none; color: #adb5bd; padding: .3rem; }
+.install-tip-x:hover { background: rgba(255,255,255,.1); color: #fff; }
+.update-bar { background: var(--accent); color: #fff; justify-content: space-between; }
+.update-bar button { background: #fff; color: #1c3d9e; font-weight: 700; padding: .35rem .8rem; }
+.update-bar button:hover { background: #e7f5ff; }
+:root[data-theme="dark"] .update-bar { background: #3b5bdb; }
 .toast {
   position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 10;
   width: max-content; max-width: min(420px, 92vw); padding: .65rem .9rem; border-radius: 10px;

@@ -6,6 +6,14 @@
   <meta name="format-detection" content="telephone=no, email=no, address=no" />
   <title>{{APP_NAME}}</title>
   <meta name="theme-color" content="#495057" />
+  <!-- Home-screen app: name, icons and colour. Files here say "Local"; the shared
+       deploy swaps in each stage's icons, name and colour (playbook pwa-icons.md). -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/app/local/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="icons/app/local/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/app/local/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="{{SHORT_NAME}} Local" />
   <link rel="stylesheet" href="style.css" />
   <!-- Apply the saved theme and text size before the page draws (no flash). See menu.js. -->
   <script>
@@ -23,6 +31,9 @@
     <span id="stage-name"></span>
     <a id="pipeline-link" href="../pipeline/" hidden>Pipeline</a>
   </div>
+  <!-- Offline strip (pwa.js): shown while there's no connection -->
+  <div id="offline-strip" class="offline-strip" role="status" hidden>You're offline. The app still works; anything that needs the internet will wait.</div>
+
   <!-- App menu (menu.js), top-right: theme, Settings, version / What's new.
        Google sign-in (account.js) adds your photo, name and Sign in / Sign out
        once Firebase is set up (see firebase-config.js). -->
@@ -50,6 +61,7 @@
         <button type="button" role="radio" data-value="dark"><span data-icon="moon"></span>Dark</button>
       </div>
       <button type="button" id="open-settings" class="plain-btn"><span data-icon="gear-six"></span>Settings</button>
+      <button type="button" id="install-btn" class="plain-btn install-btn" hidden><span data-icon="device-mobile"></span><span id="install-label">Install app</span></button>
       <button type="button" id="sign-out" class="plain-btn" hidden><span data-icon="sign-out"></span>Sign out</button>
       <hr class="menu-sep">
       <button type="button" id="version-btn" class="version-btn">What's new</button>
@@ -77,11 +89,35 @@
   <!-- The app goes here. -->
   <main id="app" class="placeholder" aria-label="{{APP_NAME}}"></main>
 
+  <!-- iPhone/iPad: how to add the app to the Home Screen (pwa.js; Safari can't install from a button) -->
+  <dialog id="ios-install" class="sheet" aria-labelledby="ios-install-title">
+    <header><h2 id="ios-install-title">Add to Home Screen</h2><button type="button" class="close-btn" data-close aria-label="Close"><span data-icon="x"></span></button></header>
+    <ol class="steps">
+      <li>Tap Safari's <b>Share</b> button <span data-icon="export"></span> (beside the address bar, or inside the <b>⋯</b> menu).</li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
+      <li>Tap <b>Add</b>. The app's icon appears on your Home Screen.</li>
+    </ol>
+    <p class="muted">Open it from that icon for the full-screen app; it works offline too.</p>
+  </dialog>
+
+  <!-- One-time install tip (pwa.js): from the 2nd visit on, until installed or dismissed -->
+  <div id="install-tip" class="install-tip" role="region" aria-label="Install tip" hidden>
+    <p><b>Use it like an app</b><span id="install-tip-text">Install it to open it from your home screen, even offline.</span></p>
+    <button type="button" id="install-tip-go" class="install-tip-go">Install</button>
+    <button type="button" id="install-tip-x" class="install-tip-x" aria-label="Don't show this again"><span data-icon="x"></span></button>
+  </div>
+
+  <!-- "New version ready" bar (pwa.js) -->
+  <div id="update-bar" class="update-bar" role="status" hidden>
+    <span>A new version is ready.</span><button type="button" id="update-reload">Reload</button>
+  </div>
+
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script src="stage.js"></script>
   <script src="icons.js"></script>
   <script src="firebase-config.js"></script>
   <script src="menu.js"></script>
+  <script src="pwa.js"></script>
   <script src="app.js"></script>
   <script type="module" src="account.js"></script>
 </body>

@@ -79,6 +79,10 @@ page from then on.
    "Pipeline ↗" link, and the top-right menu (`menu.js`): Google photo when
    signed in, Light/Auto/Dark theme, Settings (text size; add the app's own
    settings there), and the version at the bottom opening "What's new".
+   It also works offline and can be installed (`pwa.js`, `sw.js`,
+   `manifest.webmanifest`, per-stage icons in `icons/app/`): offline strip,
+   "new version ready" bar, "Install app" / "Add to Home Screen" in the
+   menu, and a one-time tip from the 2nd visit.
    Optional extra from test-app, only when asked: the news bar (`guides/design.md`).
 
 ## Updating this skill or the starter
