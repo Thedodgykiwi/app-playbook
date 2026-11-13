@@ -59,19 +59,20 @@ or propose code in the issue unless asked: it's a record, not a plan.
 ## Working on an issue
 
 1. Read it (`issue_read`), work on `dev` as usual.
-2. Mention it in the commit message: **`Fixes #12`** (or `Closes #12`).
-   GitHub closes the issue automatically when that commit reaches the
-   repo's **default branch**. With the default set to **`main`** (see
-   `new-app-setup.md`), that's **when the fix is live in Production**, not
-   when it's only on Dev.
-   ⚠️ If the default branch is `dev`, GitHub closes the issue as soon as the
-   fix is pushed to Dev (this happened on test-app, Nov 2026). Check with
-   `curl -s https://api.github.com/repos/<owner>/<repo> | grep default_branch`;
-   if it's not `main`, ask the user to change it, and reopen any issue that
-   closed early.
-3. If you need to say something on the issue (a question, "done on Dev,
+2. Mention it in the commit message as **`Issue #12`** (on its own line;
+   `Issue #3, #4` for several). **Don't write `Fixes #12`**: the repo's
+   default branch is `dev` (so new Claude sessions start there and read the
+   current CLAUDE.md), and GitHub closes "Fixes" issues as soon as the commit
+   reaches the default branch, i.e. on Dev (this happened on test-app,
+   Nov 2026).
+3. The issue stays open through Dev, Alpha and Staging. When the fix is
+   released to **Production**, the shared deploy's release step lists it
+   under "Issues resolved" in the GitHub release and **closes it** with a
+   comment naming the release (e.g. "Released to Production in
+   v2026.11.13.4"). It also recognises `Fixes`/`Closes`, as a safety net.
+4. If you need to say something on the issue (a question, "done on Dev,
    waiting for release"), add a comment.
-4. If it won't be done, close it with a comment saying why
+5. If it won't be done, close it with a comment saying why
    (`state_reason: not_planned`).
 
 ## Screenshots on issues

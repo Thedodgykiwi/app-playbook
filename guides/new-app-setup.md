@@ -40,9 +40,11 @@ The app itself needs, at minimum:
 
 ## 3. One-time GitHub settings (the user does these)
 
-- **Settings → General → Default branch:** `main` (switch with the ⇄ button).
-  Then issues close only when their fix reaches Production, and pull
-  requests on GitHub target Production's branch by default.
+- **Settings → General → Default branch:** `dev`. New Claude sessions start
+  from the default branch (and read its CLAUDE.md), so they begin where the
+  work happens. (Side effect: pull requests on GitHub target `dev` by
+  default; issues are closed by the Production release, not by GitHub's
+  "Fixes #n", see `issues.md`.)
 
 - **Settings → Pages → Source:** GitHub Actions.
 - **Settings → Environments → github-pages → Deployment branches:** allow

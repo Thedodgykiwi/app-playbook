@@ -14,6 +14,11 @@ release notes the app shows under "What's new":
     v2026.11.13.2    2nd the same day, then .3, .4 ... (by position in the day,
                      so names never depend on which other releases exist)
 
+Issues mentioned in the release's changes ("Issue #12", "Fixes #12") are
+listed in the release notes and closed with a comment naming the release,
+so they close when the fix is live in Production, whatever the repo's
+default branch is.
+
 It looks at the whole history every time, so a release that was missed (or
 releases made before this existed) is filled in on the next run. Releases
 that already exist are left alone. Run oldest first so GitHub marks the
@@ -24,6 +29,7 @@ Dates use the timezone in RELEASE_TZ (an IANA name such as
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -47,6 +53,46 @@ def same_workflows(repo, sha):
                            capture_output=True, text=True)
         return r.stdout.strip() if r.returncode == 0 else None
     return tree(sha) == tree("HEAD")
+
+
+ISSUE_REF = re.compile(r"\b(?:issues?|fix(?:es|ed)?|close[sd]?|resolve[sd]?)\s*:?\s*#(\d+)", re.I)
+
+
+def issues_in(repo, sha):
+    """Issue numbers mentioned in the changes this promotion brought into main
+    ("Issue #12", "Fixes #12", "Closes #3, #4" ...)."""
+    log = git(repo, "log", "--format=%B", f"{sha}^1..{sha}")
+    nums = set()
+    for m in ISSUE_REF.finditer(log):
+        nums.add(int(m.group(1)))
+    # "Issue #3, #4" style lists: pick up the extra numbers after a match
+    for line in log.splitlines():
+        if ISSUE_REF.search(line):
+            nums.update(int(n) for n in re.findall(r"#(\d+)", line))
+    return sorted(nums)
+
+
+def close_issues(slug, nums, tag, site):
+    """Close each still-open issue with a comment naming the release."""
+    for n in nums:
+        view = subprocess.run(["gh", "issue", "view", str(n), "--repo", slug, "--json", "state"],
+                              capture_output=True, text=True)
+        if view.returncode != 0:
+            continue                      # not an issue (e.g. a pull request number)
+        if json.loads(view.stdout).get("state") != "OPEN":
+            continue
+        rel = f"https://github.com/{slug}/releases/tag/{tag}"
+        body = (f"🚀 Released to **Production** in [{tag}]({rel}): live at {site}\n\n"
+                "Closed automatically by the release.")
+        res = subprocess.run(["gh", "issue", "close", str(n), "--repo", slug,
+                              "--reason", "completed", "--comment", body],
+                             capture_output=True, text=True)
+        if res.returncode == 0:
+            print(f"Issues: closed #{n} (released in {tag})")
+        else:
+            msg = (res.stderr or res.stdout).strip()
+            print(f"::warning::Couldn't close issue #{n}: {msg} "
+                  "(the app's deploy.yml needs 'issues: write').")
 
 
 def existing_releases(slug):
@@ -104,7 +150,9 @@ def main():
     for kind, old, tag, sha, r in actions:
         label = {"create": f"Creating {tag}", "release": f"Adding release for existing tag {tag}",
                  "rename": f"Renaming {old} -> {tag}"}[kind]
-        print(f"{'Would do: ' if dry else ''}{label} ({sha[:7]}, {r['date']})")
+        nums = issues_in(repo, sha) if kind != "rename" else []
+        print(f"{'Would do: ' if dry else ''}{label} ({sha[:7]}, {r['date']})"
+              + (f" closing issues {', '.join(f'#{n}' for n in nums)}" if nums else ""))
         if dry:
             continue
         if kind == "rename":
@@ -112,20 +160,26 @@ def main():
                      "--title", f"{tag} (Production)"],
                     ["gh", "api", "-X", "DELETE", f"repos/{slug}/git/refs/tags/{old}"]]
         else:
-            body = r["notes"].strip() + f"\n\n---\nLive at {site}\n"
+            nums = issues_in(repo, sha)
+            fixed = (f"\n\n**Issues resolved:** {', '.join(f'#{n}' for n in nums)}" if nums else "")
+            body = r["notes"].strip() + fixed + f"\n\n---\nLive at {site}\n"
             with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
                 f.write(body)
             cmd = ["gh", "release", "create", tag, "--repo", slug,
                    "--title", f"{tag} (Production)", "--notes-file", f.name]
             cmd += ["--target", sha] if kind == "create" else ["--verify-tag"]
             cmds = [cmd]
+        ok = True
         for cmd in cmds:
             res = subprocess.run(cmd, capture_output=True, text=True)
             if res.returncode != 0:
                 msg = (res.stderr or res.stdout).strip()
                 print(f"::warning::{label} failed: {msg}")
                 failed.append(tag)
+                ok = False
                 break
+        if ok and kind != "rename" and nums:
+            close_issues(slug, nums, tag, site)
     if failed:
         print(f"::warning::{len(failed)} release step(s) failed: {', '.join(failed)}. "
               "If GitHub said 403, check the app's deploy.yml has 'contents: write' "

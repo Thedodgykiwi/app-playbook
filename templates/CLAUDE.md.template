@@ -39,8 +39,8 @@ Any push to one of these branches redeploys the site (`.github/workflows/deploy.
 
 The repo's GitHub Issues are the to-do list (playbook `issues.md`).
 **"Log it" means record only:** create the issue, don't change code. Fix
-later on `dev` with `Fixes #<n>` in the commit message; the issue closes
-when the fix reaches Production. No client names or private details in
+later on `dev` with `Issue #<n>` (not "Fixes") in the commit message; the
+Production release closes the issue automatically. No client names or private details in
 issues (public repo = public issues).
 
 ## Concept first (for bigger ideas)
