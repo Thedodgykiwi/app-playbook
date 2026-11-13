@@ -30,6 +30,11 @@ on:
         type: string
         required: false
         default: '#495057'
+      release_timezone:
+        description: 'Timezone for release dates (IANA name, e.g. "Pacific/Auckland"). Default UTC.'
+        type: string
+        required: false
+        default: 'UTC'
 
 jobs:
   deploy:
@@ -104,3 +109,31 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Every Production release (promotion into main) gets a GitHub release named
+  # after its date: v2026.11.13, then v2026.11.13.2 for a second that day.
+  # Scans main's whole history each run, so missed ones are filled in.
+  # Needs `contents: write` in the app's deploy.yml; without it this only
+  # prints a warning and the deploy itself is unaffected.
+  release:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out shared scripts (app-playbook)
+        uses: actions/checkout@v4
+        with:
+          repository: Thedodgykiwi/app-playbook
+          ref: main
+          path: _tools
+          sparse-checkout: .github/scripts
+      - name: Check out the app's main branch (full history and tags)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          path: _app
+      - name: Create GitHub releases for Production releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TZ: ${{ inputs.release_timezone }}
+        run: python3 _tools/.github/scripts/make_releases.py _app "${{ github.repository }}"

@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # lets the shared deploy create a GitHub release for each Production release
   pages: write
   id-token: write
 
@@ -23,3 +23,4 @@ jobs:
     with:
       app_name: My App      # repo files say "My App Local"
       short_name: My App    # repo files say "My App Local" (home-screen short name)
+      # release_timezone: Pacific/Auckland   # dates for GitHub releases (default UTC)

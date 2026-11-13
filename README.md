@@ -48,6 +48,7 @@ can't drift apart. Improve them here and every app gets the change.
 | `.claude/skills/promote/` | The **promote** skill (dev → alpha → staging → main, release notes). Available in any session that has this repo attached |
 | `.github/workflows/deploy-stages.yml` | The multi-stage GitHub Pages deploy. Apps call it from their small `deploy.yml` |
 | `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |
+| `.github/scripts/make_releases.py` | Creates a dated GitHub release (`v2026.11.13`, `v2026.11.13.2` …) for every Production release (used by the shared deploy) |
 
 Changing a shared file changes **every** app's next deploy or promotion:
 test the change on one app's `dev` first.

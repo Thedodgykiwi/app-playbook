@@ -44,6 +44,27 @@ running the script by its full path from the app's root:
   needs `api.github.com` reachable; otherwise check the run with the
   GitHub MCP tools (`actions_list`).
 
+## GitHub releases (automatic, Production only)
+
+Every Production release also becomes a **GitHub release** (a named,
+dated bookmark of that exact version, listed on the repo's Releases page
+with its notes). Nobody has to do anything: the shared deploy creates them.
+
+- **Names are dates:** `v2026.11.13` for the first release that day,
+  `v2026.11.13.2` for a second the same day, then `.3`, and so on.
+- **Notes** are the same plain-English release notes as "What's new".
+- **Self-healing:** each deploy checks `main`'s whole history and fills in
+  any Production release that has no GitHub release yet (that's also how
+  older releases were back-filled). Existing ones are never changed.
+- Dates are in **UTC** unless the app's `deploy.yml` sets
+  `release_timezone` (e.g. `Pacific/Auckland`).
+- Needs `contents: write` under `permissions` in the app's `deploy.yml`
+  (the template has it). Without it, the deploy still works and the run
+  just shows a warning.
+- Alpha and Staging don't get GitHub releases: they're test stages.
+- Script: `.github/scripts/make_releases.py` (test with `--dry-run` on a
+  clone of the app's `main`).
+
 ## Gotchas
 
 - **Branches look "behind" `main`** on GitHub because of promotion merge
