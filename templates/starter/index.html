@@ -8,6 +8,12 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Coloured stage banner (Dev, Alpha, Staging; LOCAL on your computer; none on Production)
+       so test versions can't be mistaken for the live app, with a link to the pipeline page. -->
+  <div id="stage-banner" hidden>
+    <span id="stage-name"></span>
+    <a id="pipeline-link" href="../pipeline/" hidden>Pipeline</a>
+  </div>
   <!-- Google sign-in (account.js). Hidden until Firebase is set up: see firebase-config.js. -->
   <div id="account" class="account" hidden>
     <button type="button" id="sign-in" class="sign-in" hidden><span data-icon="google-logo"></span>Sign in</button>

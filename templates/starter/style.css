@@ -14,6 +14,27 @@ button:focus-visible, input:focus-visible { outline: 2px solid #3b5bdb; outline-
 /* Icons (Phosphor duotone, see icons.js): sized to the text around them */
 .ic { width: 1.2em; height: 1.2em; flex: none; }
 
+/* Stage banner: coloured strip across the top on every stage except Production */
+#stage-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10; padding: .4rem 1rem;
+  display: flex; justify-content: center; align-items: center;
+  font-weight: 600; color: #fff; letter-spacing: .05em; font-size: .85rem;
+}
+body.has-banner { padding-top: 3rem; }
+.stage-dev     { background: #7048e8; }
+.stage-alpha   { background: #c2255c; }
+.stage-staging { background: #c25e00; }   /* darker than the icon orange so white text stays readable */
+.stage-local   { background: #495057; }
+/* Subtle link to the pipeline page at the banner's right end */
+#pipeline-link {
+  position: absolute; right: .6rem; top: 50%; transform: translateY(-50%);
+  color: #fff; text-decoration: none; font-size: .75rem; letter-spacing: .02em; font-weight: 600;
+  padding: .15rem .5rem; border-radius: 999px; background: rgba(0, 0, 0, .18);
+}
+#pipeline-link::after { content: " ↗"; }
+#pipeline-link:hover { background: rgba(0, 0, 0, .3); text-decoration: underline; }
+#pipeline-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
 /* Empty placeholder where the app will go */
 .placeholder {
   width: min(420px, 100%); min-height: 240px;
@@ -22,6 +43,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid #3b5bdb; outline-
 
 /* Google sign-in (account.js): top-right corner of the page, shown only once Firebase is set up */
 .account { position: fixed; top: 1rem; right: 1rem; z-index: 5; }
+body.has-banner .account { top: 3rem; }
 .sign-in {
   padding: .35rem .7rem; font-size: .85rem; font-weight: 600;
   background: #fff; color: #1f1f1f; border: 1px solid #c7cad1;

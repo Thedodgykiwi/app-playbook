@@ -12,8 +12,8 @@ hosted on GitHub Pages, released through stages). Worked example:
    **"set up this repo as a new app"**. Claude asks the app's name, one
    sentence about it, and whether it needs sign-in, then runs
    `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`
-   (a blank page with an empty placeholder box and dormant sign-in; nothing
-   app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
+   (a blank page with an empty placeholder box, the coloured stage banner
+   with a subtle "Pipeline ↗" link, and dormant sign-in; nothing app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
    The first deploy also creates the issue labels.
 3. **You:** three settings clicks (Pages source, deployment branches,
    default branch `dev`); Claude gives exact links, then re-runs the deploy
@@ -51,7 +51,8 @@ The app itself needs, at minimum:
 - `stage.js` containing `window.STAGE = 'local';` (the deploy overwrites it
   per stage: never edit it for deploys).
 - A stage banner shown on every stage except `main`, so nobody mistakes Dev
-  for Production (see `github-pages.md`).
+  for Production (see `github-pages.md`). Put a small "Pipeline ↗" link
+  (`../pipeline/`) at its right end; hide it locally (no pipeline page there).
 - `style.css` with `[hidden] { display: none !important; }`.
 - Optional "What's new" panel that reads `releases.json` (generated at
   deploy time; 404 locally is normal).
