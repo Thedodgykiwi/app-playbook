@@ -24,6 +24,11 @@
 There's **one copy**, here in the playbook, used by every app; apps don't
 keep their own. It loads in any session that has the playbook attached, and
 is run from the app repo's root (see the skill's instructions).
+If the skill isn't in the session's skill list (e.g. the session restarted
+and the playbook wasn't re-registered), read
+`/home/user/app-playbook/.claude/skills/promote/SKILL.md` and follow it,
+running the script by its full path from the app's root:
+`cd /home/user/<app> && /home/user/app-playbook/.claude/skills/promote/promote.sh status`.
 
 - `promote.sh status` shows what's waiting at each step.
 - `promote.sh <target> --dry-run` previews.
