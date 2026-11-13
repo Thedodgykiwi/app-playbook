@@ -101,6 +101,11 @@ The script works on whichever repo the current directory belongs to.
      every line.
    - Keep it short: one or two sentences per bullet, friendly and positive,
      no blame. Group tiny related changes into one bullet.
+   - **Issue reference:** if a bullet covers a change made for a GitHub
+     issue (its commit says `Issue #12`), end that bullet with **`(#12)`**
+     (several: `(#12) (#14)`). The app shows it as a small coloured pill
+     ("tweak #12", reference only, no link); GitHub's release page shows it
+     as a link. Never write issue numbers anywhere else in the notes.
    - Use the stage's display name in the heading: Dev, Alpha, Staging, or
      Production (for `main`). **Only the heading may name a stage.** The
      notes are reused unchanged for Staging and Production, so bullets must

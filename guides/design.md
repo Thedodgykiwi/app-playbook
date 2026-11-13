@@ -60,6 +60,12 @@ nobody mistakes them for the real app.
   cancelled.
 - **"What's new" panel** reading release notes, so testers see what changed
   on each stage.
+- **Issue pills** at the end of a release note ("tweak #2"): small rounded
+  pill in the GitHub label's colour, `.72rem` bold, text dark or white
+  (whichever contrasts more with the colour), kept on the same line as the
+  word before it (`white-space: nowrap` wrapper), **not a link**: it's a
+  quiet reference that a reported issue was dealt with. Code:
+  test-app's `whats-new.js` (`pill()`).
 
 ## Wording
 

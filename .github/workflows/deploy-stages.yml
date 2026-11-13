@@ -53,6 +53,7 @@ jobs:
       - name: Assemble site from all stage branches
         env:
           REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          GH_TOKEN: ${{ github.token }}   # lets release_notes.py look up issue labels for the pills
           APP: ${{ inputs.app_name }}
           SHORT_IN: ${{ inputs.short_name }}
           C_MAIN: ${{ inputs.color_main }}

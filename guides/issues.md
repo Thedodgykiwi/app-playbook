@@ -75,6 +75,16 @@ or propose code in the issue unless asked: it's a record, not a plan.
 5. If it won't be done, close it with a comment saying why
    (`state_reason: not_planned`).
 
+## Issue pills in release notes
+
+When a release includes work done for an issue, the promote skill ends
+that release-note bullet with `(#12)`. In the app's "What's new" panel it
+shows as a small pill in the issue's label colour, e.g. **tweak #12**, as a
+reference that it's been addressed (deliberately **not** a link). The
+shared deploy looks the label up when it builds `releases.json`
+(`"issues": {"12": {"label": "tweak", "color": "c5def5"}}`); if it can't,
+the pill just says `#12`. On GitHub's release page `(#12)` is a normal link.
+
 ## Screenshots on issues
 
 Claude can't use GitHub's drag-and-drop image upload, so screenshots go in
