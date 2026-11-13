@@ -1,7 +1,8 @@
 // Google sign-in (Firebase Authentication) + access to Cloud Firestore.
 //
 // Dormant until firebase-config.js has the app's settings: while it's null
-// this file does nothing and no sign-in button shows. To switch it on, follow
+// this file does nothing and no sign-in button shows (the app menu in menu.js
+// still works). Signed in, the menu shows your Google photo, name and email. To switch it on, follow
 // the playbook's firebase-auth-and-firestore.md (project, rules + tests,
 // authorised domain, emulator testing).
 //
@@ -19,6 +20,8 @@
 const SDK = 'https://www.gstatic.com/firebasejs/13.1.0';
 
 const config = window.FIREBASE_CONFIG;
+// Every app on <user>.github.io shares browser storage: keep keys per app.
+const SIGNED_IN_KEY = `signed-in:${location.pathname.split('/')[1] || 'app'}`;
 let resolveReady;
 window.AppAccount = { user: null, ready: new Promise((r) => { resolveReady = r; }), setStatus() {} };
 if (!config) resolveReady(null);
@@ -50,20 +53,23 @@ async function start() {
   const $ = (id) => document.getElementById(id);
   const ui = {
     box: $('account'), signIn: $('sign-in'), button: $('account-btn'), avatar: $('avatar'),
-    dot: $('sync-dot'), menu: $('account-menu'), name: $('account-name'), email: $('account-email'),
+    avatarImg: $('avatar-img'), who: $('who'), whoImg: $('who-img'), whoLetter: $('who-letter'),
+    dot: $('sync-dot'), name: $('account-name'), email: $('account-email'),
     status: $('sync-status'), signOut: $('sign-out'),
   };
+  // The menu itself (open/close, theme, Settings, version) is menu.js.
+  const setMenu = () => window.AppMenu?.close();
+  const signedOutAvatar = ui.avatar.innerHTML;   // the generic person icon
 
-  // ---- Account menu -------------------------------------------------------
-  const setMenu = (open) => {
-    ui.menu.hidden = !open;
-    ui.button.setAttribute('aria-expanded', open);
-  };
-  ui.button.addEventListener('click', () => setMenu(ui.menu.hidden));
-  document.addEventListener('click', (e) => { if (!ui.box.contains(e.target)) setMenu(false); });
-  ui.box.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !ui.menu.hidden) { setMenu(false); ui.button.focus(); }
-  });
+  // Google photo, falling back to the first letter if there's none or it fails to load.
+  function showPhoto(img, letterEl, url, letter) {
+    letterEl.textContent = letter;
+    img.hidden = !url; letterEl.hidden = !!url;
+    if (url) {
+      img.onerror = () => { img.hidden = true; letterEl.hidden = false; };
+      img.src = url;
+    }
+  }
 
   ui.signIn.addEventListener('click', async () => {
     try {
@@ -96,7 +102,7 @@ async function start() {
   function showStatus() {
     ui.status.hidden = ui.dot.hidden = !used;
     if (!used) {
-      ui.button.setAttribute('aria-label', `Account: ${ui.name.textContent}`);
+      ui.button.setAttribute('aria-label', `Menu: ${ui.name.textContent}`);
       ui.button.title = ui.name.textContent;
       return;
     }
@@ -105,7 +111,7 @@ async function start() {
     ui.status.className = `sync-status ${state}`;
     ui.status.replaceChildren(icon({ synced: 'cloud-check', saving: 'cloud-arrow-up', offline: 'cloud-slash', error: 'warning-circle' }[state]), text);
     ui.dot.className = `sync-dot ${state}`;
-    ui.button.setAttribute('aria-label', `Account: ${ui.name.textContent}. ${text}`);
+    ui.button.setAttribute('aria-label', `Menu: ${ui.name.textContent}. ${text}`);
     ui.button.title = text;
   }
   window.AppAccount.setStatus = (s = {}) => {
@@ -120,22 +126,29 @@ async function start() {
   // ---- Signed in / out ----------------------------------------------------
   authLib.onAuthStateChanged(auth, (user) => {
     setMenu(false);
-    ui.box.hidden = false;
     ui.box.classList.toggle('signed-in', !!user);
     ui.signIn.hidden = !!user;
-    ui.button.hidden = !user;
+    ui.signOut.hidden = !user;
+    ui.who.hidden = !user;
     window.AppAccount.user = user;
     if (user) {
-      localStorage.setItem('signed-in', '1');
+      localStorage.setItem(SIGNED_IN_KEY, '1');
       const name = user.displayName || user.email || 'Signed in';
+      const letter = name.trim().charAt(0).toUpperCase();
       ui.name.textContent = name;
       ui.email.textContent = user.email || '';
-      ui.avatar.textContent = name.trim().charAt(0).toUpperCase();
+      showPhoto(ui.avatarImg, ui.avatar, user.photoURL, letter);
+      showPhoto(ui.whoImg, ui.whoLetter, user.photoURL, letter);
+      ui.avatar.classList.add('letter');
       error = '';
       showStatus();
     } else {
-      if (localStorage.getItem('signed-in')) toast('Signed out.');
-      localStorage.removeItem('signed-in');
+      ui.avatarImg.hidden = true; ui.avatar.hidden = false;
+      ui.avatar.innerHTML = signedOutAvatar; ui.avatar.classList.remove('letter');
+      ui.status.hidden = ui.dot.hidden = true;
+      ui.button.setAttribute('aria-label', 'Menu'); ui.button.title = 'Menu';
+      if (localStorage.getItem(SIGNED_IN_KEY)) toast('Signed out.');
+      localStorage.removeItem(SIGNED_IN_KEY);
     }
     window.dispatchEvent(new CustomEvent('account:change', { detail: { user } }));
   });

@@ -1,16 +1,42 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; } /* never let layout rules un-hide things */
+
+/* Theme colours. Use these variables (not fixed colours) in the app's own CSS
+   so Light / Dark / Auto (menu.js) work everywhere. */
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7; --surface: #fff; --text: #1d1f23; --muted: #5f6570;
+  --line: #dfe2e8; --hover: #eef0f3; --accent: #3b5bdb; --accent-hover: #2f4ac0;
+  --shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171b; --surface: #22252b; --text: #e8eaed; --muted: #a7adb6;
+  --line: #3a3f47; --hover: #2c3037; --accent: #748ffc; --accent-hover: #91a7ff;
+  --shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    color-scheme: dark;
+    --bg: #15171b; --surface: #22252b; --text: #e8eaed; --muted: #a7adb6;
+    --line: #3a3f47; --hover: #2c3037; --accent: #748ffc; --accent-hover: #91a7ff;
+    --shadow: 0 10px 30px rgba(0,0,0,.5);
+  }
+}
+/* Text size (Settings): everything sized in rem/em grows with it */
+:root[data-text-size="large"] { font-size: 112.5%; }
+
 body {
   margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
-  font-family: system-ui, sans-serif; background: #f4f5f7; color: #1d1f23;
+  font-family: system-ui, sans-serif; background: var(--bg); color: var(--text);
 }
 button {
   font: inherit; padding: .5rem 1rem; border: 0; border-radius: 8px;
-  background: #3b5bdb; color: #fff; cursor: pointer;
+  background: var(--accent); color: #fff; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
 }
-button:hover { background: #2f4ac0; }
-button:focus-visible, input:focus-visible { outline: 2px solid #3b5bdb; outline-offset: 2px; }
+button:hover { background: var(--accent-hover); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Icons (Phosphor duotone, see icons.js): sized to the text around them */
 .ic { width: 1.2em; height: 1.2em; flex: none; }
 
@@ -38,11 +64,11 @@ body.has-banner { padding-top: 3rem; }
 /* Empty placeholder where the app will go */
 .placeholder {
   width: min(420px, 100%); min-height: 240px;
-  border: 2px dashed #ced4da; border-radius: 12px; background: #fff;
+  border: 2px dashed var(--line); border-radius: 12px; background: var(--surface);
 }
 
-/* Google sign-in (account.js): top-right corner of the page, shown only once Firebase is set up */
-.account { position: fixed; top: 1rem; right: 1rem; z-index: 5; }
+/* App menu (menu.js) + Google sign-in (account.js): top-right corner */
+.account { position: fixed; top: 1rem; right: 1rem; z-index: 5; display: flex; align-items: center; gap: .5rem; }
 body.has-banner .account { top: 3rem; }
 .sign-in {
   padding: .35rem .7rem; font-size: .85rem; font-weight: 600;
@@ -50,35 +76,84 @@ body.has-banner .account { top: 3rem; }
 }
 .sign-in:hover { background: #f6f7f9; }
 .sign-in .ic { color: #4285f4; }
-.avatar-btn { position: relative; padding: 0; width: 34px; height: 34px; border-radius: 50%; background: none; }
+.avatar-btn { position: relative; padding: 0; width: 36px; height: 36px; border-radius: 50%; background: none; }
 .avatar-btn:hover { background: none; }
 .avatar {
-  width: 34px; height: 34px; border-radius: 50%; background: #7048e8; color: #fff;
-  font-weight: 700; font-size: .9rem; display: grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; object-fit: cover;
+  background: var(--surface); color: var(--muted); border: 1px solid var(--line);
 }
+.avatar .ic { width: 1.25rem; height: 1.25rem; }
+.avatar.letter, #who-letter { background: #7048e8; color: #fff; border: 0; font-weight: 700; font-size: .9rem; }
+.avatar-btn:hover .avatar { box-shadow: 0 0 0 3px var(--hover); }
 .sync-dot {
   position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px;
-  border-radius: 50%; border: 2px solid #fff; background: var(--none);
+  border-radius: 50%; border: 2px solid var(--bg);
 }
 .sync-dot.synced { background: #2f9e44; }
 .sync-dot.saving { background: #3b5bdb; }
 .sync-dot.offline { background: #f08c00; }
 .sync-dot.error { background: #e03131; }
 .account-menu {
-  position: absolute; right: 0; top: calc(100% + .4rem); z-index: 5; width: min(260px, 80vw);
-  background: #fff; border: 1px solid #e4e6ec; border-radius: 10px; padding: .75rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,.15); display: grid; gap: .5rem; font-size: .85rem;
+  position: absolute; right: 0; top: calc(100% + .4rem); z-index: 5; width: min(270px, 86vw);
+  background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 12px;
+  padding: .6rem; box-shadow: var(--shadow); display: grid; gap: .3rem; font-size: .9rem;
 }
 .account-menu p { margin: 0; }
-.who { display: grid; gap: .1rem; }
-.who span { color: #6b7079; font-size: .8rem; overflow-wrap: anywhere; }
-.sync-status { display: flex; align-items: center; gap: .35rem; font-weight: 600; }
+.who { display: flex; align-items: center; gap: .6rem; padding: .2rem .3rem .4rem; }
+.who p { display: grid; gap: .1rem; min-width: 0; }
+.who span:not(.avatar) { color: var(--muted); font-size: .8rem; overflow-wrap: anywhere; }
+.sync-status { display: flex; align-items: center; gap: .35rem; font-weight: 600; font-size: .82rem; padding: 0 .3rem; }
 .sync-status.synced { color: #2b8a3e; }
-.sync-status.saving { color: #3b5bdb; }
+.sync-status.saving { color: var(--accent); }
 .sync-status.offline { color: #a35200; }
 .sync-status.error { color: #c92a2a; }
-.plain-btn { justify-content: flex-start; background: none; color: #333; padding: .4rem .5rem; }
-.plain-btn:hover { background: #f1f3f5; }
+:root[data-theme="dark"] .sync-status.synced { color: #69db7c; }
+:root[data-theme="dark"] .sync-status.offline { color: #ffc078; }
+:root[data-theme="dark"] .sync-status.error { color: #ff8787; }
+.menu-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: .3rem .3rem 0; }
+.plain-btn { justify-content: flex-start; background: none; color: var(--text); padding: .5rem .5rem; }
+.plain-btn:hover { background: var(--hover); }
+.menu-sep { border: 0; border-top: 1px solid var(--line); margin: .2rem 0; width: 100%; }
+.version-btn { background: none; color: var(--muted); font-size: .78rem; padding: .25rem .5rem; }
+.version-btn:hover { background: none; color: var(--accent); text-decoration: underline; }
+
+/* Segmented choice (theme, text size): one option highlighted */
+.seg { display: flex; background: var(--hover); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button {
+  flex: 1; background: none; color: var(--text); font-size: .82rem; padding: .4rem .3rem; border-radius: 8px; gap: .25rem;
+}
+.seg button:hover { background: var(--surface); }
+.seg button[aria-checked="true"] { background: var(--surface); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.seg .ic { width: 1em; height: 1em; }
+
+/* Panels (Settings, What's new): bottom sheet on phones, centred box on wider screens */
+dialog.sheet {
+  border: 0; padding: 1rem 1.1rem 1.4rem; background: var(--surface); color: var(--text);
+  width: min(460px, 100%); max-height: 85vh; overflow: auto; border-radius: 16px; box-shadow: var(--shadow);
+}
+dialog.sheet::backdrop { background: rgba(0,0,0,.4); }
+@media (max-width: 600px) {
+  dialog.sheet { margin: auto 0 0; width: 100%; max-width: 100%; border-radius: 16px 16px 0 0; }
+}
+dialog.sheet header { display: flex; align-items: center; gap: .5rem; margin-bottom: .6rem; }
+dialog.sheet h2 { font-size: 1.15rem; margin: 0; flex: 1; }
+.close-btn { background: var(--hover); color: var(--text); width: 34px; height: 34px; padding: 0; border-radius: 50%; }
+.close-btn:hover { background: var(--line); }
+.setting { padding: .6rem 0; border-top: 1px solid var(--line); }
+.setting:first-of-type { border-top: 0; }
+.setting-name { margin: 0 0 .5rem; font-weight: 600; }
+.muted { color: var(--muted); }
+#whats-new-body h3 { font-size: 1rem; margin: .8rem 0 .3rem; }
+#whats-new-body h4 { font-size: .92rem; margin: .7rem 0 .2rem; }
+#whats-new-body ul { margin: .2rem 0; padding-left: 1.2rem; }
+#whats-new-body li { margin: .2rem 0; }
+.release { padding-bottom: .6rem; border-bottom: 1px solid var(--line); margin-bottom: .6rem; }
+.release:last-child { border-bottom: 0; }
+.release.rolled-back { opacity: .6; }
+.release-meta { color: var(--muted); font-size: .82rem; margin: 0; }
+.recent small { color: var(--muted); }
+.issue-pill { font-size: .72rem; border: 1px solid var(--line); border-radius: 99px; padding: 0 .4rem; color: var(--muted); white-space: nowrap; }
+
 .toast {
   position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 10;
   width: max-content; max-width: min(420px, 92vw); padding: .65rem .9rem; border-radius: 10px;

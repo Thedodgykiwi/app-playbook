@@ -13,7 +13,8 @@ hosted on GitHub Pages, released through stages). Worked example:
    sentence about it, and whether it needs sign-in, then runs
    `.claude/skills/new-app/new-app.sh`, which copies `templates/starter/`
    (a blank page with an empty placeholder box, the coloured stage banner
-   with a subtle "Pipeline ↗" link, and dormant sign-in; nothing app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
+   with a subtle "Pipeline ↗" link, a top-right menu with theme, Settings
+   and version / What's new, and dormant sign-in; nothing app-specific), fills in the names, pushes `main` and creates `dev`, `alpha`, `staging`.
    The first deploy also creates the issue labels.
 3. **You:** three settings clicks (Pages source, deployment branches,
    default branch `dev`); Claude gives exact links, then re-runs the deploy

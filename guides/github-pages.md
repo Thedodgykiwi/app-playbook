@@ -27,6 +27,9 @@ secrets out.
   storage, cookies, service workers and sign-in are **shared** between
   stages. Key everything stored in the browser by stage:
   `` const storageKey = `todos-${window.STAGE || 'local'}`; ``
+  It's also shared by **every app** on that address (`/test-app/`,
+  `/playbook-trial/` …): put the app's folder in keys too, e.g.
+  `` `prefs:${location.pathname.split('/')[1]}` `` (the starter does this).
 - **Stage banner:** show "DEV environment" etc. on every stage except
   `main`, coloured per stage, so nobody mistakes a test stage for Production.
   Locally it says "LOCAL".

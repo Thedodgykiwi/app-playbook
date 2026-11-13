@@ -60,6 +60,18 @@ nobody mistakes them for the real app.
   cancelled.
 - **"What's new" panel** reading release notes, so testers see what changed
   on each stage.
+- **Top-right app menu** (the starter's `menu.js`, chosen from 3 mock-ups):
+  Google photo + name when signed in; Theme as a Light / Auto / Dark
+  segmented switch right in the menu (one tap); Settings row opening a panel;
+  Sign out; a thin line, then the version ("Version 2026.11.13", or "Dev
+  build abc1234") linking to What's new. Works with sign-in off too.
+- **Light / dark theme:** colours only via CSS variables on `:root`, with a
+  `data-theme` of light / dark / auto (auto = `prefers-color-scheme`).
+  Apply the saved choice in an inline `<head>` script so the page never
+  flashes the wrong theme on load.
+- **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
+  Escape and backdrop for free); bottom sheet on phones, centred box on
+  wider screens.
 - **Issue pills** at the end of a release note ("tweak #2"): small rounded
   pill in the GitHub label's colour, `.72rem` bold, text dark or white
   (whichever contrasts more with the colour), kept on the same line as the

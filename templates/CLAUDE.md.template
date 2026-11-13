@@ -85,7 +85,13 @@ Not for small tweaks or fixes. Details: playbook `working-with-the-user.md`.
 
 ## Notes
 
-- Browser storage is shared by all stages (one web address): key it per stage.
+- Browser storage is shared by all stages **and all apps** on `<user>.github.io`
+  (one web address): key it per app and stage.
+- Theme: use the colour variables in `style.css` (`--bg`, `--surface`, `--text`,
+  `--muted`, `--line`, `--accent`…) rather than fixed colours, so Light / Dark /
+  Auto keep working. Size things in rem/em so the Large text setting works.
+- App settings go in the Settings panel (`#settings` in `index.html`, saved by
+  `menu.js` with the theme and text size).
 - <App-specific notes, setup facts (e.g. Firebase project, Firestore location), quirks.>
 
 ## Sign-in and cloud data (optional, off until set up)

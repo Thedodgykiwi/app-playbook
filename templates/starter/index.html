@@ -6,6 +6,14 @@
   <title>{{APP_NAME}}</title>
   <meta name="theme-color" content="#495057" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Apply the saved theme and text size before the page draws (no flash). See menu.js. -->
+  <script>
+    try {
+      const p = JSON.parse(localStorage.getItem(`prefs:${location.pathname.split('/')[1] || 'app'}`) || '{}');
+      document.documentElement.dataset.theme = p.theme || 'auto';
+      document.documentElement.dataset.textSize = p.textSize || 'standard';
+    } catch { /* storage blocked: defaults */ }
+  </script>
 </head>
 <body>
   <!-- Coloured stage banner (Dev, Alpha, Staging; LOCAL on your computer; none on Production)
@@ -14,18 +22,53 @@
     <span id="stage-name"></span>
     <a id="pipeline-link" href="../pipeline/" hidden>Pipeline</a>
   </div>
-  <!-- Google sign-in (account.js). Hidden until Firebase is set up: see firebase-config.js. -->
-  <div id="account" class="account" hidden>
+  <!-- App menu (menu.js), top-right: theme, Settings, version / What's new.
+       Google sign-in (account.js) adds your photo, name and Sign in / Sign out
+       once Firebase is set up (see firebase-config.js). -->
+  <div id="account" class="account">
     <button type="button" id="sign-in" class="sign-in" hidden><span data-icon="google-logo"></span>Sign in</button>
-    <button type="button" id="account-btn" class="avatar-btn" aria-expanded="false" aria-controls="account-menu" hidden>
-      <span id="avatar" class="avatar" aria-hidden="true"></span><span id="sync-dot" class="sync-dot" aria-hidden="true"></span>
+    <button type="button" id="account-btn" class="avatar-btn" aria-expanded="false" aria-controls="account-menu" aria-label="Menu" title="Menu">
+      <img id="avatar-img" class="avatar" alt="" referrerpolicy="no-referrer" hidden>
+      <span id="avatar" class="avatar" aria-hidden="true"><span data-icon="user"></span></span>
+      <span id="sync-dot" class="sync-dot" aria-hidden="true" hidden></span>
     </button>
     <div id="account-menu" class="account-menu" hidden>
-      <p class="who"><strong id="account-name"></strong><span id="account-email"></span></p>
-      <p id="sync-status" class="sync-status"></p>
-      <button type="button" id="sign-out" class="plain-btn"><span data-icon="sign-out"></span>Sign out</button>
+      <div id="who" class="who" hidden>
+        <img id="who-img" class="avatar" alt="" referrerpolicy="no-referrer" hidden>
+        <span id="who-letter" class="avatar" aria-hidden="true"></span>
+        <p><strong id="account-name"></strong><span id="account-email"></span></p>
+      </div>
+      <p id="sync-status" class="sync-status" hidden></p>
+      <p class="menu-label" id="theme-label">Theme</p>
+      <div class="seg" role="radiogroup" aria-labelledby="theme-label" data-pref="theme">
+        <button type="button" role="radio" data-value="light"><span data-icon="sun"></span>Light</button>
+        <button type="button" role="radio" data-value="auto"><span data-icon="circle-half"></span>Auto</button>
+        <button type="button" role="radio" data-value="dark"><span data-icon="moon"></span>Dark</button>
+      </div>
+      <button type="button" id="open-settings" class="plain-btn"><span data-icon="gear-six"></span>Settings</button>
+      <button type="button" id="sign-out" class="plain-btn" hidden><span data-icon="sign-out"></span>Sign out</button>
+      <hr class="menu-sep">
+      <button type="button" id="version-btn" class="version-btn">What's new</button>
     </div>
   </div>
+
+  <!-- Settings panel (menu.js). Add the app's own settings here. -->
+  <dialog id="settings" class="sheet" aria-labelledby="settings-title">
+    <header><h2 id="settings-title">Settings</h2><button type="button" class="close-btn" data-close aria-label="Close"><span data-icon="x"></span></button></header>
+    <section class="setting">
+      <p class="setting-name" id="text-size-label">Text size</p>
+      <div class="seg" role="radiogroup" aria-labelledby="text-size-label" data-pref="textSize">
+        <button type="button" role="radio" data-value="standard">Standard</button>
+        <button type="button" role="radio" data-value="large">Large</button>
+      </div>
+    </section>
+  </dialog>
+
+  <!-- What's new panel (menu.js): this stage's release notes from releases.json, made by the deploy. -->
+  <dialog id="whats-new" class="sheet" aria-labelledby="whats-new-title">
+    <header><h2 id="whats-new-title">What's new</h2><button type="button" class="close-btn" data-close aria-label="Close"><span data-icon="x"></span></button></header>
+    <div id="whats-new-body"></div>
+  </dialog>
 
   <!-- The app goes here. -->
   <main id="app" class="placeholder" aria-label="{{APP_NAME}}"></main>
@@ -34,6 +77,7 @@
   <script src="stage.js"></script>
   <script src="icons.js"></script>
   <script src="firebase-config.js"></script>
+  <script src="menu.js"></script>
   <script src="app.js"></script>
   <script type="module" src="account.js"></script>
 </body>

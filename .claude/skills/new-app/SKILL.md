@@ -74,10 +74,12 @@ page from then on.
 7. **Wrap up:** suggest the cloud environment / setup script if this account
    doesn't have them yet (`guides/cloud-sessions.md`), and say what to do
    next: describe the first feature ("log it", concept mock-up, build on Dev).
-   The starter is deliberately blank: an empty box, plus the coloured stage
+   The starter is deliberately blank: an empty box, the coloured stage
    banner (Dev/Alpha/Staging/LOCAL, none on Production) with a subtle
-   "Pipeline ↗" link. Optional extra from test-app, only when asked: the
-   "What's new" panel and news bar (`guides/design.md`).
+   "Pipeline ↗" link, and the top-right menu (`menu.js`): Google photo when
+   signed in, Light/Auto/Dark theme, Settings (text size; add the app's own
+   settings there), and the version at the bottom opening "What's new".
+   Optional extra from test-app, only when asked: the news bar (`guides/design.md`).
 
 ## Updating this skill or the starter
 
