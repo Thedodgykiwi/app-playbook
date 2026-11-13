@@ -117,6 +117,8 @@ for b in staging alpha dev; do
 done
 # dev is the same commit as main. Don't rely on origin/dev: a single-branch
 # (shallow) clone, as cloud sessions make, doesn't fetch other branches.
+git config --get-all remote.origin.fetch | grep -qF 'refs/heads/*' || git config --add remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+git fetch -q origin 2>/dev/null || true
 git checkout -q -B dev main && git branch -q --set-upstream-to=origin/dev dev 2>/dev/null || true
 
 # 3. first deploy + labels (public repos: the API needs no login)
