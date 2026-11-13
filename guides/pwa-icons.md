@@ -50,6 +50,13 @@ once dismissed or installed.
   button**: show a how-to (Share → Add to Home Screen → Add). Hide
   everything once `display-mode: standalone` (or `navigator.standalone`).
 - Keys in browser storage include app **and** stage (`pwa:<app>:<stage>`).
+- **iPhone Home Screen apps have their own storage**, separate from Safari:
+  the installed app must be opened from its icon **online** once to save its
+  offline copy. Otherwise, offline it shows a **blank white screen** (found
+  on a real iPhone). So: the worker re-saves the page on every online visit
+  (pwa.js messages it), the menu shows "✓ Ready to use offline" once saved,
+  and an offline navigation with nothing saved gets a short built-in
+  "You're offline" page instead of a blank one.
 - **Testing:** build a local copy shaped like the deploy (Production folder
   with `dev/` inside, files stamped `?v=`), then in Playwright: reload while
   `context.setOffline(true)`, change the stamp to see the update bar, and use

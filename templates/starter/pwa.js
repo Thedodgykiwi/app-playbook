@@ -18,8 +18,20 @@
   save();
 
   // ---- Service worker -------------------------------------------------------
+  // Every visit (online) asks the worker to (re)save the offline copy; the menu
+  // then shows "Ready to use offline" so people know it's safe to go offline.
   if ('serviceWorker' in navigator) {
-    addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch((err) => console.warn('Offline mode unavailable:', err)));
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data?.type === 'offline-ready') $('offline-ready').hidden = !e.data.ok;
+    });
+    addEventListener('load', async () => {
+      try {
+        await navigator.serviceWorker.register('sw.js');
+        const reg = await navigator.serviceWorker.ready;
+        if (navigator.onLine) reg.active?.postMessage('save-for-offline');
+        else $('offline-ready').hidden = false;   // offline and still running: it's saved
+      } catch (err) { console.warn('Offline mode unavailable:', err); }
+    });
   }
 
   // ---- Offline strip ----------------------------------------------------------
