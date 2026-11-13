@@ -137,3 +137,21 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TZ: ${{ inputs.release_timezone }}
         run: python3 _tools/.github/scripts/make_releases.py _app "${{ github.repository }}"
+
+  # Shared issue labels (bug, feature, tweak, performance, priorities), kept
+  # once in this repo's .github/labels.json. Needs `issues: write` in the
+  # app's deploy.yml; without it this only prints a note.
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out shared labels (app-playbook)
+        uses: actions/checkout@v4
+        with:
+          repository: Thedodgykiwi/app-playbook
+          ref: main
+          path: _tools
+          sparse-checkout: .github
+      - name: Make sure the app has the shared labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 _tools/.github/scripts/sync_labels.py _tools/.github/labels.json "${{ github.repository }}"

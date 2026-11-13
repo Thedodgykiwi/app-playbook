@@ -20,7 +20,7 @@ From `templates/` in this repo:
 | Template | Goes to | Change |
 |---|---|---|
 | `CLAUDE.md.template` | `CLAUDE.md` | app name, URLs, features to keep working |
-| `.github/workflows/deploy.yml` | same path | `app_name` / `short_name` (and colours if wanted) |
+| `.github/workflows/deploy.yml` | same path | `app_name` / `short_name` (and colours if wanted). Keeps `contents: write` (GitHub releases) and `issues: write` (shared labels) |
 
 **Don't copy** the promote skill, the release-notes script or the deploy
 steps: apps use the playbook's shared copies (see the README), so there's

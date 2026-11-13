@@ -35,6 +35,14 @@ Any push to one of these branches redeploys the site (`.github/workflows/deploy.
 - **Production (`main`) needs the user's explicit "yes"** for each release.
 - Hotfixes only when the user asks: branch from `main`, release, merge back into `dev`.
 
+## Issues (bugs, requests, tweaks)
+
+The repo's GitHub Issues are the to-do list (playbook `issues.md`).
+**"Log it" means record only:** create the issue, don't change code. Fix
+later on `dev` with `Fixes #<n>` in the commit message; the issue closes
+when the fix reaches Production. No client names or private details in
+issues (public repo = public issues).
+
 ## Concept first (for bigger ideas)
 
 Before a new feature or noticeable change to how the app looks or works,

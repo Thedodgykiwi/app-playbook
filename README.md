@@ -29,6 +29,7 @@ something that changed), add it to the right guide in the same session; see
 | [cloud-sessions.md](guides/cloud-sessions.md) | Claude running in a cloud session: network, logins, files that vanish |
 | [working-with-the-user.md](guides/working-with-the-user.md) | How to communicate, concept mock-ups, guardrails, pre-push checklist |
 | [design.md](guides/design.md) | Look and feel, stage colours, icons, UI patterns that worked |
+| [issues.md](guides/issues.md) | Logging bugs, feature requests and tweaks as GitHub issues ("log it" = record only) |
 
 ## Templates
 
@@ -48,6 +49,7 @@ can't drift apart. Improve them here and every app gets the change.
 | `.claude/skills/promote/` | The **promote** skill (dev → alpha → staging → main, release notes). Available in any session that has this repo attached |
 | `.github/workflows/deploy-stages.yml` | The multi-stage GitHub Pages deploy. Apps call it from their small `deploy.yml` |
 | `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |
+| `.github/labels.json` + `.github/scripts/sync_labels.py` | The shared issue labels (bug, feature, tweak, performance, priorities), kept in place in every app by the shared deploy |
 | `.github/scripts/make_releases.py` | Creates a dated GitHub release (`v2026.11.13`, `v2026.11.13.2` …) for every Production release (used by the shared deploy) |
 
 Changing a shared file changes **every** app's next deploy or promotion:

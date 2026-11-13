@@ -1,0 +1,8 @@
+[
+  {"name": "bug",            "color": "d73a4a", "description": "Something's broken or not working as it should"},
+  {"name": "feature",        "color": "1d76db", "description": "Something new the app should do"},
+  {"name": "tweak",          "color": "c5def5", "description": "Small visual or wording change (colour, outline, text)"},
+  {"name": "performance",    "color": "fbca04", "description": "Something is slow (loading, opening, saving)"},
+  {"name": "priority: high", "color": "b60205", "description": "Do soon: it affects people now"},
+  {"name": "priority: low",  "color": "e4e4e4", "description": "Nice to have, no rush"}
+]
