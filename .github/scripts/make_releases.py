@@ -91,7 +91,8 @@ def main():
             msg = (res.stderr or res.stdout).strip()
             if "403" in msg or "Resource not accessible" in msg:
                 print("::warning::Can't create GitHub releases: the app's deploy.yml needs "
-                      "'contents: write' under permissions (see the playbook template).")
+                      "'contents: write' under permissions (see the playbook template). "
+                      f"GitHub said: {msg}")
                 return
             print(msg)
             sys.exit(1)
