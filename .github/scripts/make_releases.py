@@ -55,6 +55,13 @@ def next_tag(day, taken):
     return f"{base}.{n}"
 
 
+def existing_releases(slug):
+    """Tag names that already have a GitHub release (empty if gh isn't available)."""
+    res = subprocess.run(["gh", "api", f"repos/{slug}/releases", "--paginate",
+                          "--jq", ".[].tag_name"], capture_output=True, text=True)
+    return set(res.stdout.split()) if res.returncode == 0 else set()
+
+
 def main():
     repo, slug = sys.argv[1], sys.argv[2]
     dry = "--dry-run" in sys.argv
@@ -62,40 +69,49 @@ def main():
     owner, name = slug.split("/", 1)
     site = f"https://{owner.lower()}.github.io/{name}/"
 
-    taken = release_tags(repo)
+    have_release = set() if dry else existing_releases(slug)
+    taken = release_tags(repo) | have_release
     todo = []
     for r in reversed(promotions(repo)):          # oldest first
         full = git(repo, "rev-parse", r["sha"]).strip()
-        if tag_for(full, repo):
+        tag = tag_for(full, repo)                 # tag already on this commit?
+        if tag and tag in have_release:
             continue
-        day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
-        tag = next_tag(day, taken)
-        taken.add(tag)
-        todo.append((tag, full, r))
+        new_tag = tag is None
+        if new_tag:
+            day = datetime.fromisoformat(r["date"]).astimezone(tz).strftime("%Y.%m.%d")
+            tag = next_tag(day, taken)
+            taken.add(tag)
+        todo.append((tag, full, r, new_tag))
 
     if not todo:
-        print("Releases: all Production releases already have a GitHub release.")
+        print("Releases: every Production release already has a GitHub release.")
         return
-    for tag, sha, r in todo:
+    failed = []
+    for tag, sha, r, new_tag in todo:
         body = (r["notes"].strip() + f"\n\n---\nLive at {site}\n")
         title = f"{tag} (Production)"
-        print(f"{'Would create' if dry else 'Creating'} {tag} -> {sha[:7]} ({r['date']})")
+        print(f"{'Would create' if dry else 'Creating'} {tag} -> {sha[:7]} ({r['date']})"
+              + ("" if new_tag else " [tag already exists]"))
         if dry:
             continue
         with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
             f.write(body)
-        res = subprocess.run(["gh", "release", "create", tag, "--repo", slug,
-                              "--target", sha, "--title", title, "--notes-file", f.name],
-                             capture_output=True, text=True)
+        cmd = ["gh", "release", "create", tag, "--repo", slug, "--title", title,
+               "--notes-file", f.name]
+        if new_tag:
+            cmd += ["--target", sha]
+        else:
+            cmd += ["--verify-tag"]
+        res = subprocess.run(cmd, capture_output=True, text=True)
         if res.returncode != 0:
             msg = (res.stderr or res.stdout).strip()
-            if "403" in msg or "Resource not accessible" in msg:
-                print("::warning::Can't create GitHub releases: the app's deploy.yml needs "
-                      "'contents: write' under permissions (see the playbook template). "
-                      f"GitHub said: {msg}")
-                return
-            print(msg)
-            sys.exit(1)
+            print(f"::warning::Couldn't create release {tag} for {sha[:7]}: {msg}")
+            failed.append(tag)
+    if failed:
+        print(f"::warning::{len(failed)} release(s) not created: {', '.join(failed)}. "
+              "If GitHub said 403, check the app's deploy.yml has 'contents: write'. "
+              "Older versions may need their tag pushed first (see the playbook guide).")
 
 
 if __name__ == "__main__":
