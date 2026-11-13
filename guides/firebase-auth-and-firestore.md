@@ -100,11 +100,28 @@ the second app). If that happens, remove it in that project's console:
 Project settings → Your apps → the app → Remove this app.
 
 **New project made by Claude (`firebase_create_project`):** the Cloud
-Firestore API starts switched off, so `firestore_create_database` fails with
-"API has not been used". Either the user creates the database in the console
+Firestore API starts switched off (Firebase's own docs: adding Firebase does
+not enable `firestore.googleapis.com`), so `firestore_create_database` fails
+with "API has not been used". The Firebase MCP has no tool to enable APIs.
+
+**Approved way (the user agreed to this, 2026-11-13):** Claude enables it with
+the Service Usage API using the Firebase CLI's sign-in. Ask the user in the
+moment first, in one line ("OK to switch on Firestore for <project>?"): their
+"yes" in that session is what lets the call through Claude Code's safety
+check. Then:
+
+```bash
+TOK=$(python3 -c "import json;print(json.load(open('/root/.config/configstore/firebase-tools.json'))['tokens']['access_token'])")
+P=YOUR-PROJECT-ID
+curl -sS -X POST -H "Authorization: Bearer $TOK" -H "x-goog-user-project: $P" \
+  https://serviceusage.googleapis.com/v1/projects/$P/services/firestore.googleapis.com:enable
+```
+
+Wait a minute, then retry `firestore_create_database`. (If the token has
+expired, call any Firebase MCP tool first; it refreshes the file.)
+Fallback if that's refused: the user creates the database in the console
 (Build → Firestore Database → Create database: Standard, location, start in
-production mode), or opens the "enable it" link from the error, then Claude
-retries.
+production mode), or opens the "enable it" link from the error.
 
 ### 2. Register the web app → `firebase-config.js`
 
