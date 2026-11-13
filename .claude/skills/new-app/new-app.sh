@@ -115,7 +115,9 @@ for b in staging alpha dev; do
   git ls-remote --exit-code --heads origin "$b" >/dev/null || die "Couldn't create branch '$b'."
   echo "Created $b."
 done
-git fetch -q origin && git checkout -q -B dev origin/dev
+# dev is the same commit as main. Don't rely on origin/dev: a single-branch
+# (shallow) clone, as cloud sessions make, doesn't fetch other branches.
+git checkout -q -B dev main && git branch -q --set-upstream-to=origin/dev dev 2>/dev/null || true
 
 # 3. first deploy + labels (public repos: the API needs no login)
 api="https://api.github.com/repos/$slug"
