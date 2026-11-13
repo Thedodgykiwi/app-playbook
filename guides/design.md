@@ -86,6 +86,12 @@ nobody mistakes them for the real app.
 - **Groups inside a collapsible section:** don't nest another row of toggle
   headings (feels like a menu inside a menu). Use centred divider labels
   ("─── Today · 2 ⌃ ───") that hide/show their own items (test-app's Done).
+- **Toasts (starter `toast.js`):** `AppToast.show(message, { icon, action: { label, icon, onClick }, duration })`.
+  Dark rounded card near the bottom, slide-up entrance, fades after 4 s (6 s
+  with an action), one at a time, `role="status"`, Reduce Motion respected.
+  While one shows, the install tip and "new version" bar step aside. Apps
+  with a fixed bottom bar set `--toast-bottom`. Use an action for anything
+  undoable ("moved to Done · Undo") instead of asking "are you sure?".
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.

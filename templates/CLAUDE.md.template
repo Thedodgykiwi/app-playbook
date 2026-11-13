@@ -118,6 +118,8 @@ artifact with 2–3 options, not in the repo. Details: playbook `working-with-th
   network-first, files the deploy stamps with `?v=` are kept offline. New
   files the app loads are stamped automatically if linked from `index.html`
   with `href`/`src`. Test offline with the browser's network set to Offline.
+- Messages: use `AppToast.show(…)` (toast.js; with an Undo action for anything
+  undoable). If the app has a bar fixed at the bottom, set `--toast-bottom`.
 - App settings go in the Settings panel (`#settings` in `index.html`, saved by
   `menu.js` with the theme and text size).
 - <App-specific notes, setup facts (e.g. Firebase project, Firestore location), quirks.>
