@@ -68,6 +68,29 @@ or propose code in the issue unless asked: it's a record, not a plan.
 4. If it won't be done, close it with a comment saying why
    (`state_reason: not_planned`).
 
+## Screenshots on issues
+
+Claude can't use GitHub's drag-and-drop image upload, so screenshots go in
+the repo and the comment shows them from there (tested Nov 2026):
+
+1. Save the PNG in **`.github/issue-screenshots/<issue>-<before|after>.png`**
+   on `dev` (with the fix, or in its own small commit). The deploy drops
+   `.github/`, so these never appear on the live site.
+2. Commit, push, then link it **pinned to that commit** so it never breaks:
+   `https://raw.githubusercontent.com/<owner>/<repo>/<commit-sha>/.github/issue-screenshots/12-after.png`
+   Check the link returns `200 image/png` before posting.
+3. Comment with an HTML image tag so it can be sized and described:
+   `<img src="<link>" alt="<what it shows>" width="360">`
+   Typically a **Before** when the work starts and an **After** with
+   "Done on Dev, closes when released to Production".
+
+- Screenshot only what matters (one element or the card), at
+  `deviceScaleFactor: 2`; typically 15–200 KB each.
+- **Public repo = public screenshots.** Show test data only: sign in with a
+  test account, never real users' names, emails or lists.
+- Private repos: the same links need the viewer to be signed in to GitHub
+  with access (not yet tested).
+
 ## Asking what's open
 
 "What's open?" → `list_issues` (state open), then summarise grouped by type,
