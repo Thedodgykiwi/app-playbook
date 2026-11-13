@@ -68,9 +68,21 @@
 
   // ---- Version + What's new (releases.json, written per stage by the deploy) --
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  // "(#12)" at the end of a note = the GitHub issue it relates to: a small pill (no link).
+  // "(#12)" at the end of a note = the GitHub issue it relates to: a small pill
+  // in that issue's label colour (from releases.json "issues"), not a link.
+  function pill(n) {
+    const info = data?.issues?.[n] || {};
+    const color = /^[0-9a-f]{6}$/i.test(info.color || '') ? info.color : null;
+    if (!color) return `<span class="issue-pill" title="Issue #${n}">#${n}</span>`;
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(color.slice(i, i + 2), 16) / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;   // dark or white text, whichever reads better
+    const text = (lum + 0.05) / 0.0637 >= 1.05 / (lum + 0.05) ? '#1d1f23' : '#fff';
+    const label = info.label ? `${esc(info.label)} ` : '';
+    return `<span class="issue-pill" style="background:#${color};color:${text};border-color:transparent" title="Issue #${n}">${label}#${n}</span>`;
+  }
   const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\s*\(#(\d+)\)/g, '&nbsp;<span class="issue-pill">#$1</span>');
+    .replace(/\s*\(#(\d+)\)/g, (m, n) => `&nbsp;${pill(n)}`);
   function markdown(src) {  // ## / ### headings, "- " bullets, paragraphs, **bold**
     const out = []; let list = null, para = null;
     const flush = () => {

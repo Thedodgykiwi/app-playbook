@@ -82,7 +82,7 @@ nobody mistakes them for the real app.
   value with dark text. Theme rules pick `--a-l` or `--a-d`, so accents and
   themes combine without extra rules. Green had to be darkened (#237032) to
   pass contrast.
-- **Icons for new apps: Phosphor Regular** (outline). test-app keeps duotone.
+- **Icons: Phosphor Regular** (outline) for new apps and test-app (since its new look; its home-screen icons stay duotone).
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.
