@@ -77,6 +77,13 @@ nobody mistakes them for the real app.
   `:focus-visible` rules, and **check hover and focus in the browser**
   (Playwright `hover()`, then screenshot), not just the resting state.
 
+- **Pop-ups and sheets must not disturb what's behind them.** Opening one
+  should only *add* the panel: don't redraw the list underneath (it
+  flickers), fade the dark backdrop in with the panel instead of snapping
+  it on, and move the cursor in with `focus({ preventScroll: true })` so
+  the page doesn't jump. Redraw the list only after Save. (Spotted by the
+  user in test-app's edit-sheet mock-up.)
+
 ## Wording
 
 - Plain, friendly, short. Say what the user can do or see.
