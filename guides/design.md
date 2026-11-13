@@ -69,6 +69,8 @@ nobody mistakes them for the real app.
   `data-theme` of light / dark / auto (auto = `prefers-color-scheme`).
   Apply the saved choice in an inline `<head>` script so the page never
   flashes the wrong theme on load.
+- **iPhone underlines emails/phone numbers** shown as text (Safari data
+  detectors): add `<meta name="format-detection" content="telephone=no, email=no, address=no">`.
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.
