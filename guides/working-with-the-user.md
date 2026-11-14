@@ -55,6 +55,13 @@ toggle. Every control and state then comes from the real app, and that
 stylesheet is most of the build. A hand-drawn redraw of Edit 1 Job Board
 silently dropped buttons, a drop-down and the job-state colours, and changed
 the button order; the user caught it (Nov 2026).
+**Before proposing to merge two steps into one** (e.g. "pick + send" →
+"pick = send"), check whether the in-between state means something on its own
+and ask if unsure. In Edit 1 Job Board, picking an editor without sending
+*pre-assigns* a job (held in the queue in case plans change); all three
+one-tap mock-up options broke that and were rejected. The fix that worked was
+making each state clearer instead (hide the button until an editor is picked,
+label it "Send to Tom"). Nov 2026.
 Never put concept code in the repo.
 
 ## Guardrails
