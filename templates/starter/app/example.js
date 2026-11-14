@@ -5,6 +5,7 @@
 import { html } from 'htm/preact';
 import { useState } from 'preact/hooks';
 import { signal, computed } from '@preact/signals';
+import { EmptyState } from '../ui.js';
 
 // Shared data: any component that reads a signal re-draws when it changes.
 // (Kept in memory only, so the example never leaves anything behind.)
@@ -78,6 +79,6 @@ export function Example() {
       <${Filter} />
       ${shown.value.length
         ? html`<ul class="list">${shown.value.map((i) => html`<${Item} key=${i.id} item=${i} />`)}</ul>`
-        : html`<div class="empty-state"><${Icon} name="tray" /><strong>Nothing here</strong><span>Add an item above.</span></div>`}
+        : html`<${EmptyState} icon="tray" title="Nothing here" text="Add an item above, or pick another filter." />`}
     </section>`;
 }

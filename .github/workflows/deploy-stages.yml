@@ -123,6 +123,15 @@ jobs:
           else
             echo "::warning::Pipeline page not built this time (the site itself is unaffected)."
           fi
+      - name: Add the site-wide 404 page (one per app, links back to the right stage)
+        env:
+          APP: ${{ inputs.app_name }}
+        run: |
+          python3 - <<'PY'
+          import html, os
+          t = open("_tools/.github/templates/404.html", encoding="utf-8").read()
+          open("_site/404.html", "w", encoding="utf-8").write(t.replace("{{APP_NAME}}", html.escape(os.environ["APP"])))
+          PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

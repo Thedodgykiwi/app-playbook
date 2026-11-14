@@ -14,3 +14,4 @@ function App() {
 }
 
 render(html`<${App} />`, document.getElementById('app'));
+window.AppReady?.();   // the app is up: no "Something went wrong" screen from now on (error-screen.js)

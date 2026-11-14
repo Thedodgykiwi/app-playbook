@@ -4,6 +4,7 @@
 import { html, render } from 'htm/preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { signal, computed } from '@preact/signals';
+import { EmptyState, SkeletonRows, SkeletonCard, SkeletonTable } from './ui.js';
 
 const Icon = ({ name }) => html`<span ref=${(el) => el && !el.firstChild && el.append(icon(name))} />`;
 
@@ -81,12 +82,24 @@ function ConfirmDelete() {
     </div>`;
 }
 
+// 6. Empty state (ui.js)
+function EmptyDemo() {
+  return html`<${EmptyState} icon="tray" title="Nothing here yet" text="Your to-dos will show up here once you add one."
+    action=${{ label: 'Add a to-do', icon: 'plus', onClick: () => AppToast.show('This is where you\'d add one.') }} />`;
+}
+// 7. Loading skeletons (ui.js)
+function LoadingDemo() {
+  return html`<div style="display:grid;gap:1rem"><${SkeletonRows} count=${3} /><${SkeletonCard} /><${SkeletonTable} rows=${3} cols=${3} /></div>`;
+}
+
 const DEMOS = {
   counter: [Counter],
   shared: [SharedData, AddToCart, CartBadge, 'const cart = signal(0);\nconst cartLabel = computed(() => (cart.value === 1 ? \'1 item\' : `${cart.value} items`));'],
   field: [FieldDemo, Field],
   loading: [LoadingList],
   dialog: [ConfirmDelete],
+  empty: [EmptyDemo],
+  skeletons: [LoadingDemo],
 };
 document.querySelectorAll('[data-demo]').forEach((el) => {
   const [Main, ...more] = DEMOS[el.dataset.demo];

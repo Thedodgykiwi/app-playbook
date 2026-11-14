@@ -86,6 +86,17 @@ nobody mistakes them for the real app.
 - **Groups inside a collapsible section:** don't nest another row of toggle
   headings (feels like a menu inside a menu). Use centred divider labels
   ("─── Today · 2 ⌃ ───") that hide/show their own items (test-app's Done).
+- **Empty, loading and error screens (starter, style "C": big illustration
+  on a soft colour blob):** `ui.js` has `EmptyState` (icon, title, text,
+  action) and skeletons (`SkeletonRows`, `SkeletonCard`, `SkeletonTable`;
+  shimmer off with Reduce Motion). `error-screen.js` shows "Oops, something
+  went wrong" (Try again / Report a problem → pre-filled GitHub issue) if the
+  app fails **while loading**; the app calls `AppReady()` once its first
+  screen is drawn. Static hosting has no server errors, so there's no "500".
+  The shared deploy adds a site-wide **404 page** (`.github/templates/404.html`):
+  one per app for all stages, it links back to the stage the address was in.
+  Big illustrations use Phosphor **duotone** (`<name>-duotone` in icons.js);
+  everything else stays Regular.
 - **Toasts (starter `toast.js`):** `AppToast.show(message, { icon, action: { label, icon, onClick }, duration })`.
   Dark rounded card near the bottom, slide-up entrance, fades after 4 s (6 s
   with an action), one at a time, `role="status"`, Reduce Motion respected.

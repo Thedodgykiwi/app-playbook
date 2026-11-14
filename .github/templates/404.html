@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page not found · {{APP_NAME}}</title>
+<!-- Site-wide 404 page, added by the playbook's shared deploy (one per app, for all
+     stages). Works out which stage the address belonged to and links back to it.
+     Self-contained: no other files needed. Style "C" (big illustration). -->
+<style>
+  :root { color-scheme: light dark; --bg:#f8f9fb; --surface:#fff; --text:#1d1f23; --muted:#5f6570; --accent:#3b5bdb; --accent-fg:#fff; --pink:#f06595; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#15171b; --surface:#1d2025; --text:#e8eaed; --muted:#a7adb6; --accent:#748ffc; --accent-fg:#0b1437; } }
+  :root[data-theme="light"] { --bg:#f8f9fb; --surface:#fff; --text:#1d1f23; --muted:#5f6570; --accent:#3b5bdb; --accent-fg:#fff; color-scheme: light; }
+  :root[data-theme="dark"] { --bg:#15171b; --surface:#1d2025; --text:#e8eaed; --muted:#a7adb6; --accent:#748ffc; --accent-fg:#0b1437; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1.5rem; background: var(--bg); color: var(--text);
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 360px; text-align: center; display: grid; justify-items: center; gap: .5rem; }
+  .big { font-size: 4rem; font-weight: 800; letter-spacing: -.02em; line-height: 1;
+         background: linear-gradient(135deg, var(--accent), var(--pink)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .art { position: relative; width: 170px; height: 130px; display: grid; place-items: center; }
+  .art::before { content: ""; position: absolute; inset: 12px 0; border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+                 background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 25%, transparent), color-mix(in srgb, var(--pink) 20%, transparent)); }
+  .art svg { position: relative; width: 84px; height: 84px; color: var(--accent); }
+  h1 { margin: .4rem 0 0; font-size: 1.35rem; }
+  p { margin: 0 0 .8rem; color: var(--muted); line-height: 1.5; }
+  a.btn { display: inline-flex; align-items: center; gap: .45rem; height: 2.8rem; padding: 0 1.2rem; border-radius: 10px;
+          background: var(--accent); color: var(--accent-fg); font-weight: 600; text-decoration: none; }
+  a.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  a.btn svg { width: 1.15em; height: 1.15em; }
+</style>
+<script>
+  // The app's folder, and the stage folder if the address was inside one.
+  const parts = location.pathname.split('/').filter(Boolean);
+  const app = parts[0] || '';
+  const STAGES = { dev: 'Dev', alpha: 'Alpha', staging: 'Staging' };
+  const stage = STAGES[parts[1]] ? parts[1] : '';
+  // Same theme as the app, if one was chosen there (Settings → theme).
+  try { const t = JSON.parse(localStorage.getItem(`prefs:${app || 'app'}`) || '{}').theme;
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}
+</script>
+</head>
+<body>
+<main>
+  <div class="big" aria-hidden="true">404</div>
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,32a96,96,0,1,0,96,96A96,96,0,0,0,128,32Zm16,112L80,176l32-64,64-32Z" opacity="0.2"/><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM172.42,72.84l-64,32a8.05,8.05,0,0,0-3.58,3.58l-32,64A8,8,0,0,0,80,184a8.1,8.1,0,0,0,3.58-.84l64-32a8.05,8.05,0,0,0,3.58-3.58l32-64a8,8,0,0,0-10.74-10.74ZM138,138,97.89,158.11,118,118l40.15-20.07Z"/></svg></div>
+  <h1>Lost your way?</h1>
+  <p>This page doesn't exist, but your app is just a tap away.</p>
+  <a class="btn" id="back" href="/"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"/></svg><span id="back-label">Back to {{APP_NAME}}</span></a>
+</main>
+<script>
+  document.getElementById('back').href = `/${app ? app + '/' : ''}${stage ? stage + '/' : ''}`;
+  document.getElementById('back-label').textContent = `Back to {{APP_NAME}}${stage ? ' ' + STAGES[stage] : ''}`;
+</script>
+</body>
+</html>
