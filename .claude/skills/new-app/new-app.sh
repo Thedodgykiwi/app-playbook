@@ -81,7 +81,10 @@ skip = {".png", ".jpg", ".ico", ".gif", ".webp"}
 for p in pathlib.Path(".").rglob("*"):
     if not p.is_file() or ".git" in p.parts or p.suffix in skip:
         continue
-    s = p.read_text(encoding="utf-8")
+    try:
+        s = p.read_text(encoding="utf-8")
+    except UnicodeDecodeError:   # binary file the repo already had (zip, font…): leave it alone
+        continue
     t = (s.replace("{{APP_NAME}}", v["NAME"]).replace("{{SHORT_NAME}}", v["SHORT"]).replace("{{DESCRIPTION}}", v["DESC"])
           .replace("{{OWNER_LC}}", v["OWNER_LC"]).replace("{{REPO}}", v["REPO"]))
     if p.name == "CLAUDE.md":
