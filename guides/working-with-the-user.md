@@ -29,6 +29,10 @@ If yes: a clickable mock-up as a **Claude artifact** (not in the repo), 2–3
 options side by side with sample data and a short "Good / Watch out" note
 each, matching the app's look. Iterate on the same artifact until they pick.
 No artifacts available → standalone HTML in the scratchpad + screenshots.
+**Before sharing a mock-up, open it in a headless browser** (Playwright),
+check for page errors and look at a screenshot. Don't name top-level script
+variables after browser globals (`top`, `name`, `parent`, `status`…): the
+script stops and every box renders empty. (Found in test-app, Nov 2026.)
 Never put concept code in the repo.
 
 ## Guardrails
