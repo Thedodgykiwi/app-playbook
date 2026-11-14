@@ -29,6 +29,12 @@ If yes: a clickable mock-up as a **Claude artifact** (not in the repo), 2–3
 options side by side with sample data and a short "Good / Watch out" note
 each, matching the app's look. Iterate on the same artifact until they pick.
 No artifacts available → standalone HTML in the scratchpad + screenshots.
+**Build mock-ups from the app itself, not from memory:** inline the app's real
+`style.css` and icon set, and copy its real markup (run the app locally,
+grab the rendered HTML of the screen with Playwright). Only the new bits get
+extra CSS. A hand-styled look-alike drifts (wrong chips, checkboxes,
+panels) and the user notices. (Found in test-app, Nov 2026.)
+
 **Before sharing a mock-up, open it in a headless browser** (Playwright),
 check for page errors and look at a screenshot. Don't name top-level script
 variables after browser globals (`top`, `name`, `parent`, `status`…): the
