@@ -51,6 +51,10 @@ page from then on.
    (`https://github.com/<owner>/<repo>/settings/...`), in this order:
    1. **Pages** (`/settings/pages`): Build and deployment → Source:
       **GitHub Actions**.
+      If the repo is private on a free plan, make it **public first**
+      (`/settings` → Danger Zone → Change visibility), then set the source:
+      a private free repo has no Pages, and the deploy fails with "Get Pages
+      site failed … Not Found" (Edit 1 Job Board, 2026-11-14).
    2. **Environments** (`/settings/environments`) → `github-pages` →
       Deployment branches and tags → choose **No restriction** (one tap,
       saves itself; fine when only the owner can push). GitHub starts it on
