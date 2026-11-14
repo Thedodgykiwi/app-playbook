@@ -41,7 +41,10 @@ self.addEventListener('message', (event) => {
   if (msg !== 'save-for-offline' && msg.type !== 'save-for-offline') return;
   // Also save the files the page actually loaded (e.g. vendor/ and app/ modules,
   // which are imported by name rather than linked from the HTML).
-  const extra = (msg.urls || []).filter((u) => u.startsWith(SCOPE) && !OTHER_STAGES.test(u.slice(SCOPE.length - 1)));
+  // ...and the Firebase library (from gstatic), so sign-in also works offline
+  // straight after the first visit, not only from the second one.
+  const firebaseLib = (u) => u.startsWith('https://www.gstatic.com/firebasejs/');
+  const extra = (msg.urls || []).filter((u) => firebaseLib(u) || (u.startsWith(SCOPE) && !OTHER_STAGES.test(u.slice(SCOPE.length - 1))));
   event.waitUntil(saveForOffline().catch(() => false).then(async (ok) => {
     const cache = await caches.open(CACHE);
     await Promise.all(extra.map(async (u) => { if (!(await cache.match(u))) await cache.add(u).catch(() => {}); }));

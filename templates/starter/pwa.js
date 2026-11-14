@@ -31,6 +31,14 @@
         const urls = performance.getEntriesByType('resource').map((r) => r.name.split('#')[0]);
         if (!offline) reg.active?.postMessage({ type: 'save-for-offline', urls });
         else $('offline-ready').hidden = false;   // offline and still running: it's saved
+        // The Firebase library loads a moment later (account.js imports it after
+        // the page has loaded), so ask again once sign-in is ready: otherwise it
+        // is only saved for offline use from the second visit.
+        window.AppAccount?.ready.then((ok) => {
+          if (!ok || offline) return;
+          const later = performance.getEntriesByType('resource').map((r) => r.name.split('#')[0]);
+          reg.active?.postMessage({ type: 'save-for-offline', urls: later });
+        });
       } catch (err) { console.warn('Offline mode unavailable:', err); }
     });
   }
