@@ -119,6 +119,13 @@ nobody mistakes them for the real app.
   Any highlight or fade on the row (e.g. a "just edited" flash) should fade to
   the row's own colour, not `transparent`, or the coloured action layer flashes
   through. (Found in test-app, Nov 2026: a gold flash after every edit.)
+- **Smooth fold/collapse of a section:** wrap the content in a
+  `display: grid; grid-template-rows: 1fr` box (child `min-height: 0;
+  overflow: hidden`) and animate to `0fr`. Unlike `max-height`, it never
+  cuts off a long list. Give the child a little padding (and matching
+  negative margin) so card shadows aren't clipped, mark the folded content
+  `inert` so the keyboard skips it, and skip the animation under Reduce
+  Motion. (test-app, Nov 2026: tap a panel heading to fold it.)
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.
@@ -163,10 +170,3 @@ nobody mistakes them for the real app.
 
 - Plain, friendly, short. Say what the user can do or see.
 - Explain anything technical in brackets the first time.
-- **Smooth fold/collapse of a section:** wrap the content in a
-  `display: grid; grid-template-rows: 1fr` box (child `min-height: 0;
-  overflow: hidden`) and animate to `0fr`. Unlike `max-height`, it never
-  cuts off a long list. Give the child a little padding (and matching
-  negative margin) so card shadows aren't clipped, mark the folded content
-  `inert` so the keyboard skips it, and skip the animation under Reduce
-  Motion. (test-app, Nov 2026: tap a panel heading to fold it.)
