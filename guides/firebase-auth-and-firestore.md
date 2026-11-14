@@ -5,7 +5,7 @@ How to add "Sign in with Google" and save each user's data in the cloud
 GitHub Pages. Worked example: `Thedodgykiwi/test-app` (to-do list that
 saves to the device when signed out and to the user's account when signed in).
 
-Last verified: November 2026, firebase-tools latest, Firebase JS SDK 13.1.0.
+Last verified: 14 November 2026, firebase-tools latest, Firebase JS SDK 13.1.0.
 
 ---
 
@@ -287,6 +287,34 @@ All GitHub Pages stages live on one web address (`<username>.github.io`), so:
   `users/{uid}/stages/{stage}/...`, with stage names whitelisted in the
   rules. Otherwise testing on Dev changes real Production data.
 
+## A shared team board (not one copy per user)
+
+When several people work on the same data (Edit 1 Job Board):
+
+- **Access list in Firestore, not in the repo:** a document
+  `access/members` with `emails: [...]` (lower case), created by Claude
+  (`firestore_add_document`) and edited by the owner in the Firebase console.
+  Rules: `request.auth.token.email_verified == true && request.auth.token.email.lower() in get(/databases/$(database)/documents/access/members).data.emails`.
+  Members may `get` it (the app reads it once to tell "not on the list" apart
+  from other errors); nobody may write it from the app. Emails never reach a public repo.
+- **Data per stage, shared by members:** `stages/{stage}/boards/{id}`
+  (shared), plus `stages/{stage}/tasks/{uid}` for anything personal.
+- **No lost updates:** store a `revision` number and save in a
+  `runTransaction` that only writes if the revision is unchanged (else show
+  "someone else changed this"). Rules enforce
+  `revision == (resource == null ? 1 : resource.data.revision + 1)`, plus a
+  `mutationId` so a retried save that already landed counts as success.
+- **Checking for others' changes without paying for reads:** an
+  `onSnapshot` listener on the open document keeps the latest revision in
+  memory; don't poll `getDoc` every few seconds (each poll is a billed read).
+- Storing a big, frequently reshaped object as one JSON **text** field
+  (`payload`, size-capped in the rules) keeps rules simple; the trade-off is
+  that rules can't validate its inside, so validate in the app.
+- Tests: give each test user `{ email, email_verified: true }` via
+  `authenticatedContext(uid, { email, email_verified })`, seed the list with
+  `withSecurityRulesDisabled`, and test a signed-in non-member and an
+  unverified email.
+
 ## Adding a field to stored data (e.g. a "done at" time, a "starred" flag)
 
 Strict rules (`keys().hasOnly([...])`) reject any new field, so signed-in
@@ -304,6 +332,18 @@ saves would fail if the app ships first. Order (done this way on test-app):
    under "Older") rather than inventing values.
 
 ## Gotchas (quick list)
+
+- **Emulator project ID vs. the app's config:** the app's `firebase-config.js`
+  has the real project ID, but the emulators run as `demo-...`. In Playwright,
+  serve a demo config instead: `ctx.route('**/firebase-config.js', r => r.fulfill({ contentType: 'text/javascript', body: "window.FIREBASE_CONFIG={apiKey:'demo-key',authDomain:'demo-x.firebaseapp.com',projectId:'demo-x',appId:'1:1:web:1'};" }))`.
+  Seed emulator data over REST with `Authorization: Bearer owner` (bypasses rules).
+- **Module vs. classic script order:** `account.js`/data modules are
+  `type="module"` (deferred), so a plain `<script>` after them runs **first**
+  and finds `window.MyCloud` undefined. Give the plain script `defer`:
+  deferred and module scripts run in document order.
+- Proving the rules tests bite: break the rule in a way that still compiles
+  (e.g. `return signedIn() || true && ...`); a half-edited function gives a
+  compile error, which proves nothing.
 
 - Network: `apis.google.com` is needed for the sign-in pop-up; `<username>.github.io` to check the live site.
 - `firebase_init` auth writes the support email into `firebase.json`; revert after deploying.

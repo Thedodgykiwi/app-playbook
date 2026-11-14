@@ -86,6 +86,32 @@ can check the live site after deploys.
   Phosphor (test-app: duotone; the starter: Regular), copied into `icons.js`, no CDN; licence file in
   `LICENSES/`). Don't mix in emoji for UI controls.
 
+## Rebuilding an existing app (e.g. an export from another host)
+
+Learned rebuilding Edit 1 Job Board from a ChatGPT Sites export (a .zip of a
+Next/vinext + Cloudflare D1 project whose real UI was plain HTML/JS).
+
+- [ ] **Find the real front end first.** Hosted-builder exports carry a lot
+      of framework scaffolding (unused UI kits, build scripts). Look for the
+      page the server actually returns and the script it loads; list every
+      `fetch('/api/...')`. Those calls are the only part tied to the old host.
+- [ ] **Recommend porting as-is** when the UI is already plain JS: keep the
+      screens, replace only the storage calls with a small module that
+      returns the **same shapes** the old API did (so the UI code barely
+      changes). A rewrite in Preact is a separate, bigger job; offer it, don't assume it.
+- [ ] **The setup script needs only README/LICENSE in the repo.** If the user
+      uploaded the export zip, `git rm` it on `main` (push), run the setup, then
+      put it back under `reference/` on `dev` as the record of the original.
+- [ ] **An app with its own complete look doesn't take the starter's style
+      kit**: the colour variables (`--bg`, `--line`, `--text`, `--muted`) and
+      element styles clash. Keep the starter's stage banner (make it part of
+      the page flow, not `position: fixed`, if the app has its own sticky
+      header), `account.js`, `stage.js`, icons and deploy; drop `style.css`,
+      menu, Preact example and style guide, and say so in the app's CLAUDE.md.
+- [ ] Old server-side checks (validation, "who owns this", conflict
+      handling) become Firestore rules + client transactions; port each
+      deliberately and test it (see `firebase-auth-and-firestore.md`).
+
 ## 6. First deploy
 
 Push to `dev`, confirm the Actions run succeeded, open the Dev URL. Then
