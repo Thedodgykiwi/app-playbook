@@ -138,6 +138,13 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Newspaper-style columns of cards (`columns: 3`)**: give each card
+  `display: table; width: 100%; break-inside: avoid; -webkit-column-break-inside: avoid`.
+  With plain `display: block`, Safari still splits a card across two columns
+  (a stray border line appears at the top of the next column); with
+  `inline-block` it stays whole but the columns stop balancing (two cards
+  both land in the first column). Edit 1 Job Board, Nov 2026.
+
 - **A menu that closes on "click outside" also closes when your own code
   clicks a hidden button** (e.g. a menu item that works by calling
   `someButton.click()`): that click bubbles to `document` from outside the
