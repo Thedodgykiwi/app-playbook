@@ -138,6 +138,15 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Check alignment by measuring, not by eye.** In Playwright, compare the
+  vertical centres (`getBoundingClientRect()`: `top + height / 2`) of the
+  things that should line up (title text, arrow button, icon buttons) at
+  desktop and phone width; aim for the same number. Screenshots taken
+  mid-animation (e.g. an arrow rotating) look misaligned when they aren't.
+  A heading with a small label above the title needs `align-items: flex-end`
+  (plus a small nudge) for side buttons to line up with the title, not the
+  label. (Edit 1 Job Board, issue #17.)
+
 - **Newspaper-style columns of cards (`columns: 3`)**: give each card
   `display: table; width: 100%; break-inside: avoid; -webkit-column-break-inside: avoid`.
   With plain `display: block`, Safari still splits a card across two columns
