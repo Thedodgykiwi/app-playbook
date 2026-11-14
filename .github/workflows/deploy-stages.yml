@@ -49,7 +49,9 @@ jobs:
           repository: Thedodgykiwi/app-playbook
           ref: main
           path: _tools
-          sparse-checkout: .github/scripts
+          sparse-checkout: |
+            .github/scripts
+            .github/templates
       - name: Assemble site from all stage branches
         env:
           REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
@@ -126,8 +128,9 @@ jobs:
       - name: Add the site-wide 404 page (one per app, links back to the right stage)
         env:
           APP: ${{ inputs.app_name }}
+        # Never blocks the deploy: if it fails the site still publishes, with a warning.
         run: |
-          python3 - <<'PY'
+          python3 - <<'PY' || echo "::warning::404 page not added this time (the site itself is unaffected)."
           import html, os
           t = open("_tools/.github/templates/404.html", encoding="utf-8").read()
           open("_site/404.html", "w", encoding="utf-8").write(t.replace("{{APP_NAME}}", html.escape(os.environ["APP"])))
