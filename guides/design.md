@@ -138,6 +138,12 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **A menu that closes on "click outside" also closes when your own code
+  clicks a hidden button** (e.g. a menu item that works by calling
+  `someButton.click()`): that click bubbles to `document` from outside the
+  menu. Only close on real clicks: `if (e.isTrusted && !e.target.closest('.menu')) close()`.
+  (Edit 1 Job Board, Nov 2026: the theme choice shut the profile menu.)
+
 - **Hover sticks on phones:** after a tap, iPhone Safari keeps a button's
   `:hover` look until you tap elsewhere (e.g. a grey box stayed behind
   "Medium" on test-app's priority flag). For buttons tapped repeatedly in
