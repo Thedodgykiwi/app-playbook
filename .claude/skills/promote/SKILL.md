@@ -203,6 +203,12 @@ says which changes to undo on `dev` by hand.
   the previous version. Re-run just the failed job (GitHub tools:
   `actions_run_trigger`, `rerun_failed_jobs`) and check it succeeds. Seen
   once on test-app's Production, Nov 2026; the re-run worked.
+- **Deploy failed: 'Branch "alpha" is not allowed to deploy to github-pages
+  due to environment protection rules'** — the one-time setting was missed:
+  ask the user to set `/settings/environments` → github-pages → Deployment
+  branches and tags → **No restriction**, then re-run the failed job
+  (`actions_run_trigger`, `rerun_failed_jobs`). The branch is already
+  promoted; only the deploy waits. Seen on Edit 1 Job Board, Nov 2026.
 - **Deploy failed** — report the run URL the script prints. The code is
   already on the target branch; fix forward on `dev` and promote again.
 - **Push rejected** — someone else updated the target. Re-run the script; it
