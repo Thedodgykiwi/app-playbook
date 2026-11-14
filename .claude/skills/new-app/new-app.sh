@@ -98,7 +98,7 @@ for p in pathlib.Path(".").rglob("*"):
     if t != s:
         p.write_text(t, encoding="utf-8")
 PY
-grep -rl '{{' --include='*.html' --include='*.js' --include='*.md' --include='*.webmanifest' . 2>/dev/null | grep -v '^./.git/' && die "Some placeholders weren't filled in (see above)."
+grep -rlE '\{\{[A-Z_]+\}\}' --include='*.html' --include='*.js' --include='*.md' --include='*.webmanifest' . 2>/dev/null | grep -v '^./.git/' && die "Some placeholders weren't filled in (see above)."
 
 git add -A
 git commit -q -m "Set up $name from the app starter
