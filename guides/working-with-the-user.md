@@ -39,6 +39,13 @@ panels) and the user notices. (Found in test-app, Nov 2026.)
 check for page errors and look at a screenshot. Don't name top-level script
 variables after browser globals (`top`, `name`, `parent`, `status`…): the
 script stops and every box renders empty. (Found in test-app, Nov 2026.)
+Three more from Edit 1 Job Board (Nov 2026): the style kit already uses
+short class names such as `.who`, `.avatar`, `.row`, `.state`, so give the
+mock-up's own classes distinct names (`.who-row`) or they inherit the
+account menu's styling; take dark-mode screenshots after a short wait (the
+kit's `.btn` animates its background, so an instant screenshot shows white
+buttons); and publish the artifact from the session's scratchpad directory
+(files elsewhere, e.g. /tmp, are refused).
 Never put concept code in the repo.
 
 ## Guardrails
