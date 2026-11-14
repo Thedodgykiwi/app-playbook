@@ -107,6 +107,13 @@ clearly urgent, e.g. people can't sign in). GitHub's default labels
 Leave out sections you don't know rather than guessing. Don't investigate
 or propose code in the issue unless asked: it's a record, not a plan.
 
+**Screenshots in an issue.** The GitHub tools can't upload an image to an
+issue. Save it (as a JPEG, to keep the repo small) under
+`docs/issue-images/<short-name>.jpg` on `dev`, push, and put it in the
+issue body as
+`![what it shows](https://raw.githubusercontent.com/<owner>/<repo>/dev/docs/issue-images/<short-name>.jpg)`.
+Only in a public repo, and check the screenshot shows no private details first.
+
 ## Working on an issue
 
 1. Read it (`issue_read`), work on `dev` as usual.
