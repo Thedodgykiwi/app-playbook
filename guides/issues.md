@@ -41,6 +41,12 @@ That gives each change a record, a pill in the release notes, and an
 automatic close on the Production release. Small follow-ups during the same
 piece of work ("move it 2px") go on the same issue.
 
+**A new feature or behaviour is a new issue, even mid-session.** Follow-ups
+are fixes and tweaks to what that issue asked for (a bug in it, a colour, a
+layout fix). Something the issue didn't ask for ("add a Due tomorrow panel"
+while building due dates) gets its own issue and the choice card first.
+(Found in test-app, Nov 2026: the user had to remind Claude.)
+
 Not for: the playbook itself, or a test-bench app like Playbook Trial
 (starter work is recorded in the playbook's commits).
 
