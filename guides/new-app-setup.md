@@ -108,6 +108,12 @@ Next/vinext + Cloudflare D1 project whose real UI was plain HTML/JS).
       the page flow, not `position: fixed`, if the app has its own sticky
       header), `account.js`, `stage.js`, icons and deploy; drop `style.css`,
       menu, Preact example and style guide, and say so in the app's CLAUDE.md.
+- [ ] **Copy the starter's `<head>` essentials into the ported page**: it
+      keeps its own `<head>`, so it misses them. At least the
+      `format-detection` meta (else iPhone underlines emails as links: Edit 1
+      Job Board's profile menu, issue #5), the manifest and icon links, and
+      `apple-mobile-web-app-*`. Diff the starter's `index.html` `<head>`
+      against the port.
 - [ ] Old server-side checks (validation, "who owns this", conflict
       handling) become Firestore rules + client transactions; port each
       deliberately and test it (see `firebase-auth-and-firestore.md`).
