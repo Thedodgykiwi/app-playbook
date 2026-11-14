@@ -109,11 +109,11 @@ nobody mistakes them for the real app.
   start dragging after ~10px of mostly-sideways movement; act past a
   threshold (~70px); swallow the click that follows so it isn't also a tap.
   Swipes are hidden, so always offer the same action somewhere visible too
+  (test-app: a switch in the edit sheet) and show a one-time tip.
 - **Rows with a layer underneath (swipe actions) must never go see-through.**
   Any highlight or fade on the row (e.g. a "just edited" flash) should fade to
   the row's own colour, not `transparent`, or the coloured action layer flashes
   through. (Found in test-app, Nov 2026: a gold flash after every edit.)
-  (test-app: a switch in the edit sheet) and show a one-time tip.
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.
