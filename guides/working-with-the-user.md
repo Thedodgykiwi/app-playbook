@@ -46,6 +46,15 @@ account menu's styling; take dark-mode screenshots after a short wait (the
 kit's `.btn` animates its background, so an instant screenshot shows white
 buttons); and publish the artifact from the session's scratchpad directory
 (files elsewhere, e.g. /tmp, are refused).
+**Restyling an existing screen: mock up the real page, not a redraw.**
+Run the app locally (emulators + seeded sample data covering every state),
+save the rendered page with Playwright (`documentElement.cloneNode`, drop
+scripts, dialogs and Firebase's hidden `<iframe>`), inline its CSS, and put
+the new look in **one extra stylesheet** with a "New look / Current look"
+toggle. Every control and state then comes from the real app, and that
+stylesheet is most of the build. A hand-drawn redraw of Edit 1 Job Board
+silently dropped buttons, a drop-down and the job-state colours, and changed
+the button order; the user caught it (Nov 2026).
 Never put concept code in the repo.
 
 ## Guardrails
