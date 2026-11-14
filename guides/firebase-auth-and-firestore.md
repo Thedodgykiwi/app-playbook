@@ -307,6 +307,14 @@ When several people work on the same data (Edit 1 Job Board):
 - **Checking for others' changes without paying for reads:** an
   `onSnapshot` listener on the open document keeps the latest revision in
   memory; don't poll `getDoc` every few seconds (each poll is a billed read).
+- **Undo on shared data:** keep a snapshot of the data from just before the
+  action, show an Undo bar (8 s with a countdown line worked well), and on
+  Undo save the snapshot as a normal new revision. Count every time the data
+  is replaced from the cloud; if the count changed since the action, refuse
+  ("Someone else changed the board just now, so this can't be undone")
+  rather than overwrite their work. If a save is still in flight, wait for it
+  first. Works alongside an "ask before every action" setting: offer Undo
+  after confirming too. (Edit 1 Job Board, issue #12.)
 - Storing a big, frequently reshaped object as one JSON **text** field
   (`payload`, size-capped in the rules) keeps rules simple; the trade-off is
   that rules can't validate its inside, so validate in the app.
