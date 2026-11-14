@@ -198,6 +198,11 @@ says which changes to undo on `dev` by hand.
 - **Merge conflict** — the script aborts the merge and changes nothing.
   Report the conflicting files. A conflict means someone changed the target
   branch directly; fix it on `dev` and promote again, don't edit the target.
+- **Deploy failed with "No artifacts named github-pages were found"** (the
+  last step, `deploy-pages`) — a GitHub glitch, not the app: the live site keeps
+  the previous version. Re-run just the failed job (GitHub tools:
+  `actions_run_trigger`, `rerun_failed_jobs`) and check it succeeds. Seen
+  once on test-app's Production, Nov 2026; the re-run worked.
 - **Deploy failed** — report the run URL the script prints. The code is
   already on the target branch; fix forward on `dev` and promote again.
 - **Push rejected** — someone else updated the target. Re-run the script; it
