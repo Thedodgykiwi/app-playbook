@@ -103,6 +103,13 @@ nobody mistakes them for the real app.
   While one shows, the install tip and "new version" bar step aside. Apps
   with a fixed bottom bar set `--toast-bottom`. Use an action for anything
   undoable ("moved to Done · Undo") instead of asking "are you sure?".
+- **Swipe actions on list rows** (test-app: swipe right to star): put the
+  row's content in an inner element that slides over a coloured layer
+  ("★ Star"); `touch-action: pan-y` so vertical scrolling still works; only
+  start dragging after ~10px of mostly-sideways movement; act past a
+  threshold (~70px); swallow the click that follows so it isn't also a tap.
+  Swipes are hidden, so always offer the same action somewhere visible too
+  (test-app: a switch in the edit sheet) and show a one-time tip.
 - **Panels** (Settings, What's new): `<dialog>` with `showModal()` (focus,
   Escape and backdrop for free); bottom sheet on phones, centred box on
   wider screens.

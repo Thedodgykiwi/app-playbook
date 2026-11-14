@@ -287,7 +287,7 @@ All GitHub Pages stages live on one web address (`<username>.github.io`), so:
   `users/{uid}/stages/{stage}/...`, with stage names whitelisted in the
   rules. Otherwise testing on Dev changes real Production data.
 
-## Adding a field to stored data (e.g. a "done at" time)
+## Adding a field to stored data (e.g. a "done at" time, a "starred" flag)
 
 Strict rules (`keys().hasOnly([...])`) reject any new field, so signed-in
 saves would fail if the app ships first. Order (done this way on test-app):
