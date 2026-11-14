@@ -163,3 +163,10 @@ nobody mistakes them for the real app.
 
 - Plain, friendly, short. Say what the user can do or see.
 - Explain anything technical in brackets the first time.
+- **Smooth fold/collapse of a section:** wrap the content in a
+  `display: grid; grid-template-rows: 1fr` box (child `min-height: 0;
+  overflow: hidden`) and animate to `0fr`. Unlike `max-height`, it never
+  cuts off a long list. Give the child a little padding (and matching
+  negative margin) so card shadows aren't clipped, mark the folded content
+  `inert` so the keyboard skips it, and skip the animation under Reduce
+  Motion. (test-app, Nov 2026: tap a panel heading to fold it.)
