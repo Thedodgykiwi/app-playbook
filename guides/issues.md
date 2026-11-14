@@ -107,6 +107,12 @@ clearly urgent, e.g. people can't sign in). GitHub's default labels
 Leave out sections you don't know rather than guessing. Don't investigate
 or propose code in the issue unless asked: it's a record, not a plan.
 
+**A bug caused by another issue's change → make it a sub-issue** of that
+issue, so the link shows on both (GitHub tools: `sub_issue_write`, method
+`add`, parent = the issue **number**, `sub_issue_id` = the child's **id**,
+the long number returned when it was created, not `#7`). Also say so in the
+bug's Notes ("Caused by the change for #6").
+
 **Screenshots in an issue.** The GitHub tools can't upload an image to an
 issue. Save it (as a JPEG, to keep the repo small) under
 `docs/issue-images/<short-name>.jpg` on `dev`, push, and put it in the
