@@ -110,6 +110,11 @@ nobody mistakes them for the real app.
   threshold (~70px); swallow the click that follows so it isn't also a tap.
   Swipes are hidden, so always offer the same action somewhere visible too
   (test-app: a switch in the edit sheet) and show a one-time tip.
+- **Sheets that can grow taller than a phone: pin the action buttons.** Make
+  the Cancel/Save row `position: sticky; bottom: 0` with the sheet's
+  background and a top border, and size the sheet with `dvh` (not `vh`) so
+  iPhone toolbars don't hide its bottom. Otherwise Save scrolls off-screen
+  and people miss it. (Found in test-app, Nov 2026, after adding a calendar.)
 - **Rows with a layer underneath (swipe actions) must never go see-through.**
   Any highlight or fade on the row (e.g. a "just edited" flash) should fade to
   the row's own colour, not `transparent`, or the coloured action layer flashes
