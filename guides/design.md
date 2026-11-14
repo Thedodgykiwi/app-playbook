@@ -181,5 +181,12 @@ nobody mistakes them for the real app.
 
 ## Wording
 
+- **Confirm dialogs:** ask about the action ("Biff this job?", not "Has this
+  job been biffed?"), name the thing, say what happens and whether it can be
+  undone, and label the buttons with the action ("Keep job" / "Biff job", never
+  "No / Yes"). Put focus on the safe button, not the ✕. If the app has an Undo
+  bar, don't ask at all by default; offer the question only as a setting.
+  (Edit 1 Job Board, issue #13.)
+
 - Plain, friendly, short. Say what the user can do or see.
 - Explain anything technical in brackets the first time.
