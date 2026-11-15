@@ -373,7 +373,13 @@ saves would fail if the app ships first. Order (done this way on test-app):
 - Authorised domains aren't in the MCP tools; use the REST call above. Host only, no path.
 - Firestore location is permanent; ask first. Turn on delete protection.
 - `measurementId` = Analytics; leave it out unless the user wants tracking.
-- `firebase_deploy` is asynchronous; poll `firebase_deploy_status`.
+- `firebase_deploy` is asynchronous; poll `firebase_deploy_status`. **It can
+  report "success" without releasing anything** (seen twice for
+  `firestore:rules`, Nov 2026): always confirm with
+  `firebase_get_security_rules`, and if the new rules aren't there, deploy
+  with the CLI (`npx -y firebase-tools@latest deploy --only firestore:rules
+  --project <id>`; the MCP sign-in works for it). A "permission denied" right
+  after a rules change usually means the old rules are still live.
 - **Edits must target the current record, not a captured copy.** Lists get
   re-read (sign-in check after load, live updates from other devices), which
   replaces the objects in memory. An editor that keeps a reference to "the
