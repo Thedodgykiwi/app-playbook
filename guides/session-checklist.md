@@ -99,8 +99,8 @@ were in the playbook, just not read.
       (usage limit, closed, computer reclaimed while idle) and only pushed
       work survives. Push each working step: to `dev` if safe, otherwise to
       `wip/<issue-number>-<short-name>` (never deployed).
-- [ ] **"Park this" / "let's leave it there" / "move on"** (or the session
-      can't finish): push what's done (as above), add a comment on the issue
+- [ ] **The user wants to set this work aside**, however they put it (or the
+      session can't finish): push what's done (as above), add a comment on the issue
       starting **"Where I got to:"** (done, not done, next step, branch) and
       confirm in one line: "Parked #<n> on <branch>; next step: …".
 - [ ] Tell the user what changed and what was / wasn't tested, in plain English,
