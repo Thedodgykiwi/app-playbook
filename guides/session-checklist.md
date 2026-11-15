@@ -52,7 +52,9 @@ Why: a quick-fix session skipped the rules and invented its own issue format
       issue. Bug caused by another issue's change → its **sub-issue**.
 - [ ] Changes or conflicts with the brief → say so; with the user's OK,
       update the brief and its change log (`new-app-kickoff.md` §5).
-- [ ] Visible change with more than one sensible design → mock-up first
+- [ ] Visible change with more than one sensible design → mock-up first, as
+      a **clickable Claude artifact built from the real app** with realistic
+      data, options side by side; not static pictures
       (`working-with-the-user.md`).
 
 ## 3. Build
