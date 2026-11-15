@@ -22,8 +22,15 @@ Notes for Claude when running in a claude.ai/code cloud container.
 
 ## Repos
 
-- Claude can't create GitHub repos. The user creates them, then
-  `add_repo` + clone + `register_repo_root`.
+- **Best start: pick the repos when starting the session.** The Claude app
+  lets the user add GitHub repos to a new session before the first message:
+  add the **app and the playbook**. Both are cloned before Claude starts, and
+  the app's `CLAUDE.md` loads straight away, so the session checklist runs
+  from the first message with nothing to attach mid-session.
+- Missing one? Claude attaches it itself: `add_repo` + clone +
+  `register_repo_root` (the user may be asked to approve).
+- Claude can't create GitHub repos. The user creates them, then attaches
+  them as above.
 - No `gh` CLI (except `gh api ... search/...`); use the GitHub MCP tools,
   e.g. `actions_list` to check deploy runs.
 - Commit only to the branches the session/CLAUDE.md allow.
