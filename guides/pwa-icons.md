@@ -19,9 +19,7 @@ different per stage so testers can tell Dev from Production.
            --glyph <name> --weight bold --out <app>/icons/app
 
   The starter ships a neutral `squares-four` (bold). Bold reads best at
-  home-screen size; Regular lines are too thin there. (test-app's tick came
-  from an older copy of this tool; test-app now uses this one with
-  `--glyph check-circle --weight duotone`.)
+  home-screen size; Regular lines are too thin there (duotone also works).
 - Files in the repo point at `icons/app/local/` and say "<App> Local"; the
   deploy swaps in each stage's folder, name and theme colour. Don't
   hand-edit per stage.

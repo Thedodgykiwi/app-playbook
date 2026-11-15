@@ -82,9 +82,8 @@ can check the live site after deploys.
 
 - Sign-in and cloud data → `firebase-auth-and-firestore.md`
 - Home-screen icons (PWA) → `pwa-icons.md`
-- Icons in the UI: pick **one** icon set and stick to it (test-app uses
-  Phosphor (test-app: duotone; the starter: Regular), copied into `icons.js`, no CDN; licence file in
-  `LICENSES/`). Don't mix in emoji for UI controls.
+- Icons in the UI: **Phosphor Regular** only (the starter's `icons.js`, no
+  CDN; licence in `LICENSES/`). Don't mix in emoji for UI controls (`design.md`).
 
 ## Rebuilding an existing app (e.g. an export from another host)
 

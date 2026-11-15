@@ -14,11 +14,12 @@ would help other apps. Worked example: `Thedodgykiwi/test-app`.
 - **Check visually.** Screenshot desktop and ~375 px phone width; don't
   trust element state alone (see the `[hidden]` gotcha in `github-pages.md`).
 
-## Base look (test-app)
+## Base look
 
-- System font (`system-ui, sans-serif`), light grey page (`#f4f5f7`), dark
-  text (`#1d1f23`), one white card (`width: min(420px, 92vw)`, radius 12px,
-  soft shadow). Buttons radius 8px, primary blue `#3b5bdb`.
+- The starter's style kit (`style.css`, live examples in `styleguide.html`)
+  is the base look for every app: system font, calm neutral colours, one
+  accent colour for main actions, Light / Dark / Auto. Use its variables and
+  building blocks rather than new styles.
 - Simple, calm, lots of space; one main action colour.
 
 ## Stage colours (used for banner, home-screen icon, theme colour)
@@ -36,8 +37,8 @@ nobody mistakes them for the real app.
 
 ## Icons
 
-- **One icon set, one style.** test-app uses Phosphor Icons, duotone only,
-  copied into the app (`icons.js`, no CDN), with the licence in `LICENSES/`.
+- **One icon set, one style:** Phosphor Icons, Regular (outline), copied into
+  the app (`icons.js`, no CDN), with the licence in `LICENSES/`.
   Icons sized to the text (`1.2em`) and coloured with `currentColor`.
 - No emoji for UI controls (fine as signposts in release notes).
 
@@ -82,7 +83,6 @@ nobody mistakes them for the real app.
   value with dark text. Theme rules pick `--a-l` or `--a-d`, so accents and
   themes combine without extra rules. Green had to be darkened (#237032) to
   pass contrast.
-- **Icons: Phosphor Regular** (outline) for new apps and test-app (since its new look; its home-screen icons stay duotone).
 - **Groups inside a collapsible section:** don't nest another row of toggle
   headings (feels like a menu inside a menu). Use centred divider labels
   ("─── Today · 2 ⌃ ───") that hide/show their own items (test-app's Done).
