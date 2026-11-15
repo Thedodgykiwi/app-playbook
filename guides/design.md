@@ -138,6 +138,13 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Changing a title or label's length: measure it against its neighbours at
+  320, 360, 375 and 390px, signed out as well as signed in.** A longer app
+  name ran under the "Sign in" button on narrow phones; nothing scrolled
+  sideways, so the automatic check passed. Compare the text's right edge with
+  the next control's left edge (Playwright `getBoundingClientRect`).
+  (test-app, Nov 2026: renamed to a longer name.)
+
 - **Refactoring CSS with proof of "no visible change"** (merging stylesheets,
   removing `!important`): take Playwright screenshots of ~15 views (desktop and
   phone, light and dark, open dialogs/menus, messages, bars) with the clock and
