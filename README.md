@@ -30,6 +30,7 @@ something that changed), add it to the right guide in the same session; see
 |---|---|
 | [session-checklist.md](guides/session-checklist.md) | **Every session, first** (including quick fixes) |
 | [new-app-setup.md](guides/new-app-setup.md) | Starting a new app from nothing |
+| [new-app-kickoff.md](guides/new-app-kickoff.md) | Right after setup: the app's plan and desired outcome (`docs/brief.md`), kept current every session |
 | [stages-and-releases.md](guides/stages-and-releases.md) | Promoting dev → alpha → staging → main, release notes, hotfixes |
 | [github-pages.md](guides/github-pages.md) | Deploying; caching; several stages on one site |
 | [firebase-auth-and-firestore.md](guides/firebase-auth-and-firestore.md) | Adding Google sign-in and saving user data in the cloud |
@@ -55,8 +56,11 @@ Create an empty repo on GitHub, attach it and this playbook to a session, and
 say **"set up this repo as a new app"**: the `new-app` skill copies
 `templates/starter/` (a page with a small live example to delete, React-style components (Preact), the style kit and stage banner, plus Google
 sign-in that stays dormant until switched on), creates the four stage
-branches and walks you through the three GitHub settings. See
-[new-app-setup.md](guides/new-app-setup.md).
+branches and walks you through the three GitHub settings, then runs the **kickoff**: a
+short interview that writes the app's brief (goal, users, v1 must-haves,
+desired outcome) and plans v1 as issues. See
+[new-app-setup.md](guides/new-app-setup.md) and
+[new-app-kickoff.md](guides/new-app-kickoff.md).
 
 ## Shared by every app (one copy only)
 

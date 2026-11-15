@@ -12,6 +12,13 @@ https://github.com/Thedodgykiwi/app-playbook/blob/main/guides/session-checklist.
 `dev`, run the checks, end with the Dev link). If the playbook isn't attached,
 attach it (`add_repo`) and read that file before starting.
 
+## Brief (the plan)
+
+`docs/brief.md` holds the app's goal, who it's for, the v1 must-haves, the
+"not now" list and the build plan. **Read it every session**, check requests
+against it, and keep it current as ideas change (playbook
+`new-app-kickoff.md`). Facts about *how* the app works stay in this file.
+
 ## Playbook
 
 General processes, design patterns and gotchas live in

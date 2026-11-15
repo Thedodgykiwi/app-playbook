@@ -81,9 +81,17 @@ page from then on.
    example). Otherwise tell them it can be switched on later ("add sign-in
    to this app").
 
-7. **Wrap up:** suggest the cloud environment / setup script if this account
+7. **Kickoff: plan and desired outcome.** Before any feature code, follow
+   `guides/new-app-kickoff.md`: ask about the problem, people, main moment,
+   desired outcome, v1 must-haves and "not now"; fill in `docs/brief.md`
+   (the starter ships the template); mock up the main screen; get the user's
+   OK; log the must-haves as sub-issues of a "v1" parent issue. If the user
+   wants to stop after setup, say the kickoff is the next session's first job
+   (the session checklist will catch a missing brief anyway).
+
+8. **Wrap up:** suggest the cloud environment / setup script if this account
    doesn't have them yet (`guides/cloud-sessions.md`), and say what to do
-   next: describe the first feature ("log it", concept mock-up, build on Dev).
+   next: build the first must-have from the brief's plan on Dev.
    The starter's page holds a small live example (`app/example.js`, Preact
    components) to delete when building the first real screen; plus the coloured stage
    banner (Dev/Alpha/Staging/LOCAL, none on Production) with a subtle

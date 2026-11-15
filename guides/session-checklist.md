@@ -15,6 +15,10 @@ were in the playbook, just not read.
       `CLAUDE.md` in full (it has app-specific rules and notes).
 - [ ] `git checkout dev && git pull`. All work happens on `dev`
       (never `alpha`, `staging` or `main` directly).
+- [ ] Read the app's **brief** (`docs/brief.md`): the goal, who it's for,
+      v1 must-haves, "not now" list and plan. No brief yet? New app → run
+      the kickoff (`new-app-kickoff.md`) before feature work; existing app →
+      offer to draft one.
 - [ ] Look at what's new: `git log --oneline -10` and the open issues. Another
       session may have changed things since the app's notes were written.
 
@@ -50,6 +54,9 @@ were in the playbook, just not read.
       and show it in the issue (`issues.md`).
 - [ ] A bug caused by another issue's change → make it a **sub-issue** of that
       issue (`issues.md`).
+- [ ] Check it against the brief: if it changes the goal, a must-have or the
+      "not now" list, or conflicts with it, say so; with the user's OK update
+      the brief (and its change log) in the same commit (`new-app-kickoff.md` §5).
 - [ ] Bigger or visible change with more than one sensible design → mock-up
       first, built from the real app (`working-with-the-user.md`).
 
@@ -71,6 +78,7 @@ were in the playbook, just not read.
 - [ ] Confirm the deploy succeeded and the live Dev page loads without errors.
 - [ ] Tell the user what changed and what was / wasn't tested, in plain English,
       ending with: `You can see it in action here: <Dev link>`.
+- [ ] A must-have released to Production → tick it in the brief.
 - [ ] Learned something useful beyond this app? Add it to the right playbook
       guide, commit to the playbook's `main`, and say so in one line.
 - [ ] Promote to Alpha / Staging / Production only when the user asks

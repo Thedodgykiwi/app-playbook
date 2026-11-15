@@ -129,3 +129,11 @@ Next/vinext + Cloudflare D1 project whose real UI was plain HTML/JS).
 
 Push to `dev`, confirm the Actions run succeeded, open the Dev URL. Then
 promote through the stages once so every URL exists.
+
+## 7. Kickoff: plan and desired outcome
+
+Before any feature code, follow [new-app-kickoff.md](new-app-kickoff.md):
+write the app's brief (`docs/brief.md`: goal, users, v1 must-haves, "not
+now", desired outcome), mock up the main screen, agree the plan with the user
+and log v1 as issues. Every later session reads the brief first. Rebuilding
+an existing app? Draft the brief from what the app already does.
