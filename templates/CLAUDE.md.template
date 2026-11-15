@@ -91,6 +91,14 @@ artifact with 2–3 options, not in the repo. Details: playbook `working-with-th
 - **Every deploy ends with a link:** the full, clickable address of each stage
   that changed (pushed to Dev or promoted), plus one line on what to look at.
 
+## Checks (run before every push)
+
+- Automatic check (playbook `testing-and-testers.md`):
+  `node /home/user/app-playbook/tools/check-app.js --pages "/,/styleguide.html"`
+  Add each main screen to `--pages` here as it's built.
+- App-specific tests: <none yet; e.g. `npm run test:rules`>
+- Testers: <who tries Alpha / Staging, or "just us: Alpha and Staging are our own phone check">
+
 ## Quality checklist (before pushing)
 
 - No errors in the browser console.

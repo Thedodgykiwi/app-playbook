@@ -54,6 +54,13 @@ The script works on whichever repo the current directory belongs to.
      and ask if the user wants a short extra intro (e.g. "🎉 First public
      release!"); if so, save it to a file and pass `--intro-file`.
 
+   **Testing notes** (`guides/testing-and-testers.md`): for `alpha` or
+   `staging`, add a short "what to try" list (2–5 plain steps from this
+   batch's issues and the brief's success checks) the user can forward to
+   testers. For `main`, give a one-line sign-off summary first (what was tried
+   on Staging, by whom as a role, anything known and accepted, or "not
+   tested on Staging yet"), and mention open bugs reported against Staging.
+
    Then **ask the user to confirm**, unless they already clearly asked for
    this specific promotion in their current message. Promotion to `main`
    (Production) always needs an explicit "yes" for that promotion, even if
@@ -154,7 +161,7 @@ The script works on whichever repo the current directory belongs to.
    that stage's site (built from these promotions by the playbook's shared
    deploy workflow on every deploy), and remind them a hard refresh
    (Ctrl+Shift+R) may be needed for up to 10 minutes, because GitHub Pages
-   caches pages.
+   caches pages. For Alpha/Staging, repeat the "what to try" list.
 
    **The message's very last line is always the link**, in exactly this form
    (full, clickable address; one line per stage promoted in this run):

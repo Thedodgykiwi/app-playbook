@@ -73,6 +73,16 @@ cp -R "$TPL/starter/." .
 mkdir -p .github/workflows
 cp "$TPL/.github/workflows/deploy.yml" .github/workflows/deploy.yml
 cp "$TPL/CLAUDE.md.template" CLAUDE.md
+mkdir -p docs
+cat > docs/starter-version.md <<EOF
+# Starter version
+
+Set up from the app-playbook starter at playbook commit
+\`$(git -C "$PLAYBOOK" rev-parse --short HEAD)\` ($(git -C "$PLAYBOOK" log -1 --format=%cs)).
+Used by the playbook's \`guides/upgrading-an-app.md\` to see what's new since.
+
+Upgrades brought in since: none yet.
+EOF
 
 NAME="$name" SHORT="$short" DESC="$desc" OWNER_LC="$owner_lc" REPO="$repo" python3 - <<'PY'
 import os, pathlib, re

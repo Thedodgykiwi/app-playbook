@@ -136,6 +136,15 @@ Only in a public repo, and check the screenshot shows no private details first.
    v2026.11.13.4"). It also recognises `Fixes`/`Closes`, as a safety net.
 4. If you need to say something on the issue (a question, "done on Dev,
    waiting for release"), add a comment.
+5. **Stopping before it's done** (the session is ending, the user moves on):
+   push the work (to `dev` if it's safe, otherwise a `wip/<issue>-<name>`
+   branch, which never deploys) and comment:
+
+       **Where I got to:** <what's done> · **Not done:** <what's left> ·
+       **Next step:** <the very next thing> · **Branch:** <dev or wip/…>
+
+   The next session's catch-up looks for these, finishes from there, merges a
+   `wip/` branch into `dev` when ready and deletes it.
 5. If it won't be done, close it with a comment saying why
    (`state_reason: not_planned`).
 

@@ -16,6 +16,9 @@
   dev → alpha → staging → main.
 - **Production needs the user's explicit "yes"** for each release, even if
   they approved earlier ones.
+- **Unfinished work** goes on a `wip/<issue>-<name>` branch (never
+  deployed, since only the four stage branches deploy), with a "Where I got to"
+  comment on the issue (`issues.md`); merged into `dev` once it works.
 - **Hotfixes** (urgent production fixes) only when the user asks: branch
   from `main`, fix, release, then merge the fix back into `dev`.
 

@@ -27,11 +27,17 @@ were in the playbook, just not read.
         what's waiting between Dev → Alpha → Staging → Production;
       - **last deploy:** the latest `deploy.yml` run (GitHub tools,
         `actions_list`) succeeded; if it failed, say so before anything else;
-      - progress against the brief: which v1 must-haves are ticked / still open.
+      - progress against the brief: which v1 must-haves are ticked / still open;
+      - **unfinished work** left by an earlier session: `wip/*` branches
+        (`git branch -r --list 'origin/wip/*'`) and "Where I got to" comments
+        on open issues; pick up from there rather than starting again;
+      - **app behind the starter?** if `docs/starter-version.md` is missing or
+        old, mention it once and offer an upgrade (`upgrading-an-app.md`);
+        don't do it uninvited.
 - [ ] **Tell the user where things are** in 3–5 plain lines before starting:
       stages (e.g. "2 changes on Dev not yet in Alpha; Production up to
-      date"), last deploy OK or not, open issues worth knowing, next
-      must-have from the brief. Skip only for a pure question.
+      date"), last deploy OK or not, open issues worth knowing, unfinished
+      work, next must-have from the brief. Skip only for a pure question.
 
 ## 2. Every request (bug, change, idea), however small
 
@@ -75,8 +81,9 @@ were in the playbook, just not read.
 
 - [ ] Small, focused change on `dev`; one issue per commit, message ends with
       `Issue #<n>` (not "Fixes").
-- [ ] Run the app's checks (its `CLAUDE.md` lists them, e.g. `npm run test:rules`,
-      `npm run test:board`) and look at the change: screenshot at phone
+- [ ] Run the **automatic check** (`node /home/user/app-playbook/tools/check-app.js
+      --pages "<the app's screens>"`) and the app's own checks (its `CLAUDE.md`
+      "Checks" lists both; `testing-and-testers.md`), then look at the change: screenshot at phone
       (~375px) and desktop, light and dark; measure alignment rather than
       eyeballing it (`design.md`).
 - [ ] No errors in the browser console; nothing scrolls sideways on a phone.
@@ -86,11 +93,21 @@ were in the playbook, just not read.
 
 - [ ] Push to `dev`; if rejected, someone else pushed: fetch, read their
       commits, combine, re-check (`stages-and-releases.md`). Never force-push.
-- [ ] Confirm the deploy succeeded and the live Dev page loads without errors.
+- [ ] Confirm the deploy succeeded and the live Dev page passes the check
+      (`check-app.js --url <Dev link>`).
+- [ ] **Can't finish this session?** Never leave work only in the session
+      (it's deleted when the session ends). Working and safe → commit to `dev`
+      as usual. Half-done or would break Dev → push it to a branch
+      `wip/<issue-number>-<short-name>` (no deploy happens from it). Either way,
+      add a comment on the issue starting **"Where I got to:"** (done, not
+      done, next step, branch name) and tell the user in one line.
 - [ ] Tell the user what changed and what was / wasn't tested, in plain English,
       ending with: `You can see it in action here: <Dev link>`.
 - [ ] A must-have released to Production → tick it in the brief.
-- [ ] Learned something useful beyond this app? Add it to the right playbook
-      guide, commit to the playbook's `main`, and say so in one line.
+- [ ] Learned something useful beyond this app? Apply the **"any app?"
+      test** (playbook `CLAUDE.md`): general lesson → the right playbook
+      guide, written generically, committed to the playbook's `main`, said in
+      one line; fact about this app only → the app's own `CLAUDE.md`.
 - [ ] Promote to Alpha / Staging / Production only when the user asks
-      (`promote` skill); Production always needs their explicit "yes".
+      (`promote` skill), with a "what to try" list for testers; Production
+      always needs their explicit "yes" (`testing-and-testers.md`).

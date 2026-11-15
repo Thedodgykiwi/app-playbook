@@ -17,8 +17,18 @@ deploying), so it never contradicts the detailed guides.
   session (or start a new guide and list it in the README), commit to
   `main`, and tell the user in a line what was added. Fix steps that turned
   out wrong rather than adding contradictions.
-- App-specific facts (project IDs, URLs, one app's features) belong in that
-  app's own CLAUDE.md, not here.
+- **The "any app?" test before adding anything:** would this help an app
+  that has nothing to do with the one you're working on? Yes → add it here,
+  written generically (the app can be named only as the *example* in
+  brackets, e.g. "(Edit 1 Job Board, Nov 2026)"). No (project IDs, URLs,
+  one app's features, screens, data or client) → that app's own CLAUDE.md.
+  Half and half → split it: the general rule here, the app's detail there.
+- **Tidy, don't just add.** Before adding, look for an existing line that
+  says the same thing and improve it instead. When asked to "tidy the
+  playbook" (or a guide is getting long or contradicts another): move
+  app-specific bits out to that app's CLAUDE.md (ask first if unsure),
+  merge duplicates, delete steps that no longer apply, re-check "Last
+  verified" dates, keep the session checklist short, and list what changed.
 - Prefer **checklists and exact commands** over prose. Say *why* for
   anything surprising.
 - Put a "Last verified" date on guides with version-specific steps and

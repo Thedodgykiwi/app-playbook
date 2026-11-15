@@ -39,6 +39,8 @@ something that changed), add it to the right guide in the same session; see
 | [working-with-the-user.md](guides/working-with-the-user.md) | How to communicate, concept mock-ups, guardrails, pre-push checklist |
 | [preact.md](guides/preact.md) | Building app screens with Preact + htm + Signals (React-style, no build step) |
 | [design.md](guides/design.md) | Look and feel, stage colours, icons, UI patterns that worked |
+| [testing-and-testers.md](guides/testing-and-testers.md) | The automatic check before every push; what testers try at Alpha / Staging; sign-off before Production |
+| [upgrading-an-app.md](guides/upgrading-an-app.md) | Bringing an older app up to the current starter and CLAUDE.md template |
 | [issues.md](guides/issues.md) | Logging bugs, feature requests and tweaks as GitHub issues ("log it" = record only) |
 
 ## Templates
@@ -75,6 +77,8 @@ can't drift apart. Improve them here and every app gets the change.
 | `.github/scripts/release_notes.py` | Builds each stage's "What's new" from promotions (used by the shared deploy) |
 | `.github/labels.json` + `.github/scripts/sync_labels.py` | The shared issue labels (bug, feature, tweak, performance, priorities), kept in place in every app by the shared deploy |
 | `.github/scripts/pipeline_page.py` | Builds each app's **Pipeline page** (`…/<repo>/pipeline/`): what's live, what's waiting at each stage, open issues. Rebuilt by the shared deploy |
+| `tools/check-app.js` | The **automatic check** every app runs before pushing: each page at phone/desktop, light/dark; fails on errors, broken files, the error screen, sideways scrolling |
+| `tools/make-app-icons.js` | Makes an app's per-stage home-screen icons |
 | `.github/scripts/make_releases.py` | Creates a dated GitHub release (`v2026.11.13`, `v2026.11.13.2` …) for every Production release (used by the shared deploy) |
 
 Changing a shared file changes **every** app's next deploy or promotion:
