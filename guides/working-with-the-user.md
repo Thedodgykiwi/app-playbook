@@ -25,6 +25,13 @@ Offered through the **choice card** every request starts with (`issues.md`):
 noticeable change** to how the app looks or works with more than one
 reasonable design or a vague request; not for small tweaks or fixes.
 
+**Artifact or pictures?** New features, flows and anything the user needs to
+tap through → a clickable artifact. Small visual tweaks (an icon, a label, a
+divider, a colour) → static pictures of the options are fine when faster,
+still rendered from the real app (Playwright on the local app with sample
+data), in light and dark, never hand-drawn. Check every option actually
+rendered before sending.
+
 If yes: a clickable mock-up as a **Claude artifact** (not in the repo), 2–3
 options side by side with sample data and a short "Good / Watch out" note
 each, matching the app's look. Iterate on the same artifact until they pick.
