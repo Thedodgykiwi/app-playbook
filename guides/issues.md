@@ -181,10 +181,26 @@ the repo and the comment shows them from there (tested Nov 2026):
 - Private repos: the same links need the viewer to be signed in to GitHub
   with access (not yet tested).
 
-## Asking what's open
+## Asking what's open, and what to do first
 
 "What's open?" → `list_issues` (state open), then summarise grouped by type,
 high priority first, with each issue's number and title.
+
+"What should we look at first?" / "order them by importance" → a **review**:
+1. Read every open issue (body, comments, screenshot), not just titles.
+2. Spot **duplicates** and reports about the same thing (say which to merge),
+   tester reports with too little to act on (suggest a question to ask),
+   and test reports (offer to close as "not planned").
+3. Rank in this order, saying why in one line each:
+   - broken for people now (can't sign in, data lost or wrong, crash) →
+     suggest `priority: high`;
+   - bugs on the next stage to be released, or reported by several testers;
+   - the brief's next must-have (`docs/brief.md`);
+   - quick wins (small tweaks, done in minutes);
+   - bigger features and nice-to-haves → suggest `priority: low`.
+4. Show a short table (rank, #, title, type, why, rough size: small /
+   medium / large), then recommend the top 1–3 to do next.
+5. Change labels, close or merge issues **only after the user agrees**.
 
 ## Privacy
 
