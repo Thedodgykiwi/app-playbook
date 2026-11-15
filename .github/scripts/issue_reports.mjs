@@ -142,8 +142,10 @@ async function productionNote(n) {
   }
   for (const rel of notesCache || []) {
     for (const line of String(rel.notes || '').split('\n')) {
-      if (new RegExp(`\\(#${n}\\)\\s*$`).test(line.trim())) {
-        return line.trim().replace(/^[-*]\s*/, '').replace(/\s*\(#\d+\)\s*$/, '')
+      // The line's issue pills sit at its end, e.g. "... (#28) (#34)".
+      const pills = (line.trim().match(/(?:\s*\(#\d+\))+\s*$/) || [''])[0];
+      if (new RegExp(`\\(#${n}\\)`).test(pills)) {
+        return line.trim().replace(/^[-*]\s*/, '').replace(/(?:\s*\(#\d+\))+\s*$/, '')
           .replace(/\*\*(.+?)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
       }
     }
