@@ -202,6 +202,23 @@ high priority first, with each issue's number and title.
    medium / large), then recommend the top 1–3 to do next.
 5. Change labels, close or merge issues **only after the user agrees**.
 
+**Rewriting a vague tester report.** Tester reports arrive in the tester's
+own words ("the thing at the top is broken"). When one is vague but you can
+tell what it means (from the screenshot, the stage, the app's code or other
+reports), rewrite it into the standard layout so anyone can act on it:
+- **Title:** what's wrong, where ("Job Queue cards overlap on iPad").
+- **What's happening / Where / Expected:** in plain words. Anything you
+  worked out rather than read gets "(my reading; check with the tester)".
+- **Keep the original:** move the tester's exact words and screenshot under
+  **Notes → "Tester's report (original)"**, never delete them.
+- Set the type label if it was missing; "Reported by: tester" stays.
+- Add a one-line comment: "Reworded for clarity; original kept under Notes."
+During a review, propose the rewrites in the table and apply them when the
+user agrees; when starting work on a report, rewrite it first without
+asking. If you can't tell what it means, don't guess: suggest a question
+for the tester instead. (The tester's receipt email already went out with
+their own words; rewording doesn't email anyone.)
+
 ## Privacy
 
 Issues in a **public** repo are public: anyone can read them, and anyone
