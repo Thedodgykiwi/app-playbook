@@ -4,7 +4,7 @@ Last verified: 2026-11-15 (test-app, issues #28 and #34).
 
 An optional extra for any app with Google sign-in. Testers tap **Report issue**
 on the stage banner (Dev, Alpha, Staging; never Production), fill in a title,
-a description and an optional type, and:
+a description, an optional screenshot and an optional type, and:
 
 1. the report is saved to the app's Firestore (testers only);
 2. every few minutes a GitHub Action turns it into a **GitHub issue** in the
@@ -16,6 +16,21 @@ a description and an optional type, and:
 Free plan throughout (no Firebase billing, no new accounts besides a Gmail
 app password). Issues and emails arrive **5–15 minutes** after a report
 (GitHub's schedule), so say that when offering it.
+
+## Screenshots
+
+- Optional, one per report. The phone shrinks it to a JPEG of at most
+  ~500 KB (`shrink()` in `report.js`) and it's saved with the report
+  (rules allow a `screenshot` data URL up to 750 KB; a report document can
+  hold 1 MB). Free: no Firebase Storage (that needs the paid plan).
+- The job saves it to the repo's **`issue-images`** branch
+  (`screenshots/<report id>.jpg`; the branch is made from the default
+  branch the first time and is never deployed), shows it in the issue's
+  "What's happening" section, then deletes it from the database. Needs
+  `contents: write` in the app's small workflow file.
+- **Screenshots are public** (public repos): the form says so in a yellow
+  note under the picker. The user chose public-with-a-warning (Nov 2026);
+  for an app with private client data, say so when offering it.
 
 ## Your part: 4 things per app (the only steps that differ each time)
 

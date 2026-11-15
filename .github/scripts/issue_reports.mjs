@@ -47,9 +47,34 @@ if (!mailer) console.log('Gmail secrets not set: issues will be created but no e
 // Stop "@someone" in a report from notifying GitHub users (the repo is public).
 const noMentions = (s) => s.replace(/@(?=[A-Za-z0-9])/g, '@​');
 
-async function createIssue(r) {
+// Screenshots (optional): saved to the repo's "issue-images" branch (never
+// deployed; made from the default branch the first time) and shown in the
+// issue. Returns the image's address, or null if there's none or it failed.
+const IMAGE_BRANCH = 'issue-images';
+async function gh(path, opts = {}) {
+  const res = await fetch(`${api}/repos/${repo}${path}`, { ...opts, headers: { ...ghHeaders, 'content-type': 'application/json', ...(opts.headers || {}) } });
+  return res;
+}
+async function saveScreenshot(id, dataUrl) {
+  const m = /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl || '');
+  if (!m) return null;
+  let ref = await gh(`/git/ref/heads/${IMAGE_BRANCH}`);
+  if (ref.status === 404) {
+    const info = await (await gh('')).json();
+    const base = await (await gh(`/git/ref/heads/${info.default_branch}`)).json();
+    const made = await gh('/git/refs', { method: 'POST', body: JSON.stringify({ ref: `refs/heads/${IMAGE_BRANCH}`, sha: base.object.sha }) });
+    if (!made.ok) throw new Error(`couldn't create the ${IMAGE_BRANCH} branch: ${made.status}`);
+  } else if (!ref.ok) throw new Error(`GitHub said ${ref.status}`);
+  const path = `screenshots/${id}.jpg`;
+  const put = await gh(`/contents/${path}`, { method: 'PUT', body: JSON.stringify({ message: 'Screenshot for a tester report', content: m[1], branch: IMAGE_BRANCH }) });
+  if (!put.ok && put.status !== 422) throw new Error(`couldn't save the screenshot: ${put.status}`);   // 422: already saved by an earlier try
+  return `https://raw.githubusercontent.com/${repo}/${IMAGE_BRANCH}/${path}`;
+}
+
+async function createIssue(r, imageUrl) {
   const body = [
     "**What's happening / what's wanted**", noMentions(r.body), '',
+    ...(imageUrl ? [`<img src="${imageUrl}" alt="Screenshot from the tester" width="420">`, ''] : []),
     '**Where**', `${STAGES[r.stage] || r.stage} (sent from the stage banner's "Report issue")`, '',
     '**Expected**', '_To fill in when triaged._', '',
     '**Reported by**', 'tester', '',
@@ -74,7 +99,7 @@ async function sendReceipt(r, issue) {
 WHAT YOU SENT
 Title: ${r.title}
 Type: ${type}
-Stage: ${stageName}
+Stage: ${stageName}${r.screenshot ? '\nScreenshot: attached' : ''}
 
 Description:
 ${r.body}
@@ -92,7 +117,8 @@ Sent from ${appName} (${stageName}) using "Report issue".`;
       intro: "We review every report. If it leads to a change in a future update, we'll let you know.",
       rows: [['Title', `<b>${h(r.title)}</b>`],
         ['Type', type === 'Not set' ? '<span style="color:#5f6570;">Not set</span>' : pill(type, '#e7ecff', '#3b5bdb')],
-        ['Stage', pill(stageName, STAGE_COLOURS[r.stage] || '#4263eb', '#ffffff')]],
+        ['Stage', pill(stageName, STAGE_COLOURS[r.stage] || '#4263eb', '#ffffff')],
+        ...(r.screenshot ? [['Screenshot', 'Attached']] : [])],
       rowsHeading: 'What you sent',
       box: ['Description', h(r.body)],
       footer: `You're getting this because you used "Report issue" in ${h(appName)} (${h(stageName)}).`,
@@ -212,8 +238,15 @@ for (const docSnap of snap.docs) {
   const r = docSnap.data();
   let issue;
   try {
-    issue = await createIssue(r);
-    await ref.update({ status: 'logged', issueNumber: issue.number, issueUrl: issue.html_url, loggedAt: FieldValue.serverTimestamp() });
+    let imageUrl = null;
+    if (r.screenshot) {
+      try { imageUrl = await saveScreenshot(ref.id, r.screenshot); }
+      catch (e) { console.warn(`Report ${ref.id}: screenshot not saved (the issue still gets created):`, e.message); }
+    }
+    issue = await createIssue(r, imageUrl);
+    // The screenshot now lives in the repo: drop the copy in the database.
+    await ref.update({ status: 'logged', issueNumber: issue.number, issueUrl: issue.html_url, loggedAt: FieldValue.serverTimestamp(),
+      ...(r.screenshot ? { screenshot: FieldValue.delete(), screenshotUrl: imageUrl } : {}) });
     console.log(`Report ${ref.id} → issue #${issue.number}`);
   } catch (e) {
     failed++;

@@ -13,8 +13,8 @@ on:
   workflow_dispatch:     # "Run workflow" button, to collect reports now
 
 permissions:
-  contents: read
   issues: write          # create the issues
+  contents: write        # save screenshots to the issue-images branch
 
 concurrency:
   group: issue-reports
