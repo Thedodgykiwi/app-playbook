@@ -78,3 +78,13 @@ EOT
 - It runs when a fresh container starts, not on a resume. Check with
   `/context` that `/root/.claude/CLAUDE.md` appears under Memory files.
 - It's visible to anyone who can use the environment: no secrets.
+
+## Personal instructions for every session
+
+The user's "all projects" instructions (e.g. "use my playbook repo…") are set
+in the **environment settings for new sessions** on claude.ai, not in any
+repo. Sessions see them as the user-level `CLAUDE.md`. Changes apply to
+sessions started afterwards. They currently tell every session to read and
+follow `guides/session-checklist.md` before any work, so the checklist applies
+even in a repo whose own CLAUDE.md doesn't mention it yet.
+
