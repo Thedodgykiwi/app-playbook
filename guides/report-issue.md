@@ -17,6 +17,24 @@ Free plan throughout (no Firebase billing, no new accounts besides a Gmail
 app password). Issues and emails arrive **5–15 minutes** after a report
 (GitHub's schedule), so say that when offering it.
 
+## Your part: 4 things per app (the only steps that differ each time)
+
+Everything else (button, rules, workflow) Claude sets up from the templates.
+These four need the app owner, once per app. Claude gives the exact links.
+
+| # | What | Where | Notes |
+|---|---|---|---|
+| 1 | **`FIREBASE_SERVICE_ACCOUNT`** secret | Firebase console → that app's project → Project settings → Service accounts → **Generate new private key**: `https://console.firebase.google.com/project/<project-id>/settings/serviceaccounts/adminsdk`. Paste the whole file as a new secret at `https://github.com/<owner>/<repo>/settings/secrets/actions`, then delete the file. | **Different for every app** (each app has its own Firebase project). |
+| 2 | **`GMAIL_USER`** secret | Same GitHub secrets page. | The sending Gmail address. Same value for every app. |
+| 3 | **`GMAIL_APP_PASSWORD`** secret | Make one at `https://myaccount.google.com/apppasswords` (signed in as that Gmail), add on the same page. | Same value for every app (or one per app). "Not available for your account" = turn on 2-Step Verification first. Never paste it into a chat. |
+| 4 | **Testers list** | Firestore → `access` → `testers`, field `emails` (array of lower-case addresses): `https://console.firebase.google.com/project/<project-id>/firestore/databases/-default-/data/~2Faccess~2Ftesters`. Claude can create it with your go-ahead. | **Separate from the app's own allow list** (e.g. `access/members`): someone can be a tester without using the app, or use the app without being a tester. Never in the repo. |
+
+Secrets belong to the **repo**, not to a stage: set once, they work for Dev,
+Alpha and Staging. Do 1–3 **before the first test report**: a report
+collected while the Gmail secrets are missing never gets its emails.
+Check: Actions → "Turn reports into issues" → Run workflow; the log must
+not say "secret not set".
+
 ## What's shared and what each app owns
 
 | Piece | Where |
@@ -60,15 +78,8 @@ Offer it with the choice card like any feature. Before building, confirm:
 4. **Workflow:** copy `templates/.github/workflows/issue-reports.yml`, set
    `app_name` and `app_url` (Production address). Push to `dev` (scheduled
    runs only use the default branch's copy).
-5. **Secrets** (the user adds these: GitHub repo → Settings → Secrets and
-   variables → Actions):
-   - `FIREBASE_SERVICE_ACCOUNT`: Firebase console → Project settings →
-     Service accounts → Generate new private key; paste the whole file.
-     Link: `https://console.firebase.google.com/project/<id>/settings/serviceaccounts/adminsdk`
-   - `GMAIL_USER`: the sending Gmail address.
-   - `GMAIL_APP_PASSWORD`: `https://myaccount.google.com/apppasswords`
-     ("not available for your account" = 2-Step Verification is off).
-   Never ask for these in chat.
+5. **Secrets and testers list:** the owner's part, "Your part" table above.
+   Give them the exact links for this app; never ask for the values in chat.
 6. **Test:** a tester sends a report on Dev; run the workflow (Actions → Turn
    reports into issues → Run workflow, or `actions_run_trigger`); check the
    issue, the report's `status: logged` in Firestore, and the email.
