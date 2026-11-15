@@ -151,3 +151,14 @@ themselves on the fix-forward release.
   directly. Fix on `dev` and promote again; don't edit the target.
 - Deploy failed after promoting: the code is already on the target; fix
   forward on `dev` and promote again.
+
+## Two sessions on the same app
+
+Another Claude session (or the user) may push to `dev` while you work. If a
+push is rejected, `git fetch` and read the incoming commits **before**
+combining: `git rebase origin/dev`, and where your change moved or merged a
+file they edited, carry their edit into the new place by hand. Then re-run
+the checks (for styling, compare screenshots against their version) before
+pushing. Never force-push `dev`. (Edit 1 Job Board, Nov 2026: a spacing fix
+landed in a stylesheet that was being merged away.)
+

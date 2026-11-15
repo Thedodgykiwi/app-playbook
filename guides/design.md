@@ -138,6 +138,15 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Refactoring CSS with proof of "no visible change"** (merging stylesheets,
+  removing `!important`): take Playwright screenshots of ~15 views (desktop and
+  phone, light and dark, open dialogs/menus, messages, bars) with the clock and
+  other ticking text hidden and animations off; take them twice to prove they
+  repeat. Then change one thing at a time, re-shoot, and keep the change only if
+  every view is byte-identical. Serve the CSS from memory with `page.route` so
+  each trial needs no file writes. Edit 1 Job Board (issue #24): 3 files → 1,
+  41 of 52 `!important` removed automatically, 11 proved necessary.
+
 - **Check alignment by measuring, not by eye.** In Playwright, compare the
   vertical centres (`getBoundingClientRect()`: `top + height / 2`) of the
   things that should line up (title text, arrow button, icon buttons) at
