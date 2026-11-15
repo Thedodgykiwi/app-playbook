@@ -44,6 +44,14 @@ nobody mistakes them for the real app.
 
 ## Patterns that worked
 
+- **Levels (priority, urgency, strength): show them by shape as well as
+  colour, with one symbol used everywhere.** Signal bars (3 filled = high,
+  2 = medium, 1 = low, unfilled bars faint) read at a glance and for
+  colour-blind users, where three same-shaped flags in different colours
+  didn't. Use the same symbol in headings, rows, pickers and buttons. If
+  other groups already use background colour (starred, due), keep level
+  groups neutral and colour only the heading. (test-app, Nov 2026.)
+
 - **Sign-in in the card's top-right corner** (chosen from a 3-option
   concept). Signed out: a small "Sign in" button with the Google logo.
   Signed in: a round avatar with the first initial plus a small **sync dot**
