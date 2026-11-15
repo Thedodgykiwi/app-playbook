@@ -1,0 +1,51 @@
+name: Turn reports into issues (shared)
+
+# The ONE copy of the "Report issue" job, shared by every app that uses it
+# (guides/report-issue.md). Apps call it on a schedule from a small
+# .github/workflows/issue-reports.yml (see templates/). Changing this file or
+# .github/scripts/issue_reports.mjs changes every app: test on one app first.
+#
+# Each run: new reports in the app's Firestore -> GitHub issues + receipt
+# emails; issues whose change reached Production -> "it's now live" emails.
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: 'App name used in the emails, e.g. "The Shortlist".'
+        required: true
+        type: string
+      app_url:
+        description: 'Production address, e.g. https://<owner>.github.io/<repo>/ (its releases.json and the email link).'
+        required: true
+        type: string
+    secrets:
+      FIREBASE_SERVICE_ACCOUNT: { required: false }
+      GMAIL_USER: { required: false }
+      GMAIL_APP_PASSWORD: { required: false }
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the shared script (app-playbook)
+        uses: actions/checkout@v4
+        with:
+          repository: Thedodgykiwi/app-playbook
+          ref: main
+          path: _tools
+          sparse-checkout: .github/scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Installed only for this job (no app uses them).
+      - run: npm install --prefix _tools/.github/scripts --no-save --no-package-lock firebase-admin@14 nodemailer@10
+      - run: node _tools/.github/scripts/issue_reports.mjs
+        # A failed run (e.g. an email couldn't send) shows red in Actions; issues are still created.
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GITHUB_TOKEN: ${{ github.token }}
+          APP_NAME: ${{ inputs.app_name }}
+          APP_URL: ${{ inputs.app_url }}

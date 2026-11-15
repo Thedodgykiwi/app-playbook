@@ -1,0 +1,29 @@
+name: Turn reports into issues
+
+# "Report issue" on the stage banner (playbook guides/report-issue.md).
+# Every few minutes: new reports -> GitHub issues + receipt emails; changes
+# that reached Production -> "it's now live" emails. The steps live in ONE
+# shared place, the app-playbook repo (.github/workflows/issue-reports.yml).
+# Scheduled runs use this file from the default branch (dev). GitHub runs
+# "every 5 minutes" late when busy: expect 5-15 minutes.
+# Needs repo secrets FIREBASE_SERVICE_ACCOUNT, GMAIL_USER, GMAIL_APP_PASSWORD.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:     # "Run workflow" button, to collect reports now
+
+permissions:
+  contents: read
+  issues: write          # create the issues
+
+concurrency:
+  group: issue-reports
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    uses: Thedodgykiwi/app-playbook/.github/workflows/issue-reports.yml@main
+    with:
+      app_name: My App
+      app_url: https://YOUR-USER.github.io/YOUR-REPO/   # Production address
+    secrets: inherit

@@ -32,6 +32,9 @@ page from then on.
      calendar", "a shopping cart"; default: the starter's neutral app tiles);
    - does it need **Google sign-in / cloud-saved data**? (Default: not now;
      the module ships dormant either way, see step 6.)
+   - with sign-in: should testers get a **"Report issue"** button on the
+     test stages (reports become GitHub issues, testers get emails)?
+     (Default: later; it ships switched off, see step 6.)
 
 3. **Run the setup** from the new repo's root (preview first):
 
@@ -80,6 +83,9 @@ page from then on.
    this app (test-app's `sync.js` and `firestore.rules` are the worked
    example). Otherwise tell them it can be switched on later ("add sign-in
    to this app").
+   **Report issue (only if they said yes, after sign-in works):** follow
+   `guides/report-issue.md` ("Switching it on"); otherwise mention it can
+   be added later ("add Report issue to this app").
 
 7. **Kickoff: plan and desired outcome.** Before any feature code, follow
    `guides/new-app-kickoff.md`: ask about the problem, people, main moment,

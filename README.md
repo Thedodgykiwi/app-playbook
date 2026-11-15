@@ -42,6 +42,7 @@ something that changed), add it to the right guide in the same session; see
 | [testing-and-testers.md](guides/testing-and-testers.md) | The automatic check before every push; what testers try at Alpha / Staging; sign-off before Production |
 | [upgrading-an-app.md](guides/upgrading-an-app.md) | Bringing an older app up to the current starter and CLAUDE.md template |
 | [issues.md](guides/issues.md) | Logging bugs, feature requests and tweaks as GitHub issues ("log it" = record only) |
+| [report-issue.md](guides/report-issue.md) | Optional "Report issue" button for testers: reports become GitHub issues, with receipt and "now live" emails |
 
 ## Templates
 
@@ -51,6 +52,7 @@ something that changed), add it to the right guide in the same session; see
 | `templates/.github/workflows/deploy.yml` | The small deploy file each app keeps: it just calls the shared deploy below |
 | `templates/starter/` | The starting point every new app gets: a small live example (Preact) to delete, the coloured stage banner with a Pipeline link, a ready-made look (style kit + style guide page, accent colour setting), a menu with theme (light/dark/auto), Settings and version / What's new, works offline and installs to the home screen, and dormant sign-in (copied once; it's the app's own code after that) |
 | `templates/firebase/` | Firebase config, rules, rules tests, `sync.js` sign-in + sync module |
+| `templates/.github/workflows/issue-reports.yml` | Small scheduled file for "Report issue": calls the shared job (`.github/workflows/issue-reports.yml` + `.github/scripts/issue_reports.mjs`) |
 
 ## Starting a new app
 
