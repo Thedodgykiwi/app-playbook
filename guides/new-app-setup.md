@@ -114,6 +114,13 @@ Next/vinext + Cloudflare D1 project whose real UI was plain HTML/JS).
       Job Board's profile menu, issue #5), the manifest and icon links, and
       `apple-mobile-web-app-*`. Diff the starter's `index.html` `<head>`
       against the port.
+- [ ] **New controls that drive the ported app: give them direct commands**,
+      not hidden copies of its old buttons. Expose a small object from the app
+      (`window.MyApp = { setTheme, togglePanel… }`) and have it announce state
+      changes with a custom event (`app:ui`) so the new controls stay in step,
+      including with its keyboard shortcuts and settings. Clicking hidden
+      buttons works at first but breaks silently later and leaves dead markup;
+      Edit 1 Job Board did that first and replaced it in issue #22.
 - [ ] Old server-side checks (validation, "who owns this", conflict
       handling) become Firestore rules + client transactions; port each
       deliberately and test it (see `firebase-auth-and-firestore.md`).
