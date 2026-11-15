@@ -95,6 +95,10 @@ were in the playbook, just not read.
       commits, combine, re-check (`stages-and-releases.md`). Never force-push.
 - [ ] Confirm the deploy succeeded and the live Dev page passes the check
       (`check-app.js --url <Dev link>`).
+- [ ] **Long change (more than one sitting)?** Save as you go: push each
+      working step to `wip/<issue-number>-<short-name>` and update the
+      issue's "Where I got to" comment, so a session that is cut off
+      suddenly loses nothing.
 - [ ] **Can't finish this session?** Never leave work only in the session
       (it's deleted when the session ends). Working and safe → commit to `dev`
       as usual. Half-done or would break Dev → push it to a branch
