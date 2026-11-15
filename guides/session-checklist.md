@@ -19,8 +19,19 @@ were in the playbook, just not read.
       v1 must-haves, "not now" list and plan. No brief yet? New app → run
       the kickoff (`new-app-kickoff.md`) before feature work; existing app →
       offer to draft one.
-- [ ] Look at what's new: `git log --oneline -10` and the open issues. Another
-      session may have changed things since the app's notes were written.
+- [ ] **Catch up on progress** (another session may have changed things since
+      the app's notes were written):
+      - what's new: `git log --oneline -10` on `dev`, and the open issues
+        (newest and `priority: high` first);
+      - **where the stages are:** `promote.sh status` (promote skill) shows
+        what's waiting between Dev → Alpha → Staging → Production;
+      - **last deploy:** the latest `deploy.yml` run (GitHub tools,
+        `actions_list`) succeeded; if it failed, say so before anything else;
+      - progress against the brief: which v1 must-haves are ticked / still open.
+- [ ] **Tell the user where things are** in 3–5 plain lines before starting:
+      stages (e.g. "2 changes on Dev not yet in Alpha; Production up to
+      date"), last deploy OK or not, open issues worth knowing, next
+      must-have from the brief. Skip only for a pure question.
 
 ## 2. Every request (bug, change, idea), however small
 
