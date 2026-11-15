@@ -3,6 +3,15 @@
 <One or two sentences: what the app does and who it's for.>
 Plain HTML/CSS/JS, no build step, hosted on GitHub Pages.
 
+## Before anything else
+
+Every session, including a quick fix, follows the playbook's
+**session checklist**:
+https://github.com/Thedodgykiwi/app-playbook/blob/main/guides/session-checklist.md
+(choice card first, issue in the standard layout before any code, work on
+`dev`, run the checks, end with the Dev link). If the playbook isn't attached,
+attach it (`add_repo`) and read that file before starting.
+
 ## Playbook
 
 General processes, design patterns and gotchas live in

@@ -3,6 +3,12 @@
 This repo is documentation and templates, not an app. Other projects point
 Claude here for how to do common things.
 
+## The session checklist
+
+`guides/session-checklist.md` is what every app session reads first. Keep it
+short, and update it whenever a rule changes elsewhere (issues, testing,
+deploying), so it never contradicts the detailed guides.
+
 ## Keeping it useful
 
 - **Add lessons as you learn them, from any project.** Whenever work on any

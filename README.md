@@ -9,6 +9,13 @@ database (Firebase).
 Everything here was learned building `Thedodgykiwi/test-app`, which is the
 worked example for all of it.
 
+## Start here (every session)
+
+**Follow [guides/session-checklist.md](guides/session-checklist.md) in every
+session on an app, including quick fixes.** It lists the steps that keep all
+apps to the same standard (choice card, issue layout, dev-only, checks,
+deploy link, playbook updates).
+
 ## For Claude: how to use this
 
 When a project points you here, **read only the guides relevant to the
@@ -21,6 +28,7 @@ something that changed), add it to the right guide in the same session; see
 
 | Guide | Use it when |
 |---|---|
+| [session-checklist.md](guides/session-checklist.md) | **Every session, first** (including quick fixes) |
 | [new-app-setup.md](guides/new-app-setup.md) | Starting a new app from nothing |
 | [stages-and-releases.md](guides/stages-and-releases.md) | Promoting dev → alpha → staging → main, release notes, hotfixes |
 | [github-pages.md](guides/github-pages.md) | Deploying; caching; several stages on one site |
