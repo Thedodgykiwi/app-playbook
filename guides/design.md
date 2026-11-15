@@ -222,4 +222,9 @@ nobody mistakes them for the real app.
   (Edit 1 Job Board, issue #13.)
 
 - Plain, friendly, short. Say what the user can do or see.
+- **Feedback and report receipts never promise action:** "We review every
+  report. If it leads to a change in a future update, we'll let you know",
+  not "we'll fix it". A follow-up says "it's now live", not "fixed" (it may
+  be a tweak or a feature). Keep tool names (GitHub, issue trackers) out of
+  what testers and end users see. (test-app "Report issue", Nov 2026.)
 - Explain anything technical in brackets the first time.
