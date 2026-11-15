@@ -389,4 +389,18 @@ saves would fail if the app ships first. Order (done this way on test-app):
 - Emulator project IDs must start with `demo-` so nothing reaches the real project.
 - `[hidden]` can be overridden by CSS `display`; add `[hidden] { display: none !important; }`.
 - Never delete users' device or cloud data without asking; migrate formats instead.
-- Billing stays off (Spark). Anything that needs Blaze (Cloud Functions, etc.) needs the user's OK.
+- Billing stays off (Spark). Anything that needs Blaze (Cloud Functions,
+  **every Firebase Extension, e.g. Trigger Email**) needs the user's OK. A
+  free-plan way to run server-side work (talk to GitHub, send email) is a
+  scheduled **GitHub Action** with the Admin SDK and a service-account key in
+  a repo secret: the app writes a doc, the Action picks it up. Say up front
+  that it isn't instant: GitHub's shortest schedule is 5 minutes and runs
+  often start 5–15 minutes late; scheduled workflows only run from the
+  **default branch**. (test-app "Report issue", Nov 2026.)
+- **firebase-admin v14+ has no default `admin` namespace in ES modules**
+  (`admin.firestore is not a function`): import from `firebase-admin/app` and
+  `firebase-admin/firestore`.
+- **Write-only collections** (reports, feedback): rules allow `create` for
+  people on an allow-list doc (`request.auth.token.email.lower() in
+  get(.../access/x).data.emails`, plus `email_verified`), and no read,
+  update or delete; the server side reads them with admin access.
