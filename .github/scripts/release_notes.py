@@ -116,9 +116,10 @@ def rollbacks(repo, ref="HEAD"):
 
 
 def is_housekeeping(files):
-    """Commits that only touch issue screenshots/workflows (.github/) or
-    documents (*.md) don't change the app, so Dev doesn't list them."""
-    return bool(files) and all(f.startswith(".github/") or f.endswith(".md") for f in files)
+    """Commits that only touch workflows (.github/), docs and issue
+    screenshots (docs/, see guides/issues.md) or documents (*.md) don't change
+    the app, so Dev's "What's new" and the pipeline page don't list them."""
+    return bool(files) and all(f.startswith((".github/", "docs/")) or f.endswith(".md") for f in files)
 
 
 COMMIT_ISSUE = re.compile(r"\b(?:issues?|fix(?:es|ed)?|close[sd]?|resolve[sd]?)\s*:?\s*#(\d+)", re.I)
