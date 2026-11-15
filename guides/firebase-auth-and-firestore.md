@@ -263,6 +263,21 @@ reload; sign-out returns to the device list; phone width (375 px); no
 console errors. A 404 for files the deploy generates (e.g. `releases.json`)
 is expected locally.
 
+**Keep the check in the repo**, not just in the session: a
+`tests/<app>.e2e.mjs` that starts a tiny static server, seeds the emulator
+over REST (`Authorization: Bearer owner`), signs in through the fake pop-up
+and drives the main features, run with
+`firebase emulators:exec --only auth,firestore --project demo-x "node tests/<app>.e2e.mjs"`
+as `npm run test:<app>` (Edit 1 Job Board: `tests/board.e2e.mjs`, 13 checks).
+Two lessons from writing it:
+- **Prove it bites** like the rules tests: break one feature on purpose and
+  see a check fail. The first version passed with Undo broken, because the
+  Undo bar from the *previous* step was still on screen; checks must assert
+  the thing they expect (e.g. the bar names the action just taken).
+- In a hand-written Node server, read the file *before* `res.writeHead(200)`;
+  `res.writeHead(200).end(await readFile(f))` sends the header first and then
+  crashes on a missing file.
+
 **What can't be tested from a cloud session:** a real Google sign-in. The
 user does that on the Dev site; tell them so honestly.
 
