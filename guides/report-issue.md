@@ -44,6 +44,12 @@ Offer it with the choice card like any feature. Before building, confirm:
      `cloud` object (current user, sign in, save the report) from the app's
      own sign-in code (test-app does this from `sync.js`).
    - `window.REPORT_ISSUES = true;` in `firebase-config.js`.
+   - Apps with a sign-in / access **gate** that covers the page: give
+     `.report-box` a higher z-index than the gate, so a tester who is
+     locked out can still report (Edit 1 Job Board: gate 50, box 60).
+   - Apps not on the starter's style kit: map its CSS variables
+     (`--surface`, `--accent`, `--danger`) and button classes to the app's
+     own, and inline the three icons if the app has no `icon()`.
 2. **Rules:** copy the `issueReports` block (and the comment) from
    `templates/firebase/firestore.rules`, and its tests; run `npm run
    test:rules`; deploy, then **check the live rules** (the MCP deploy can
