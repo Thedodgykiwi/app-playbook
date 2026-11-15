@@ -95,10 +95,11 @@ were in the playbook, just not read.
       commits, combine, re-check (`stages-and-releases.md`). Never force-push.
 - [ ] Confirm the deploy succeeded and the live Dev page passes the check
       (`check-app.js --url <Dev link>`).
-- [ ] **Save as you go, every change.** Sessions can stop without warning
-      (usage limit, closed, computer reclaimed while idle) and only pushed
-      work survives. Push each working step: to `dev` if safe, otherwise to
-      `wip/<issue-number>-<short-name>` (never deployed).
+- [ ] **Save as you go on bigger changes.** Small fix (one step) → push
+      once to `dev` when done, nothing extra. Several steps → push each
+      working step to `wip/<issue-number>-<short-name>` (no deploy), then
+      merge into `dev` when done. Why: sessions can stop without warning
+      (usage limit, computer reclaimed while idle) and only pushed work survives.
 - [ ] **The user wants to set this work aside**, however they put it (or the
       session can't finish): push what's done (as above), add a comment on the issue
       starting **"Where I got to:"** (done, not done, next step, branch) and
