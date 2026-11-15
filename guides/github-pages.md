@@ -43,4 +43,8 @@ secrets out.
   *cancelled*, not failed). Harmless if a later run succeeded; only a ✗ on
   the **latest** commit needs looking at. Avoid starting a manual run while
   a deploy is still going.
+- **"No artifacts named github-pages were found"** in the deploy step (with
+  "Is githubstatus.com reporting issues…") is a GitHub hiccup, not your
+  code: re-run the **whole** run (`rerun_workflow_run`), not just the failed
+  job, so the site package is uploaded again. (test-app, Nov 2026.)
 - Local preview: `python3 -m http.server 8080` from the repo root.

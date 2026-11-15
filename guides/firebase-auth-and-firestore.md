@@ -400,6 +400,13 @@ saves would fail if the app ships first. Order (done this way on test-app):
 - The emulator's fake sign-in pop-up is sometimes slow to finish in cloud
   sessions: in Playwright, poll for the signed-in state for up to a minute
   instead of a single short wait, and retry once before suspecting the app.
+  If the pop-up's page can't load its scripts (it needs `unpkg.com`; blocked
+  in some cloud sessions, so the button does nothing), sign in from the test
+  instead, with an unsigned Google token only the Auth emulator accepts:
+  `await page.evaluate(async () => { const a = await import('https://www.gstatic.com/firebasejs/<version>/firebase-auth.js'); await a.signInWithCredential(a.getAuth(), a.GoogleAuthProvider.credential(JSON.stringify({ sub: 'u' + Date.now(), email: 'u' + Date.now() + '@example.com', email_verified: true }))); })`
+  (same SDK address as the app, so it's the app's own sign-in). Use a new
+  email each run: the emulator keeps users, and the same email is the same
+  account with last run's data. (test-app, Nov 2026.)
 - In a new session the Firebase sign-in may still be valid, but there's no
   active project: `firebase_deploy` fails with "requires an active project".
   Call `firebase_update_environment` with `project_dir` (the app repo) and
