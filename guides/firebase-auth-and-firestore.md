@@ -229,6 +229,15 @@ version; rename collections/fields for your app). Key decisions in it:
   localStorage; **never delete** the device copy.
 - **Friendly errors** for `auth/popup-blocked`, `auth/network-request-failed`,
   `auth/unauthorized-domain`; ignore `auth/popup-closed-by-user`.
+- **Don't hide the list until Firebase is ready.** For a returning signed-in
+  user, `onAuthStateChanged` only fires after the SDK has downloaded (~1 MB)
+  *and* Auth has checked the saved sign-in with Google over the network
+  (token refresh + account lookup, every load), and Firestore can't read its
+  own offline cache until then either. So an app that shows "Loading…" until
+  the first snapshot pauses on every open, however few items there are.
+  Keep a copy of the last list shown in localStorage, show it at once, and
+  swap in the live list when it arrives (block edits until then). Measure
+  it with Playwright before guessing. (test-app Issue #36, Nov 2026.)
 - The main app exposes small hooks (`useLocal`, `useCloud`, `setTodos`,
   `localTodos`, `stage`) so `sync.js` stays separate from the UI code.
 - Emulator switch: `http://localhost:8080/?emulators` connects to the local
