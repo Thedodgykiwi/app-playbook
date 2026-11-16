@@ -78,6 +78,13 @@ nobody mistakes them for the real app.
   `data-theme` of light / dark / auto (auto = `prefers-color-scheme`).
   Apply the saved choice in an inline `<head>` script so the page never
   flashes the wrong theme on load.
+  **Every new colour needs three rules:** light on `:root`, then the same
+  dark values twice: `:root[data-theme="dark"]` *and*
+  `@media (prefers-color-scheme: dark) { :root[data-theme="auto"] … }`.
+  Miss the second and dark mode looks right only when chosen by hand, not
+  when following the phone: a mock-up's new label was unreadable on the
+  user's phone (test-app #43, Nov 2026). Check mock-ups and new UI in dark
+  mode too (Playwright `colorScheme: 'dark'`), and aim for 4.5:1 contrast.
 - **iPhone underlines emails/phone numbers** shown as text (Safari data
   detectors): add `<meta name="format-detection" content="telephone=no, email=no, address=no">`.
 - **Style kit (starter, chosen from 3 mock-ups: "B", neutral + accent):**
