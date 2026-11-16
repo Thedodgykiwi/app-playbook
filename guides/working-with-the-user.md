@@ -62,6 +62,13 @@ toggle. Every control and state then comes from the real app, and that
 stylesheet is most of the build. A hand-drawn redraw of Edit 1 Job Board
 silently dropped buttons, a drop-down and the job-state colours, and changed
 the button order; the user caught it (Nov 2026).
+**Don't judge a gesture from a mock-up.** A swipe or drag hand-written for
+a mock-up (inside the artifact's frame, without the app's real pointer
+handling) stutters and misses; the user rejected a swipe idea partly because
+the mock-up's swipe "only worked half the time". For gestures, show a
+"Show me" animation in the mock-up and say the feel can only be judged in
+the real app, or build it on Dev with the app's own gesture code to try on a
+phone. (test-app Issue #38, Nov 2026.)
 **Before proposing to merge two steps into one** (e.g. "pick + send" →
 "pick = send"), check whether the in-between state means something on its own
 and ask if unsure. In Edit 1 Job Board, picking an editor without sending
