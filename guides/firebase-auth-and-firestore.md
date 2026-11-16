@@ -331,6 +331,12 @@ When several people work on the same data (Edit 1 Job Board):
 - **Checking for others' changes without paying for reads:** an
   `onSnapshot` listener on the open document keeps the latest revision in
   memory; don't poll `getDoc` every few seconds (each poll is a billed read).
+- **Searching many documents without re-reading them all:** save an
+  `updatedAt` server timestamp on every write, read everything once, then
+  only query `where('updatedAt', '>=', newestSeen)`. Remember `newestSeen`
+  per device and stage (localStorage) only after a full read, because the
+  device copy (`getDocsFromCache`) may hold just the documents opened
+  earlier, not all of them. (Edit 1 Job Board history search, Nov 2026)
 - **Undo on shared data:** keep a snapshot of the data from just before the
   action, show an Undo bar (8 s with a countdown line worked well), and on
   Undo save the snapshot as a normal new revision. Count every time the data
