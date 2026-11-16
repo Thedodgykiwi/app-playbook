@@ -70,6 +70,10 @@ toggle. Every control and state then comes from the real app, and that
 stylesheet is most of the build. A hand-drawn redraw of Edit 1 Job Board
 silently dropped buttons, a drop-down and the job-state colours, and changed
 the button order; the user caught it (Nov 2026).
+**Keyboard shortcuts in a mock-up need an on-screen button too** ("Tap to
+press N"): the user often reviews mock-ups on a phone, which has no keys.
+(test-app #41, Nov 2026.)
+
 **Don't judge a gesture from a mock-up.** A swipe or drag hand-written for
 a mock-up (inside the artifact's frame, without the app's real pointer
 handling) stutters and misses; the user rejected a swipe idea partly because
