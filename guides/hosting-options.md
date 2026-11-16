@@ -68,7 +68,8 @@ an option. Ask the user first: it needs their account on that host.
       Free 2,000, Team/Pro 3,000. Each run is rounded up to a whole minute,
       so the every-5-minutes "Report issue" job alone is ~8,600 min/month
       per app: far over. Before going private, run it every 30–60 minutes
-      (~1,400 / ~720 min) or move it off GitHub. Applies whatever the host.
+      (~1,400 / ~720 min) or move it off GitHub
+      (planned Firebase option: `report-issue.md`, last section). Applies whatever the host.
 
 ## Custom domains (any host, including GitHub Pages)
 

@@ -126,3 +126,42 @@ node .github/scripts/issue_reports.mjs` (after `npm install --no-save
 firebase-admin@14 nodemailer@10` beside it). `MAIL_TEST=1` builds the emails
 and sends nothing. The fake server answers `POST /repos/o/r/issues`,
 `GET /repos/o/r/issues/<n>` and `GET /releases.json`.
+
+## Idea: move the job off GitHub to Firebase (not built yet)
+
+**Status: planned option, not built or tested.** Do this before making an
+app's repo private (the 5-minute job would use ~8,600 GitHub Actions
+minutes a month per app; see `hosting-options.md`), or when testers should
+get their receipt instantly.
+
+**How it would work**
+- A **Firebase Cloud Function** runs the moment a report is saved
+  (`issueReports/{id}` created): creates the GitHub issue (same layout),
+  marks the report `logged`, emails the receipt. No polling; receipts in
+  seconds instead of 5–15 minutes; no GitHub Actions minutes.
+- **"It's fixed" email:** either a scheduled function (once or twice a day)
+  checks `logged` reports' issues, or a GitHub **webhook** on issue close
+  calls an HTTP function (instant). Same rules as now: closed *and* in
+  Production's release notes → email and `fixed`; otherwise `closed`, no
+  email; delete the reporter's address either way.
+
+**Steps (first app)**
+1. Ask the user: it needs the Firebase **Blaze** plan (pay-as-you-go, card
+   on file). Free allowance (2M calls/month) means ~$0; set a budget alert
+   (e.g. $1).
+2. Port the shared script's logic (`.github/scripts/issue_reports.mjs`) into
+   one shared function, kept **once in this repo** and deployed to each
+   app's Firebase project (no copies in apps).
+3. Secrets into Firebase's secret store (`firebase functions:secrets:set`):
+   a GitHub token that can create issues on that repo, `GMAIL_USER`,
+   `GMAIL_APP_PASSWORD`. Remove them from GitHub secrets afterwards.
+4. Test on one app's Dev stage (local emulator first, then real), including
+   the "it's fixed" path.
+5. Remove the app's `issue-reports.yml` schedule; update this guide and the
+   app's CLAUDE.md.
+
+**Trade-offs:** instant and free of GitHub minutes, nothing runs when nobody
+reports; but a card on file with Google, and logs live in Firebase (Functions
+→ Logs) instead of GitHub Actions. Rough effort: one session for the first
+app, minutes for each after.
+
