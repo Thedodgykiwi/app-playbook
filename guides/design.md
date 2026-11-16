@@ -214,6 +214,15 @@ nobody mistakes them for the real app.
 
 ## Wording
 
+- **Hint text in a box (placeholder): measure the room before writing it.**
+  A box with a button or label inside it (padding reserved on one side) fits
+  far fewer letters than it looks: about 15 on a 375px phone with 100px
+  reserved, about 22 without. Measure each line against the box's inner
+  width (canvas `measureText` with the input's font, at 375px and 320px),
+  reserve the space only while the thing it's for is showing, and add
+  `:placeholder-shown { text-overflow: ellipsis; }` so an over-long line
+  ends in "…" rather than mid-letter. Keep the `aria-label` plain when the
+  visible hint is playful. (test-app Issue #37, Nov 2026.)
 - **Confirm dialogs:** ask about the action ("Biff this job?", not "Has this
   job been biffed?"), name the thing, say what happens and whether it can be
   undone, and label the buttons with the action ("Keep job" / "Biff job", never
