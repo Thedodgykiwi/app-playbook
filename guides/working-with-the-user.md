@@ -41,6 +41,14 @@ No artifacts available → standalone HTML in the scratchpad + screenshots.
 grab the rendered HTML of the screen with Playwright). Only the new bits get
 extra CSS. A hand-styled look-alike drifts (wrong chips, checkboxes,
 panels) and the user notices. (Found in test-app, Nov 2026.)
+**Best for a change to an existing screen: run the real app as the
+mock-up.** Copy the app's files to a scratch folder, set
+`firebase-config.js` to `null` (device-only) and seed sample data, add the
+options to the real component behind a small option bar (`#A`/`#B`/`#C`),
+check each with Playwright screenshots, then publish the folder with
+`publish_files` (multi-file artifact). It looks and behaves exactly like
+the app. A redrawn single-file page was called "more of a guess" (test-app
+#40, Nov 2026).
 
 **Before sharing a mock-up, open it in a headless browser** (Playwright),
 check for page errors and look at a screenshot. Don't name top-level script
