@@ -34,6 +34,19 @@ Pages" to an upload of the finished folder:
   branch deploys), token in GitHub secrets.
 - Vercel: `vercel deploy --prebuilt`; Hostinger basic: upload over SFTP.
 
+Automatic: the upload is one extra step in the deploy job, using an access
+token from the host saved in the repo's GitHub secrets; every push to a
+stage branch deploys, as now. (The alternative, linking the repo in the
+host's dashboard so it builds, means redoing the stage steps their way.)
+
+Why upload rather than let the host build: fast (no package install or
+compile; the job takes about a minute, the upload seconds, changed files
+only), the same steps for any host, and the exact files that were built go
+live. Downsides (small): failure details are in GitHub's log, not the
+host's; the host's "Redeploy" can only restore an earlier upload; the token
+can expire; the host's per-pull-request previews go unused (stages do that
+job); it uses GitHub Actions minutes.
+
 Try it on **one app's Dev stage only**, then add it to the shared deploy as
 an option. Ask the user first: it needs their account on that host.
 
