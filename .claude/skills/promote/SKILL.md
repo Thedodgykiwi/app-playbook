@@ -231,6 +231,11 @@ says which changes to undo on `dev` by hand.
 
 ## Notes
 
+- **"Skip straight to Production"** (user's explicit yes): still run every
+  step, alpha → staging → main, back to back without waiting for testing.
+  That keeps release notes, What's new and issue closing working. Tell the
+  user it wasn't tested on Staging. (test-app, Nov 2026)
+
 - The script returns you to the branch you started on.
 - Prefer a pull request on GitHub if the user wants a review step or
   discussion before promoting. This skill is for direct promotion when the
