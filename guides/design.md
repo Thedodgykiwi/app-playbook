@@ -85,6 +85,12 @@ nobody mistakes them for the real app.
   when following the phone: a mock-up's new label was unreadable on the
   user's phone (test-app #43, Nov 2026). Check mock-ups and new UI in dark
   mode too (Playwright `colorScheme: 'dark'`), and aim for 4.5:1 contrast.
+- **Cards that hide overflow and hold an input: use `overflow: clip`, not
+  `hidden`.** A `hidden` box is still a scroll container, so focusing an
+  input inside (or `scrollIntoView`) can shift its content sideways and
+  clip the edge. `clip` can't scroll. Also give grid/flex children that
+  hold inputs `min-width: 0` so they shrink instead of overflowing
+  (test-app #44, Nov 2026).
 - **iPhone underlines emails/phone numbers** shown as text (Safari data
   detectors): add `<meta name="format-detection" content="telephone=no, email=no, address=no">`.
 - **Style kit (starter, chosen from 3 mock-ups: "B", neutral + accent):**
