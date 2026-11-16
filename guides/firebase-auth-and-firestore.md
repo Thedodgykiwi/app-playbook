@@ -204,8 +204,16 @@ Then:
    real project). Needs Java (present in cloud sessions).
 3. **Prove the tests bite:** temporarily loosen a rule (e.g. `allow delete:
    if true;`), check a test fails, then `git checkout firestore.rules`.
-4. Deploy: `firebase_deploy` with `only: "firestore"` (or
-   `npx -y firebase-tools@latest deploy --only firestore:rules`).
+4. Deploy with the CLI: `npx -y firebase-tools@latest deploy --only
+   firestore:rules --project YOUR-PROJECT-ID` (from the app repo's root).
+5. **Check it's live:** `firebase_get_security_rules` (type `firestore`)
+   must show the new rule. Why: the MCP `firebase_deploy` tool once
+   reported "success" but the old rules stayed live; the CLI worked
+   (test-app, Nov 2026).
+   Cloud session not signed in to Firebase? `firebase_login` gives a link
+   and a session ID; the user signs in, checks the ID matches, and pastes
+   the code back. Then `firebase_update_environment` (project dir = app
+   repo, active project).
 
 Update the tests whenever the data model changes.
 
