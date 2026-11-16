@@ -8,7 +8,9 @@ scratch. Prices and plan rules change: re-check them before acting.
 ## Why look beyond GitHub Pages
 
 - **Private repos:** a private repo's Pages site needs a paid GitHub plan
-  (Pro, about US$4/month). Private repos also make issues (tester reports)
+  (Pro for a personal account, Team for an organisation: about US$4/month;
+  the site itself stays public). Read the Actions-minutes item in the
+  checklist below first: it matters more than the host. Private repos also make issues (tester reports)
   private.
 - **No 10-minute stale cache** after a deploy.
 - **Instant rollback** from the host's dashboard.
@@ -61,8 +63,12 @@ an option. Ask the user first: it needs their account on that host.
       in deploy messages.
 - [ ] Signed-out device data stays at the old address (users signed in are
       fine); home-screen shortcuts need re-adding.
-- [ ] Private repo on a free GitHub plan: Actions minutes are limited; the
-      5-minute "Report issue" job uses them.
+- [ ] **Private repo = GitHub Actions minutes are counted** (public repos:
+      unlimited, free). Allowance per month (github.com/pricing, Nov 2026):
+      Free 2,000, Team/Pro 3,000. Each run is rounded up to a whole minute,
+      so the every-5-minutes "Report issue" job alone is ~8,600 min/month
+      per app: far over. Before going private, run it every 30–60 minutes
+      (~1,400 / ~720 min) or move it off GitHub. Applies whatever the host.
 
 ## Custom domains (any host, including GitHub Pages)
 
