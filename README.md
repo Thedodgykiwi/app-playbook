@@ -33,6 +33,7 @@ something that changed), add it to the right guide in the same session; see
 | [new-app-kickoff.md](guides/new-app-kickoff.md) | Right after setup: the app's plan and desired outcome (`docs/brief.md`), kept current every session |
 | [stages-and-releases.md](guides/stages-and-releases.md) | Promoting dev → alpha → staging → main, release notes, hotfixes |
 | [github-pages.md](guides/github-pages.md) | Deploying; caching; several stages on one site |
+| [hosting-options.md](guides/hosting-options.md) | Reference only (not in use): Netlify / Vercel / Cloudflare / Hostinger, private repos, custom domains, the simplest test |
 | [firebase-auth-and-firestore.md](guides/firebase-auth-and-firestore.md) | Adding Google sign-in and saving user data in the cloud |
 | [pwa-icons.md](guides/pwa-icons.md) | Home-screen icons (including the iOS workaround) |
 | [cloud-sessions.md](guides/cloud-sessions.md) | Claude running in a cloud session: network, logins, files that vanish |
