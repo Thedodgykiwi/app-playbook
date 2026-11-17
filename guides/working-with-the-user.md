@@ -31,6 +31,12 @@ divider, a colour) → static pictures of the options are fine when faster,
 still rendered from the real app (Playwright on the local app with sample
 data), in light and dark, never hand-drawn. Check every option actually
 rendered before sending.
+Quickest route when the app has an end-to-end test that signs in to the
+emulators: copy its seed + sign-in steps into a scratch script, swap each
+option into the live page with `page.evaluate`, and screenshot just the
+affected element (`locator.screenshot`). A redrawn page "from the app's
+CSS" still doesn't count: the user caught it straight away (Edit 1 Job
+Board #30, Nov 2026).
 
 If yes: a clickable mock-up as a **Claude artifact** (not in the repo), 2–3
 options side by side with sample data and a short "Good / Watch out" note

@@ -53,7 +53,7 @@ Why: a quick-fix session skipped the rules and invented its own issue format
 - [ ] Changes or conflicts with the brief → say so; with the user's OK,
       update the brief and its change log (`new-app-kickoff.md` §5).
 - [ ] Visible change with more than one sensible design → mock-up first,
-      built from the real app with realistic data, options side by side: a
+      built from the real app with realistic data, options side by side, **never a hand-drawn look-alike**: a
       **clickable Claude artifact** for new features, flows or anything you
       need to tap through; **static pictures are fine for small visual
       tweaks** (an icon, a label, a divider) when faster
