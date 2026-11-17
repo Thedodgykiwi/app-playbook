@@ -403,15 +403,15 @@ saves would fail if the app ships first. Order (done this way on test-app):
   with the CLI (`npx -y firebase-tools@latest deploy --only firestore:rules
   --project <id>`; the MCP sign-in works for it). A "permission denied" right
   after a rules change usually means the old rules are still live.
+  `firebase_get_security_rules` can also show **another project's** rules
+  even after `firebase_update_environment` switched projects (Nov 2026):
+  check the rules text names the right app before trusting it.
 - **New field: get the rules live before the app code (Nov 2026).** If a change adds
   a field that the rules must allow, deploy the rules first, then push the
   code to `dev`. While you wait (for example for a Firebase sign-in), push the
   work to `wip/<issue>-<name>`, which doesn't deploy. A Firebase MCP sign-in link
   dies if the MCP server restarts, so call `firebase_login` again for a fresh
   one (The Shortlist #50).
-  `firebase_get_security_rules` can also show **another project's** rules
-  even after `firebase_update_environment` switched projects (Nov 2026):
-  check the rules text names the right app before trusting it.
 - **Edits must target the current record, not a captured copy.** Lists get
   re-read (sign-in check after load, live updates from other devices), which
   replaces the objects in memory. An editor that keeps a reference to "the
