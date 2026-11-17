@@ -250,3 +250,18 @@ nobody mistakes them for the real app.
   be a tweak or a feature). Keep tool names (GitHub, issue trackers) out of
   what testers and end users see. (test-app "Report issue", Nov 2026.)
 - Explain anything technical in brackets the first time.
+
+## Rich-text boxes (contenteditable)
+
+- **Set `document.execCommand("defaultParagraphSeparator", false, "p")`**
+  when editing starts. Chrome otherwise makes each new line a `<div>`; if
+  your save step only keeps an allow-list of tags, the lines lose their
+  breaks and run together, and the next "make this a heading" turns the
+  whole run into one heading. Also turn stray `<div>`s into `<p>` when
+  saving, and repair content saved before the fix.
+- **Pasted text often arrives wrapped in `<b style="font-weight:normal">`**
+  (Google Docs and others). If you strip styles but keep `<b>`, everything
+  pasted turns bold: unwrap those first.
+- Test it the way people use it: type, format, save, **reopen and format
+  again**; the bug only shows on the second edit. (Edit 1 Job Board #33,
+  Nov 2026)
