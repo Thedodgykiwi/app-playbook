@@ -102,9 +102,26 @@ jobs:
               mkdir -p "$dest"
               cp -r "$tmp"/. "$dest"/
               echo "window.STAGE = '$stage';" > "$dest/stage.js"
+              # Compare mode + stage switcher (shared; does nothing unless opened with
+              # ?compare, apart from the banner's stage menu). guides/compare-stages.md
+              if [ -f "$dest/index.html" ] && grep -q 'src="stage\.js' "$dest/index.html"; then
+                sed -e "s/__C_MAIN__/$C_MAIN/; s/__C_STAGING__/$C_STAGING/; s/__C_ALPHA__/$C_ALPHA/; s/__C_DEV__/$C_DEV/" \
+                  _tools/.github/scripts/compare.js > "$dest/compare.js"
+                sed -i -E "s#(<script src=\"stage\.js[^\"]*\"></script>)#\1<script src=\"compare.js?v=$sha\"></script>#" "$dest/index.html"
+              fi
               echo "Deployed $stage -> $dest"
             else
               echo "Branch $stage does not exist yet, skipping"
+            fi
+          done
+          # Compare mode: every stage starts from the SAME sample, the newest one (Dev's,
+          # else the most advanced stage that has one), so older stages match too.
+          for src in _site/dev _site/alpha _site/staging _site; do
+            if [ -f "$src/compare-sample.json" ]; then
+              for d in _site _site/staging _site/alpha _site/dev; do
+                if [ -d "$d" ] && [ "$d" != "$src" ]; then cp "$src/compare-sample.json" "$d/"; fi
+              done
+              break
             fi
           done
       - name: Build the pipeline page (what's in each stage and what's waiting)

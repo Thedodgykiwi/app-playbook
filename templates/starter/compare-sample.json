@@ -1,0 +1,5 @@
+{
+  "key": "my-data",
+  "about": "Sample data for comparing stages (guides/compare-stages.md). 'key' is your data's storage key without the stage (the app saves 'my-data-dev' -> 'my-data'); 'items' is the starting data in your app's own format. Dates: '@today', '@today+1', '@now-2h'.",
+  "items": []
+}

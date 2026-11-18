@@ -200,12 +200,41 @@ ul.items li{font-size:.88rem;line-height:1.35;padding:.45rem .55rem;border:1px s
 .issues a{color:#1d1f23;text-decoration:none}.issues a:hover{text-decoration:underline}
 .num{color:#6c757d;margin-right:.3rem}
 .legend{margin-top:1rem;font-size:.78rem;color:#6c757d}
+.page-tabs{display:inline-flex;background:#e9ecef;border-radius:12px;padding:3px;margin:0 0 1rem}
+.page-tabs button{font:inherit;font-size:.9rem;font-weight:600;border:0;background:none;border-radius:9px;padding:.45rem 1.1rem;min-height:40px;cursor:pointer;color:#495057}
+.page-tabs button[aria-selected="true"]{background:#fff;color:#1d1f23;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.compare{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:.9rem}
+.compare h2{margin:0;font-size:1.05rem}.cmp-sub{margin:.3rem 0 .7rem;font-size:.82rem;color:#495057;max-width:46rem}
+.cmp-tools{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.8rem}
+.seg{display:inline-flex;background:#f1f3f5;border-radius:10px;padding:3px}.seg button{font:inherit;font-size:.82rem;font-weight:600;border:0;background:none;border-radius:8px;padding:.35rem .8rem;cursor:pointer;color:#495057;min-height:34px}
+.seg button[aria-pressed="true"]{background:#fff;color:#1d1f23;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.cmp-reset{font:inherit;font-size:.82rem;font-weight:600;border:1px solid #dee2e6;background:#fff;border-radius:10px;padding:.35rem .8rem;min-height:40px;cursor:pointer}
+.frames{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.5rem}
+.frame{flex:none;width:390px;position:relative}.frame .cap{display:flex;align-items:center;gap:.45rem;font-weight:700;font-size:.85rem;margin:0 0 .4rem}
+.dot{width:.7rem;height:.7rem;border-radius:50%;flex:none}
+.frame iframe{width:390px;height:760px;border:1px solid #dee2e6;border-radius:18px;background:#fff;display:block}
+.frame .nosupport{position:absolute;inset:1.9rem 0 0;display:grid;place-items:center;padding:1.5rem;text-align:center;background:rgba(248,249,250,.96);border-radius:18px;font-size:.88rem;color:#495057}
+.cmp-tabs{display:none}
+@media (max-width:760px){.cmp-tabs{display:flex;gap:.3rem;margin-bottom:.6rem;flex-wrap:wrap}
+.cmp-tabs button{font:inherit;font-size:.82rem;font-weight:600;border:1px solid #dee2e6;background:#fff;border-radius:99px;padding:.3rem .75rem;min-height:38px;display:inline-flex;align-items:center;gap:.35rem;cursor:pointer}
+.cmp-tabs button[aria-selected="true"]{background:#1d1f23;color:#fff;border-color:#1d1f23}
+.frames{display:block;overflow:visible}.frame{width:auto}.frame:not(.on){display:none}.frame .cap{display:none}.frame iframe{width:100%;height:72vh}.frame .nosupport{inset:0}}
+[hidden]{display:none!important}
 @media (max-width:760px){.lanes{grid-template-columns:1fr}.arrow{top:auto;bottom:-.85rem;right:50%;transform:translateX(50%) rotate(90deg)}}
 </style></head><body><main>
 <a class="back" id="back" href="../">← Back to the app</a>
 <header class="top"><h1>__TITLE__</h1><span class="sub" id="updated"></span></header>
-<div class="lanes" id="lanes"></div>
-<section class="issues" id="issues"><h2>Open issues <span class="count" id="opencount"></span></h2><ul id="open"></ul></section>
+<nav class="page-tabs" role="tablist" aria-label="View"><button type="button" role="tab" id="tab-pipeline" aria-selected="true">Pipeline</button><button type="button" role="tab" id="tab-compare" aria-selected="false">Compare</button></nav>
+<div id="pipeline-view"><div class="lanes" id="lanes"></div>
+<section class="issues" id="issues"><h2>Open issues <span class="count" id="opencount"></span></h2><ul id="open"></ul></section></div>
+<section class="compare" id="compare" aria-labelledby="cmp-title" hidden>
+<h2 id="cmp-title">Compare stages</h2>
+<p class="cmp-sub">The same sample list on every stage, so only the design differs. Add or tick things in any window and the others update too. It's kept in this browser only: your real lists and account aren't touched.</p>
+<div class="cmp-tools"><div class="seg" role="group" aria-label="Theme"><button type="button" data-theme="light" aria-pressed="true">Light</button><button type="button" data-theme="dark" aria-pressed="false">Dark</button></div>
+<button type="button" class="cmp-reset" id="cmp-reset">Reset sample</button></div>
+<div class="cmp-tabs" role="tablist" aria-label="Stage"></div>
+<div class="frames" id="frames"></div>
+</section>
 <p class="legend">Waiting items come from release notes where they exist, otherwise from change titles. Housekeeping (screenshots, notes) is left out. This page is rebuilt automatically on every deploy.</p>
 </main>
 <script>
@@ -236,6 +265,26 @@ D.stages.forEach((s,idx)=>{const el=document.createElement('section');el.classNa
 (function(){try{const r=document.referrer&&new URL(document.referrer);const b=document.getElementById('back');
  if(r&&r.origin===location.origin&&!r.pathname.includes('/pipeline/')){b.href=r.href;
   const m=r.pathname.match(/\/(dev|alpha|staging)\//);b.textContent='← Back to '+(m?m[1][0].toUpperCase()+m[1].slice(1):'the app');}}catch(e){}})();
+// Pipeline | Compare tabs. Compare shows every stage side by side (one at a time
+// on a phone) in compare mode: the same shared sample data (compare.js, added to
+// each stage by the deploy). Frames load only when Compare is first opened.
+(function(){const S=D.stages.slice();let theme='light',cur=S[0]&&S[0].key;
+const fr=document.getElementById('frames'),tabs=document.querySelector('.cmp-tabs');
+const src=s=>s.url+(s.url.includes('?')?'&':'?')+'compare=1&theme='+theme;
+fr.innerHTML=S.map(s=>`<div class="frame${s.key===cur?' on':''}" data-k="${esc(s.key)}"><p class="cap"><span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}</p><iframe title="${esc(s.name)}, compare mode"></iframe></div>`).join('');
+tabs.innerHTML=S.map(s=>`<button type="button" role="tab" data-k="${esc(s.key)}" aria-selected="${s.key===cur}"><span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}</button>`).join('');
+const frames=[...fr.querySelectorAll('iframe')];let loaded=false;
+frames.forEach((f,i)=>f.addEventListener('load',()=>{const box=f.parentNode;let ok=false;try{ok=!!f.contentWindow.COMPARE_READY;}catch(e){}
+ let n=box.querySelector('.nosupport');if(!ok&&!n){n=document.createElement('div');n.className='nosupport';n.textContent='Compare mode isn\'t on this stage yet. It arrives with the stage\'s next deploy.';box.append(n);}else if(ok&&n)n.remove();}));
+const load=()=>{frames.forEach((f,i)=>{f.src=src(S[i]);});loaded=true;};
+tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;cur=b.dataset.k;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x.dataset.k===cur));fr.querySelectorAll('.frame').forEach(x=>x.classList.toggle('on',x.dataset.k===cur));};
+document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;theme=b.dataset.theme;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(loaded)load();};
+document.getElementById('cmp-reset').onclick=()=>{const f=frames.find(x=>{try{return x.contentWindow.compareReset;}catch(e){return false;}});if(f)f.contentWindow.compareReset();if(loaded)setTimeout(load,150);};
+const show=t=>{const c=t==='compare';document.getElementById('compare').hidden=!c;document.getElementById('pipeline-view').hidden=c;
+ document.getElementById('tab-compare').setAttribute('aria-selected',c);document.getElementById('tab-pipeline').setAttribute('aria-selected',!c);
+ if(c&&!loaded)load();try{localStorage.setItem('pipeline-tab:'+D.slug,t);}catch(e){}};
+document.getElementById('tab-pipeline').onclick=()=>show('pipeline');document.getElementById('tab-compare').onclick=()=>show('compare');
+let last='pipeline';try{last=localStorage.getItem('pipeline-tab:'+D.slug)||'pipeline';}catch(e){}show(last);})();
 document.getElementById('updated').textContent='Updated '+ago(D.updated)+' · '+fmt(D.updated);
 function showOpen(list){document.getElementById('issues').hidden=!list.length;
  document.getElementById('opencount').textContent=list.length;
