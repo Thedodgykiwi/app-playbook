@@ -5,6 +5,8 @@
 #       Promote the previous stage into <target>.
 #       --notes-file  release notes to use (required for alpha: dev has none)
 #       --intro-file  optional extra paragraph placed above reused notes
+#       --stack       go ahead even though <target> still holds earlier work that
+#                     hasn't moved on to the next stage (see "HELD" below)
 #   Past alpha, notes are reused automatically from the previous stage.
 #   promote.sh rollback --reason-file FILE [--dry-run]
 #       Emergency undo of the last Production release: reverses it on main
@@ -166,10 +168,11 @@ if [[ ${1:-} == status || -z ${1:-} ]]; then
 fi
 
 target=$1; shift; [[ $target == production || $target == prod ]] && target=main
-dry_run=false; notes_file=; intro_file=
+dry_run=false; notes_file=; intro_file=; stack=false
 while (( $# )); do
   case $1 in
     --dry-run) dry_run=true ;;
+    --stack) stack=true ;;
     --notes-file) notes_file=${2:?--notes-file needs a path}; shift ;;
     --intro-file) intro_file=${2:?--intro-file needs a path}; shift ;;
     *) die "Unknown option '$1'" ;;
@@ -186,6 +189,21 @@ if [[ -z $list ]] && git merge-base --is-ancestor "$REMOTE/$source" "$REMOTE/$ta
 fi
 echo "Promoting $source → $target. Commits:"
 echo "${list:-  (merge commits only)}"
+
+# Earlier work still sitting on the target (not yet on the stage after it)?
+# Promoting now stacks the new batch on top, and they can only move on together.
+if [[ $target != main ]]; then
+  for i in "${!STAGES[@]}"; do [[ ${STAGES[$i]} == "$target" ]] && next=${STAGES[$((i+1))]}; done
+  held=$(pending "$target" "$next")
+  if [[ -n $held ]]; then
+    echo
+    echo "HELD: $target still has $(echo "$held" | wc -l) commit(s) not yet on $next:"
+    echo "$held"
+    echo "Promote $target → $next first to release them on their own, or pass --stack"
+    echo "to add this batch on top (both will then move on together)."
+    if ! $dry_run && ! $stack; then die "$target holds earlier work; promote $target → $next first, or pass --stack."; fi
+  fi
+fi
 
 # Past alpha, reuse the notes already written for these changes.
 if [[ -z $notes_file && $target != alpha ]]; then

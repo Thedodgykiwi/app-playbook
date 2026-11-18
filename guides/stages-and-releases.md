@@ -59,6 +59,10 @@ deploy, `pipeline_page.py`):
 - **Too big?** If the release notes need more than about 8 bullets, or the
   "what to try" list more than 5 steps, the batch is too big to test well.
   Split the next one sooner. (test-app, Nov 2026)
+- **Held work check (automatic):** promoting into a stage that still holds an
+  earlier batch (not yet on the next stage) stops and asks: move that batch on
+  first, or stack the new one on top (`--stack`), after which they can only
+  move on together.
 
 ## The promote skill (shared: `.claude/skills/promote/` in this repo)
 

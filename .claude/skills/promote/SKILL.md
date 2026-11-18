@@ -42,7 +42,19 @@ The script works on whichever repo the current directory belongs to.
 
        <skill-dir>/promote.sh <target> --dry-run
 
-   Summarise the commits that will move. Then:
+   Summarise the commits that will move.
+
+   **Held work check:** if the dry run prints **HELD** (the target still has
+   earlier work that hasn't moved on to the next stage), ask the user with
+   the AskUserQuestion card before anything else, naming both batches in
+   plain words:
+   - **"Move <target> on to <next> first" (Recommended)**: promote the held
+     batch one stage on (its own notes; for `main` the usual explicit yes),
+     then come back and do this promotion. Each release stays one story.
+   - **"Stack them"**: promote now with `--stack`. Both batches then move on
+     together, with their notes combined.
+
+   The script refuses to promote over held work without `--stack`. Then:
    - **Target `alpha`:** write release notes (step 4) and show the draft.
    - **Target `staging` or `main`:** the dry run prints release notes the
      script has **reused** from the previous stage's promotions (combined,
