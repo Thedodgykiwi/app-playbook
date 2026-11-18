@@ -169,7 +169,22 @@ nobody mistakes them for the real app.
   to its button, or to the section heading if the button has gone, never
   leave it on the page body. Found by `/code-review` (The Shortlist #59).
 
+- **Switching between views of one list: a side panel, opened two ways.**
+  For "My Day / Important / Planned / Completed / your own lists", a panel
+  from the left (like Microsoft To Do) beat a chip row (gets crowded once
+  people add their own lists) and a title-only menu (people don't guess the
+  title is tappable). Open it from a "‹ Lists" button **and** by tapping the
+  view's title ("My Day ▾"), give each view its own big title and a count,
+  and keep the panel open as a sidebar on wide screens. Adding while a view
+  is open should put the new item in that view. (The Shortlist #71, Nov 2026.)
+
 ## Gotchas
+
+- **A sidebar that stays open on wide screens must make room for fixed
+  parts:** put it *under* the stage banner (lower z-index, padded down), or
+  it covers the banner's left-end buttons; push the page over
+  (`padding-left`), and re-centre any fixed bottom bar on the space that's
+  left, not the whole window. (The Shortlist #71, Nov 2026.)
 
 - **Hide swipe-reveal layers at rest.** A coloured layer kept under a row for
   swipe actions (e.g. gold "Star") can show through on iPhone Safari, mostly
