@@ -118,7 +118,7 @@ async function start() {
       }
       delDlg.close();
       window.dispatchEvent(new CustomEvent('account:deleted'));
-      toast('Your account and everything saved in it have been deleted.', 6000);
+      toast('Your account has been deleted.', 6000);
     } catch (err) {
       deleting = false;
       delErr.textContent = ['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(err.code)
