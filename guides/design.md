@@ -288,6 +288,13 @@ Shortlist #76).
 
 ### Colour
 
+- **Dark-theme rules must cover "Auto" as well as "Dark".** A fix written only
+  for `:root[data-theme="dark"]` leaves anyone on Auto with a dark phone on the
+  light-theme version (white text on a bright red pill, 2.8:1). Write each dark
+  rule twice (the explicit selector and `@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] … }`), and test dark with both settings. Solid bright
+  status pills (overdue red) read as shouting in dark: use a dark tint with
+  light text instead. (The Shortlist #84, Nov 2026.)
 - **Coloured text on a tint of the same colour fails contrast.** A red
   "Overdue" label on a 14% red tint was only 3.4:1 (needs 4.5:1). Darken the
   text toward the body text colour, e.g. `color-mix(in srgb, var(--danger)
