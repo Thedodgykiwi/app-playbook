@@ -5,7 +5,7 @@ How to add "Sign in with Google" and save each user's data in the cloud
 GitHub Pages. Worked example: `Thedodgykiwi/test-app` (to-do list that
 saves to the device when signed out and to the user's account when signed in).
 
-Last verified: 14 November 2026, firebase-tools latest, Firebase JS SDK 13.1.0.
+Last verified: 18 November 2026, firebase-tools latest, Firebase JS SDK 13.1.0 (rules deployed and tested with the emulators).
 
 ---
 

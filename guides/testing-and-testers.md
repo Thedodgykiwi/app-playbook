@@ -4,7 +4,7 @@ Two layers: a quick **automatic check** that every session runs before
 pushing, and **people** trying the app at Alpha and Staging before anything
 reaches Production.
 
-Last verified: 2026-11-15 (check run on the starter and on test-app's Dev).
+Last verified: 2026-11-18 (check run on the starter and on test-app's Dev).
 
 ## 1. The automatic check (every app, every push)
 

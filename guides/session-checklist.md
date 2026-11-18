@@ -52,16 +52,14 @@ Why: a quick-fix session skipped the rules and invented its own issue format
       issue. Bug caused by another issue's change → its **sub-issue**.
 - [ ] Changes or conflicts with the brief → say so; with the user's OK,
       update the brief and its change log (`new-app-kickoff.md` §5).
-- [ ] Visible change with more than one sensible design → mock-up first,
-      built from the real app with realistic data, options side by side, **never a hand-drawn look-alike**: a
-      **clickable Claude artifact** for new features, flows or anything you
-      need to tap through; **static pictures are fine for small visual
-      tweaks** (an icon, a label, a divider) when faster
-      (`working-with-the-user.md`).
-      **Change to an existing screen → run a copy of the real app as the
-      mock-up** (scratch copy, real component with an A/B bar, published with
-      `publish_files`; `working-with-the-user.md`). Never a redrawn look-alike:
-      it gets called a guess (The Shortlist #40, #60).
+- [ ] Visible change with more than one sensible design → **mock-up first,
+      built from a copy of the real app** (scratch copy, the real component
+      with an A/B switch, realistic data, published with `publish_files`),
+      options side by side, until the user picks. Never a redrawn look-alike:
+      it gets called a guess (The Shortlist #40, #60). Static screenshots are
+      fine for a tiny visual tweak (`working-with-the-user.md`).
+- [ ] Small follow-ups to work not yet released go on the **same issue**
+      (a comment), not a new one.
 
 ## 3. Build
 - [ ] Small change on `dev`; one issue per commit, ending `Issue #<n>`
