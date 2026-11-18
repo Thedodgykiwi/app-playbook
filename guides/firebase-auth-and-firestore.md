@@ -327,13 +327,25 @@ Two lessons from writing it:
 **What can't be tested from a cloud session:** a real Google sign-in. The
 user does that on the Dev site; tell them so honestly.
 
-### 8b. Privacy page and "Delete my account" (before real people sign in)
+### 8b. Privacy page, "Download my data" and "Delete my account" (before real people sign in)
 
-The starter has both; switch them on for this app:
-- **`privacy.html`:** fill in every `{{…}}` (what's saved, the Firestore
-  region, how to get in touch: never a personal email in a public repo).
-  It's linked from the sign-in card, the menu and Settings. Update it
-  whenever the app starts storing something new.
+The starter has all three; switch them on for this app:
+- **`privacy.html`:** written to cover what the GDPR (EU/UK) and NZ's Privacy
+  Act 2020 expect a privacy notice to say: who's responsible and how to reach
+  them, what's collected and why (the legal basis), who else handles it
+  (Google/Firebase, GitHub hosting, plus e.g. Gmail if the app sends email),
+  that Google's sign-in runs in the US (covered by the EU–US Data Privacy
+  Framework), how long data is kept, the person's rights and where to
+  complain. Ask the user for `{{RESPONSIBLE}}` (a person or trading name) and
+  `{{CONTACT}}` (a business/app address they choose to publish, never a
+  personal one), and fill in the rest (what's saved, the Firestore region).
+  Delete sections that don't apply. It's linked from the sign-in card, the
+  menu and Settings. Update it, and its date, whenever the app starts storing
+  or sharing something new. Not legal advice: for a business app, suggest
+  having it checked.
+- **Download my data** (Settings → Your account): a JSON file of everything in
+  the account on every stage (the right to a copy), from the same
+  `dataCollections` list as Delete.
 - **Delete my account** (Settings → Your account, signed in only): set
   `window.AppAccount.dataCollections = ['todos', …]`, every collection under
   `users/{uid}/stages/{stage}/`. It deletes them on **every** stage, then the

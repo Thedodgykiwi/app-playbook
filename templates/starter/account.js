@@ -12,7 +12,7 @@
 //   await window.AppAccount.ready   // { auth, authLib, db, fs } once Firebase has loaded (null if off)
 //   window.AppAccount.user          // current user or null
 //   window.AppAccount.setStatus({ saving, error })   // shows/updates the menu's sync status (hidden until first called)
-//   window.AppAccount.dataCollections = ['todos']   // what "Delete my account" removes, on every stage
+//   window.AppAccount.dataCollections = ['todos']   // what "Download my data" / "Delete my account" cover, on every stage
 //   window.addEventListener('account:deleted', ...)  // clear any copies the app keeps on the device
 // Store each user's data per stage, e.g. users/{uid}/stages/{stage}/...,
 // because all stages share one web address and one sign-in.
@@ -88,6 +88,34 @@ async function start() {
     }
   });
   ui.signOut.addEventListener('click', () => { setMenu(false); authLib.signOut(auth); });
+
+  // ---- Download my data (Settings → Your account) ---------------------------
+  // A copy of everything in the account, every stage, as a JSON file (the right to
+  // a copy of your data). Dates come out as ISO text.
+  $('download-data')?.addEventListener('click', async (e) => {
+    const user = auth.currentUser, btn = e.currentTarget; if (!user) return;
+    btn.disabled = true;
+    try {
+      const out = { app: document.title, exportedAt: new Date().toISOString(),
+        account: { name: user.displayName, email: user.email }, stages: {} };
+      for (const stage of ['local', 'dev', 'alpha', 'staging', 'main']) {
+        for (const name of window.AppAccount.dataCollections || []) {
+          const snap = await fs.getDocs(fs.collection(db, 'users', user.uid, 'stages', stage, name));
+          if (!snap.size) continue;
+          (out.stages[stage] ||= {})[name] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        }
+      }
+      const json = JSON.stringify(out, (k, v) => (v && typeof v.toDate === 'function' ? v.toDate().toISOString() : v), 2);
+      const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(new Blob([json], { type: 'application/json' })),
+        download: `${(document.title || 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-my-data-${new Date().toISOString().slice(0, 10)}.json`,
+      });
+      document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+      toast('Your data has been downloaded.');
+    } catch (err) {
+      toast(`Couldn't download your data (${err.code || err.message}).`, 6000);
+    } finally { btn.disabled = false; }
+  });
 
   // ---- Delete my account (Settings → Your account) --------------------------
   // Removes everything the app saved for this person on every stage (the app lists

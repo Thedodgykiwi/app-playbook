@@ -82,9 +82,10 @@ page from then on.
    `firebase-config.js`; the app's own data code and rules are written for
    this app (test-app's `sync.js` and `firestore.rules` are the worked
    example). Set `window.AppAccount.dataCollections` to the app's
-   collections (so "Delete my account" removes them) and fill in the
-   `{{…}}` blanks in `privacy.html` (what's saved, region, how to get in
-   touch). Otherwise tell them it can be switched on later ("add sign-in
+   collections (so "Download my data" and "Delete my account" cover them)
+   and fill in the `{{…}}` blanks in `privacy.html` (ask the user who's
+   responsible and which business/app address to publish; what's saved,
+   region). Otherwise tell them it can be switched on later ("add sign-in
    to this app").
    **Report issue (only if they said yes, after sign-in works):** follow
    `guides/report-issue.md` ("Switching it on"); otherwise mention it can
