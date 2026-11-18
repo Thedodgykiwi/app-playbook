@@ -72,6 +72,10 @@ The script works on whichever repo the current directory belongs to.
    testers. For `main`, give a one-line sign-off summary first (what was tried
    on Staging, by whom as a role, anything known and accepted, or "not
    tested on Staging yet"), and mention open bugs reported against Staging.
+   Put the Staging-test status in the confirm card's question itself ("tried
+   on Staging: yes / no / not known") and, if it wasn't tried, add a "Not yet:
+   try it on Staging first" option next to "Yes, release". Do the same when
+   releasing a held batch to make room for the next one.
 
    Then **ask the user to confirm**, unless they already clearly asked for
    this specific promotion in their current message. Promotion to `main`

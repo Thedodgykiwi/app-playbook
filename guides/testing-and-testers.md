@@ -62,6 +62,14 @@ just your own check on your phone. Say so in the app's `CLAUDE.md`.
   summary**: what was tested on Staging, by whom (role), anything known and
   accepted. No sign-off yet → say so; Production still only needs the user's
   "yes", but they decide knowing that.
+  **Ask it as its own question on the confirm card, not just a note:** put
+  "tried on Staging: yes / no / not known" in the card's question, and when
+  it wasn't tried offer **"Not yet: try it on Staging first"** beside
+  "Yes, release". This matters most when clearing held work (promoting a
+  batch from Staging to Production only to make room for the next one): that
+  batch reaches Production straight after being promoted, so it's easy to
+  release something nobody has looked at. (The Shortlist, Nov 2026: a batch
+  went to Production untested because the note was only mentioned.)
 
 ### Feedback from testers
 
