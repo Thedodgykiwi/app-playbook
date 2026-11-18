@@ -54,9 +54,12 @@ Report issue, the stage menu and Pipeline, and the buttons overlapped.
   other groups already use background colour (starred, due), keep level
   groups neutral and colour only the heading. (test-app, Nov 2026.)
 
-- **Sign-in in the card's top-right corner** (chosen from a 3-option
-  concept). Signed out: a small "Sign in" button with the Google logo.
-  Signed in: a round avatar with the first initial plus a small **sync dot**
+- **Sign-in lives in the top-right menu, not the header.** Signed out: the
+  round Menu button only; the menu opens with a small card ("Your to-dos, on
+  every device / Sign in to keep them safe and in sync") and a full-width
+  **Sign in with Google** button. A separate "Sign in" button beside the
+  title looked awkward (a bright white box in dark mode) and crowded it
+  (The Shortlist #78, Nov 2026). Signed in: a round avatar with the first initial plus a small **sync dot**
   (green saved / amber saving / grey offline / red error) that opens an
   account menu (name, email, sync status in words, Sign out).
 - **Appearance choices live together in Settings** (theme, accent colour,

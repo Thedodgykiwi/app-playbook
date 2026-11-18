@@ -11,7 +11,7 @@ Last verified: 14 November 2026, firebase-tools latest, Firebase JS SDK 13.1.0.
 
 ## What you'll end up with
 
-- A **Sign in** button. Signed out, the app works exactly as before (data
+- **Sign in with Google** at the top of the menu (signed out). Signed out, the app works exactly as before (data
   on the device only). Signed in, data lives in the user's own folder in
   Firestore and follows them to other devices.
 - On first sign-in on a device, that device's data is **copied** into the

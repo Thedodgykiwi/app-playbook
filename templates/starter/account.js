@@ -127,7 +127,7 @@ async function start() {
   authLib.onAuthStateChanged(auth, (user) => {
     setMenu(false);
     ui.box.classList.toggle('signed-in', !!user);
-    ui.signIn.hidden = !!user;
+    document.getElementById('signin-box').hidden = !!user;   // sign-in lives at the top of the menu
     ui.signOut.hidden = !user;
     ui.who.hidden = !user;
     window.AppAccount.user = user;
