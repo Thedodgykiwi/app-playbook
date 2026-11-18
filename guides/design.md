@@ -171,6 +171,12 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Hide swipe-reveal layers at rest.** A coloured layer kept under a row for
+  swipe actions (e.g. gold "Star") can show through on iPhone Safari, mostly
+  inside embedded frames, until the row is touched (a repaint glitch). Keep
+  it `visibility: hidden` and show it only while the row is being swiped or
+  sliding back (The Shortlist #70, Nov 2026).
+
 - **`env(safe-area-inset-*)` is zero unless the viewport tag has
   `viewport-fit=cover`.** Without it, an installed iPhone web app puts the
   bottom bar right against the home-bar swipe line, even though the CSS
