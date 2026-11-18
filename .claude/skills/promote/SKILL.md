@@ -215,7 +215,11 @@ says which changes to undo on `dev` by hand.
   last step, `deploy-pages`) — a GitHub glitch, not the app: the live site keeps
   the previous version. Re-run just the failed job (GitHub tools:
   `actions_run_trigger`, `rerun_failed_jobs`) and check it succeeds. Seen
-  once on test-app's Production, Nov 2026; the re-run worked.
+  once on test-app's Production, Nov 2026; the re-run worked. **If the re-run
+  fails the same way**, start a fresh run on that branch instead
+  (`actions_run_trigger`, `run_workflow`, workflow `deploy.yml`, ref = the
+  branch): a re-run reuses the run whose upload GitHub can't see; a fresh run
+  uploads again. Worked on test-app's Alpha, Nov 2026.
 - **Deploy failed: 'Branch "alpha" is not allowed to deploy to github-pages
   due to environment protection rules'** — the one-time setting was missed:
   ask the user to set `/settings/environments` → github-pages → Deployment
