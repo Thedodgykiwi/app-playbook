@@ -158,6 +158,13 @@ Shortlist #76).
   threshold (~70px); swallow the click that follows so it isn't also a tap.
   Swipes are hidden, so always offer the same action somewhere visible too
   (The Shortlist: a switch in the edit sheet) and show a one-time tip.
+  **Let people choose the action per direction** in Settings (a live preview
+  strip of the two coloured ends, then one icon menu per direction, built like
+  the app's other menus); keep today's behaviour as the default. Give every
+  action its own colour, and keep the layer's label to one short word: the
+  layer is only as wide as the drag, so "Out of My Day" was clipped (use
+  "Remove"). Destructive actions (Delete) need Undo, not a confirm step.
+  (The Shortlist #81, Nov 2026.)
 - **Rows with a layer underneath (swipe actions) must never go see-through.**
   Any highlight or fade on the row (e.g. a "just edited" flash) should fade to
   the row's own colour, not `transparent`, or the coloured action layer flashes
@@ -286,6 +293,16 @@ Shortlist #76).
   text toward the body text colour, e.g. `color-mix(in srgb, var(--danger)
   75%, var(--text))`, which works in light and dark themes. (The Shortlist
   #71, Nov 2026.)
+
+- **Check text on every coloured block, in both themes, with numbers.** White
+  text on mid-tone colours (orange, green, teal, grey) fails 4.5:1; and the
+  light theme's fix (deepen the colour) is wrong for dark, where the colours
+  are light and need dark text. Set colour *and* text colour per theme, and
+  read the computed styles in Playwright to check every pair (a script
+  computing the contrast ratio, not an eyeball). Give mock-up previews the same
+  CSS classes as the real thing, or they hide the problem (a preview with
+  hard-coded white text looked fine in light and unreadable in dark). (The
+  Shortlist #81, Nov 2026.)
 
 ### Behaviour
 
