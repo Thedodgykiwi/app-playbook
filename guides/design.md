@@ -195,6 +195,11 @@ nobody mistakes them for the real app.
   (`padding-left`), and re-centre any fixed bottom bar on the space that's
   left, not the whole window. (The Shortlist #71, Nov 2026.)
 
+- **iPhone Safari zooms into any text box under 16px** when it's tapped,
+  and stays zoomed. A "Small" text size (e.g. 93.75% on `:root`) pushes rem
+  sized boxes under 16px, so pin typing boxes to `max(16px, 1rem)` in that
+  mode (the starter does). (The Shortlist #73, Nov 2026.)
+
 - **Coloured text on a tint of the same colour fails contrast.** A red
   "Overdue" label on a 14% red tint was only 3.4:1 (needs 4.5:1). Darken the
   text toward the body text colour, e.g. `color-mix(in srgb, var(--danger)
