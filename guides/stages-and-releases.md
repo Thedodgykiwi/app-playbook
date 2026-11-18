@@ -16,6 +16,18 @@
   dev → alpha → staging → main.
 - **Production needs the user's explicit "yes"** for each release, even if
   they approved earlier ones.
+- **How fast to move depends on the size of the change** (the user's rule,
+  Nov 2026: stages exist so problems are caught as a build moves through them).
+  **Larger changes** (a new feature, a new screen, a change to the data or
+  Settings, anything touching shared files) go stage by stage and get time
+  with testers at Alpha and Staging. **Quick tweaks and bug fixes** (a colour,
+  a label, a one-line fix) can leap: promote alpha → staging → main back to
+  back (the `promote` skill's "skip straight to Production"), still with the
+  user's explicit "yes" for Production and a plain "not tested on Staging"
+  in the sign-off. Offer the quick route only for small, low-risk changes, and
+  say which route you're recommending and why. Never mix a large change into a
+  quick release: if a held batch is waiting, ask (held-work card) before
+  leaping past it.
 - **Unfinished work** goes on a `wip/<issue>-<name>` branch (never
   deployed, since only the four stage branches deploy), with a "Where I got to"
   comment on the issue (`issues.md`); merged into `dev` once it works.

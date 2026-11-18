@@ -88,3 +88,5 @@ Why: a quick-fix session skipped the rules and invented its own issue format
       the user); fact about this app → its `CLAUDE.md` (playbook `CLAUDE.md`).
 - [ ] Promote only when asked (`promote` skill), with a "what to try" list;
       Production needs an explicit "yes" (`testing-and-testers.md`).
+      Large changes go stage by stage; quick tweaks / bug fixes may leap
+      stages if the user says so (`stages-and-releases.md`).
