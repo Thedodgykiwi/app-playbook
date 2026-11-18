@@ -289,6 +289,13 @@ Shortlist #76).
 
 ### Behaviour
 
+- **A screen tied to something that can disappear must fall back.** If the
+  open view is a list (or project, folder…) that's been deleted, on this
+  device, another one, or with the account, show the overview instead of an
+  empty screen, and keep the saved choice in case it comes back. Found
+  testing "Delete my account" (The Shortlist #79).
+- **Toasts are one line: keep them under about 40 characters** ("Your
+  account has been deleted."); longer ones get cut off with "…" on phones.
 - **Toasts don't show above an open `<dialog>`.** A modal dialog sits in the
   browser's top layer, so a page toast (e.g. "Saved · Undo") appears behind
   it and can't be tapped. Anything that applies changes while a dialog is
