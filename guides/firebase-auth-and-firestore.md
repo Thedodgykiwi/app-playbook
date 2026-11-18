@@ -84,9 +84,10 @@ session has them.
   authorisation code; call `firebase_login` again with `authCode`.
 - Check access with `firebase_get_project`.
 
-The sign-in lasts for the cloud session only. The token is stored in
-`~/.config/configstore/firebase-tools.json`, which is useful for REST calls the
-MCP tools don't cover (step 5).
+The sign-in lasts for the cloud session only, and the login link dies if
+the MCP server restarts (call `firebase_login` again for a fresh one). The
+token is stored in `~/.config/configstore/firebase-tools.json`, which is
+useful for REST calls the MCP tools don't cover (step 5).
 
 ### 1b. Point the tools at THIS app's project first
 
@@ -98,6 +99,9 @@ and `firebase.json` (template) to the app's repo, then
 `firebase_create_app` registered a web app in the wrong project (found on
 the second app). If that happens, remove it in that project's console:
 Project settings → Your apps → the app → Remove this app.
+In a later session the sign-in may still be valid but with no active
+project (`firebase_deploy` fails with "requires an active project"): call
+`firebase_update_environment` again first.
 
 **New project made by Claude (`firebase_create_project`):** the Cloud
 Firestore API starts switched off (Firebase's own docs: adding Firebase does
@@ -194,6 +198,9 @@ Start from `templates/firebase/firestore.rules`. Principles:
 - **Immutable fields:** on update, `diff(resource.data).affectedKeys().hasOnly([...])`.
 - **No delete until the app has a delete feature.** Add it when needed.
 - **Whitelist stage names** in the path (see "Stages" below).
+- **Fixed choices as lists:** `data.color in ['red', 'orange', …]` for
+  anything picked from a set (colours, icons, priorities); ids that point at
+  other documents checked as short ids (`matches('^[A-Za-z0-9_-]{1,40}$')`).
 
 Then:
 
@@ -207,13 +214,12 @@ Then:
 4. Deploy with the CLI: `npx -y firebase-tools@latest deploy --only
    firestore:rules --project YOUR-PROJECT-ID` (from the app repo's root).
 5. **Check it's live:** `firebase_get_security_rules` (type `firestore`)
-   must show the new rule. Why: the MCP `firebase_deploy` tool once
-   reported "success" but the old rules stayed live; the CLI worked
-   (test-app, Nov 2026).
-   Cloud session not signed in to Firebase? `firebase_login` gives a link
-   and a session ID; the user signs in, checks the ID matches, and pastes
-   the code back. Then `firebase_update_environment` (project dir = app
-   repo, active project).
+   must show the new rule, and its text must name the right app (it has
+   shown another project's rules after switching). Why: the MCP
+   `firebase_deploy` tool has reported "success" without releasing anything
+   (twice, Nov 2026); the CLI above works with the same sign-in. A
+   "permission denied" right after a rules change usually means the old
+   rules are still live.
 
 Update the tests whenever the data model changes.
 
@@ -245,7 +251,17 @@ version; rename collections/fields for your app). Key decisions in it:
   the first snapshot pauses on every open, however few items there are.
   Keep a copy of the last list shown in localStorage, show it at once, and
   swap in the live list when it arrives (block edits until then). Measure
-  it with Playwright before guessing. (test-app Issue #36, Nov 2026.)
+  it with Playwright before guessing. (The Shortlist #36, Nov 2026.)
+- **Edits target the current record, not a captured copy.** Lists get
+  re-read (sign-in check after load, live updates from other devices), which
+  replaces the objects in memory; an editor holding "the item being edited"
+  saves to a stale copy. Look it up again by id when saving.
+- **Related collections** (e.g. lists that to-dos belong to,
+  `users/{uid}/stages/{stage}/lists/{id}`): make the id on the device and
+  save with `setDoc(doc(ref, id), …)`, so an item can point at a new one at
+  once, before the server answers. On first sign-in copy them **before** the
+  items, reuse one with the same name already in the account, and map the
+  items' ids to it. (The Shortlist #72.)
 - The main app exposes small hooks (`useLocal`, `useCloud`, `setTodos`,
   `localTodos`, `stage`) so `sync.js` stays separate from the UI code.
 - Emulator switch: `http://localhost:8080/?emulators` connects to the local
@@ -270,9 +286,22 @@ await popup.locator('#display-name-input').fill('Test User');
 await popup.locator('#sign-in').click();   // the pop-up's own button
 ```
 
-(The "Auto-generate user information" button didn't work reliably; fill
-the fields instead. The pop-up looks unstyled in cloud sessions because its
-fonts are blocked. That's fine.)
+(Filling the fields is the most reliable; "Auto-generate user information"
+has worked too. The pop-up looks unstyled in cloud sessions because its
+fonts are blocked. That's fine. It's sometimes slow: poll for the signed-in
+state for up to a minute instead of one short wait. If the pop-up can't load
+its scripts at all (it needs `unpkg.com`), sign in from the test instead with
+an unsigned Google token only the Auth emulator accepts:
+`await page.evaluate(async () => { const a = await import('https://www.gstatic.com/firebasejs/<version>/firebase-auth.js'); await a.signInWithCredential(a.getAuth(), a.GoogleAuthProvider.credential(JSON.stringify({ sub: 'u' + Date.now(), email: 'u' + Date.now() + '@example.com', email_verified: true }))); })`.
+Use a new email each run: the emulator keeps users between runs.)
+
+**Emulator project ID vs. the app's config:** emulator project IDs must
+start with `demo-` (so nothing reaches the real project), while the app's
+`firebase-config.js` has the real ID. With `firebase.json`'s
+`"singleProjectMode": true` the app's own config works against the
+emulators; otherwise serve a demo config in Playwright:
+`ctx.route('**/firebase-config.js', r => r.fulfill({ contentType: 'text/javascript', body: "window.FIREBASE_CONFIG={apiKey:'demo-key',authDomain:'demo-x.firebaseapp.com',projectId:'demo-x',appId:'1:1:web:1'};" }))`.
+Seed emulator data over REST with `Authorization: Bearer owner` (bypasses rules).
 
 Check: signed-out features unchanged and persist after reload; sign-in
 copies device data; add/edit while signed in shows "saved", survives a
@@ -364,7 +393,8 @@ When several people work on the same data (Edit 1 Job Board):
 ## Adding a field to stored data (e.g. a "done at" time, a "starred" flag)
 
 Strict rules (`keys().hasOnly([...])`) reject any new field, so signed-in
-saves would fail if the app ships first. Order (done this way on test-app):
+saves would fail if the app ships first. Order (done this way on The Shortlist,
+for every new field):
 
 1. Make the field **optional** in the rules (allow absent/null, validate type
    and range) and add it to `onlyChanges([...])` if it changes on update.
@@ -374,65 +404,36 @@ saves would fail if the app ships first. Order (done this way on test-app):
    back).
 4. **Deploy the rules first**, check them live (`firebase_get_security_rules`),
    then push the app change. Old app versions keep working with the new rules.
+   Waiting on something (e.g. a Firebase sign-in)? Push the work to
+   `wip/<issue>-<name>`, which doesn't deploy, not to `dev` (The Shortlist #50).
 5. Existing records without the field: handle "missing" in the app (e.g. show
    under "Older") rather than inventing values.
 
-## Gotchas (quick list)
+## Gotchas
 
-- **Emulator project ID vs. the app's config:** the app's `firebase-config.js`
-  has the real project ID, but the emulators run as `demo-...`. In Playwright,
-  serve a demo config instead: `ctx.route('**/firebase-config.js', r => r.fulfill({ contentType: 'text/javascript', body: "window.FIREBASE_CONFIG={apiKey:'demo-key',authDomain:'demo-x.firebaseapp.com',projectId:'demo-x',appId:'1:1:web:1'};" }))`.
-  Seed emulator data over REST with `Authorization: Bearer owner` (bypasses rules).
+Most setup gotchas are in the steps above (network hosts, support email in
+`firebase.json`, authorised domains, `measurementId`, location is permanent,
+`firebase_deploy` reporting success without releasing). These are the rest.
+
+**Code and loading**
 - **Module vs. classic script order:** `account.js`/data modules are
   `type="module"` (deferred), so a plain `<script>` after them runs **first**
   and finds `window.MyCloud` undefined. Give the plain script `defer`:
   deferred and module scripts run in document order.
+- **firebase-admin v14+ has no default `admin` namespace in ES modules**
+  (`admin.firestore is not a function`): import from `firebase-admin/app` and
+  `firebase-admin/firestore`.
+
+**Rules and tests**
 - Proving the rules tests bite: break the rule in a way that still compiles
   (e.g. `return signedIn() || true && ...`); a half-edited function gives a
   compile error, which proves nothing.
+- **Write-only collections** (reports, feedback): rules allow `create` for
+  people on an allow-list doc (`request.auth.token.email.lower() in
+  get(.../access/x).data.emails`, plus `email_verified`), and no read,
+  update or delete; the server side reads them with admin access.
 
-- Network: `apis.google.com` is needed for the sign-in pop-up; `<username>.github.io` to check the live site.
-- `firebase_init` auth writes the support email into `firebase.json`; revert after deploying.
-- Authorised domains aren't in the MCP tools; use the REST call above. Host only, no path.
-- Firestore location is permanent; ask first. Turn on delete protection.
-- `measurementId` = Analytics; leave it out unless the user wants tracking.
-- `firebase_deploy` is asynchronous; poll `firebase_deploy_status`. **It can
-  report "success" without releasing anything** (seen twice for
-  `firestore:rules`, Nov 2026): always confirm with
-  `firebase_get_security_rules`, and if the new rules aren't there, deploy
-  with the CLI (`npx -y firebase-tools@latest deploy --only firestore:rules
-  --project <id>`; the MCP sign-in works for it). A "permission denied" right
-  after a rules change usually means the old rules are still live.
-  `firebase_get_security_rules` can also show **another project's** rules
-  even after `firebase_update_environment` switched projects (Nov 2026):
-  check the rules text names the right app before trusting it.
-- **New field: get the rules live before the app code (Nov 2026).** If a change adds
-  a field that the rules must allow, deploy the rules first, then push the
-  code to `dev`. While you wait (for example for a Firebase sign-in), push the
-  work to `wip/<issue>-<name>`, which doesn't deploy. A Firebase MCP sign-in link
-  dies if the MCP server restarts, so call `firebase_login` again for a fresh
-  one (The Shortlist #50).
-- **Edits must target the current record, not a captured copy.** Lists get
-  re-read (sign-in check after load, live updates from other devices), which
-  replaces the objects in memory. An editor that keeps a reference to "the
-  to-do being edited" will save to a stale copy and lose the change: look it
-  up again by id when saving.
-- The emulator's fake sign-in pop-up is sometimes slow to finish in cloud
-  sessions: in Playwright, poll for the signed-in state for up to a minute
-  instead of a single short wait, and retry once before suspecting the app.
-  If the pop-up's page can't load its scripts (it needs `unpkg.com`; blocked
-  in some cloud sessions, so the button does nothing), sign in from the test
-  instead, with an unsigned Google token only the Auth emulator accepts:
-  `await page.evaluate(async () => { const a = await import('https://www.gstatic.com/firebasejs/<version>/firebase-auth.js'); await a.signInWithCredential(a.getAuth(), a.GoogleAuthProvider.credential(JSON.stringify({ sub: 'u' + Date.now(), email: 'u' + Date.now() + '@example.com', email_verified: true }))); })`
-  (same SDK address as the app, so it's the app's own sign-in). Use a new
-  email each run: the emulator keeps users, and the same email is the same
-  account with last run's data. (test-app, Nov 2026.)
-- In a new session the Firebase sign-in may still be valid, but there's no
-  active project: `firebase_deploy` fails with "requires an active project".
-  Call `firebase_update_environment` with `project_dir` (the app repo) and
-  `active_project` first.
-- Emulator project IDs must start with `demo-` so nothing reaches the real project.
-- `[hidden]` can be overridden by CSS `display`; add `[hidden] { display: none !important; }`.
+**Data and money**
 - Never delete users' device or cloud data without asking; migrate formats instead.
 - Billing stays off (Spark). Anything that needs Blaze (Cloud Functions,
   **every Firebase Extension, e.g. Trigger Email**) needs the user's OK. A
@@ -441,11 +442,4 @@ saves would fail if the app ships first. Order (done this way on test-app):
   a repo secret: the app writes a doc, the Action picks it up. Say up front
   that it isn't instant: GitHub's shortest schedule is 5 minutes and runs
   often start 5–15 minutes late; scheduled workflows only run from the
-  **default branch**. (test-app "Report issue", Nov 2026.)
-- **firebase-admin v14+ has no default `admin` namespace in ES modules**
-  (`admin.firestore is not a function`): import from `firebase-admin/app` and
-  `firebase-admin/firestore`.
-- **Write-only collections** (reports, feedback): rules allow `create` for
-  people on an allow-list doc (`request.auth.token.email.lower() in
-  get(.../access/x).data.emails`, plus `email_verified`), and no read,
-  update or delete; the server side reads them with admin access.
+  **default branch**. (The Shortlist "Report issue", Nov 2026.)

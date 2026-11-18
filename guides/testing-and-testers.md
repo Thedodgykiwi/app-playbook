@@ -67,7 +67,7 @@ just your own check on your phone. Say so in the app's `CLAUDE.md`.
 
 - Each problem or idea becomes an issue in the usual layout (`issues.md`),
   "Reported by: tester" (or "client"), with the **stage** under "Where".
-  Screenshots go in `docs/issue-images/`.
+  Screenshots go in `.github/issue-screenshots/` (`issues.md`).
 - A bug in something just promoted → a sub-issue of that change's issue
   (`issues.md`). It blocks the next promotion unless the user says it can wait.
 - Testers don't need GitHub: they tell the user (message, screenshot), or use

@@ -22,15 +22,14 @@ recommended one first, marked "(Recommended)":
 **Every issue uses the layout in "Writing a good issue" below** (What's
 happening / what's wanted, Where, Expected, Reported by, Notes), however it
 was created: from the card, logged after the fact, or by "log it". (Found in
-test-app: issues #10–#16 were first written in a looser style and had to be
+The Shortlist: issues #10–#16 were first written in a looser style and had to be
 rewritten.)
 
 Say in the card's question what the request is in one line (the card may be
 all the user sees). Skip the card only when the user already said which
 (e.g. "log it", "mock it up", "just do it", "promote …"), for questions that
 change nothing, and for follow-ups inside work already chosen (they go on the
-same issue). Every option creates an issue. Test-bench apps and the playbook
-itself don't use issues: there the card offers mock-up first / build now.
+same issue). Every option creates an issue.
 
 ## Every change gets an issue (automatically)
 
@@ -41,19 +40,23 @@ That gives each change a record, a pill in the release notes, and an
 automatic close on the Production release. Small follow-ups during the same
 piece of work ("move it 2px") go on the same issue.
 
+**Follow-up or new issue?** Fixes and tweaks to what an issue asked for (a
+bug in it, a colour, a layout fix), including ones on work built but **not
+yet released**, are comments on that issue.
 **A new feature or behaviour is a new issue, even mid-session.** Follow-ups
 are fixes and tweaks to what that issue asked for (a bug in it, a colour, a
 layout fix). Something the issue didn't ask for ("add a Due tomorrow panel"
 while building due dates) gets its own issue and the choice card first.
-(Found in test-app, Nov 2026: the user had to remind Claude.)
+(The Shortlist, Nov 2026: the user had to remind Claude.)
 
 Not for: the playbook itself, or a test-bench app like Playbook Trial
-(starter work is recorded in the playbook's commits).
+(starter work is recorded in the playbook's commits). There the card offers
+just mock-up first / build now.
 
 If work was done without one, log it afterwards ("Logged after the fact",
 with the commits) and link it with a later commit that says `Issue #<n>`
 (e.g. the commit that records the rule or a note), so the release still
-closes it. (Found in test-app, Nov 2026: three changes had no issues.)
+closes it. (The Shortlist, Nov 2026: three changes had no issues.)
 
 ## The golden rule: "log it" means record only
 
@@ -113,12 +116,7 @@ issue, so the link shows on both (GitHub tools: `sub_issue_write`, method
 the long number returned when it was created, not `#7`). Also say so in the
 bug's Notes ("Caused by the change for #6").
 
-**Screenshots in an issue.** The GitHub tools can't upload an image to an
-issue. Save it (as a JPEG, to keep the repo small) under
-`docs/issue-images/<short-name>.jpg` on `dev`, push, and put it in the
-issue body as
-`![what it shows](https://raw.githubusercontent.com/<owner>/<repo>/dev/docs/issue-images/<short-name>.jpg)`.
-Only in a public repo, and check the screenshot shows no private details first.
+**Screenshots:** see "Screenshots on issues" below.
 
 ## Working on an issue
 
@@ -127,7 +125,7 @@ Only in a public repo, and check the screenshot shows no private details first.
    `Issue #3, #4` for several). **Don't write `Fixes #12`**: the repo's
    default branch is `dev` (so new Claude sessions start there and read the
    current CLAUDE.md), and GitHub closes "Fixes" issues as soon as the commit
-   reaches the default branch, i.e. on Dev (this happened on test-app,
+   reaches the default branch, i.e. on Dev (this happened on The Shortlist,
    Nov 2026).
 3. The issue stays open through Dev, Alpha and Staging. When the fix is
    released to **Production**, the shared deploy's release step **closes
@@ -145,7 +143,7 @@ Only in a public repo, and check the screenshot shows no private details first.
 
    The next session's catch-up looks for these, finishes from there, merges a
    `wip/` branch into `dev` when ready and deletes it.
-5. If it won't be done, close it with a comment saying why
+6. If it won't be done, close it with a comment saying why
    (`state_reason: not_planned`).
 
 ## Issue pills in release notes
@@ -160,26 +158,31 @@ the pill just says `#12`. On GitHub's release page `(#12)` is a normal link.
 
 ## Screenshots on issues
 
-Claude can't use GitHub's drag-and-drop image upload, so screenshots go in
-the repo and the comment shows them from there (tested Nov 2026):
+The GitHub tools can't upload an image, so screenshots (the user's, or
+Claude's own Before / After) go in the repo and the issue shows them from
+there:
 
-1. Save the PNG in **`.github/issue-screenshots/<issue>-<before|after>.png`**
-   on `dev` (with the fix, or in its own small commit). The deploy drops
-   `.github/`, so these never appear on the live site.
-2. Commit, push, then link it **pinned to that commit** so it never breaks:
-   `https://raw.githubusercontent.com/<owner>/<repo>/<commit-sha>/.github/issue-screenshots/12-after.png`
-   Check the link returns `200 image/png` before posting.
-3. Comment with an HTML image tag so it can be sized and described:
-   `<img src="<link>" alt="<what it shows>" width="360">`
-   Typically a **Before** when the work starts and an **After** with
-   "Done on Dev, closes when released to Production".
+1. Save it in **`.github/issue-screenshots/<issue>-<what>.png`** (or `.jpg`
+   for photos, to keep the repo small) on `dev`, with the fix or in its own
+   small commit. The deploy drops `.github/`, so these never reach the live site.
+2. Commit, push, then link it **pinned to that commit** so it never breaks
+   (a link to `dev` breaks if the file moves):
+   `https://raw.githubusercontent.com/<owner>/<repo>/<commit-sha>/.github/issue-screenshots/12-after.png`.
+   Check the link returns `200 image/...` before posting.
+3. Show it with an HTML image tag so it can be sized and described:
+   `<img src="<link>" alt="<what it shows>" width="360">`: in the issue body
+   for the user's screenshot, in a comment for a **Before** when work starts
+   and an **After** ("Done on Dev, closes when released to Production").
 
 - Screenshot only what matters (one element or the card), at
   `deviceScaleFactor: 2`; typically 15–200 KB each.
-- **Public repo = public screenshots.** Show test data only: sign in with a
-  test account, never real users' names, emails or lists.
+- **Public repo = public screenshots.** Check the user's screenshot shows no
+  private details; for your own, use test data only, never real users' names,
+  emails or lists.
 - Private repos: the same links need the viewer to be signed in to GitHub
   with access (not yet tested).
+- Tester reports from the app's Report issue button store their screenshot
+  differently (an `issue-images` branch, `report-issue.md`).
 
 ## Asking what's open, and what to do first
 
