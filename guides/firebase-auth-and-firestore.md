@@ -347,7 +347,9 @@ The starter has all three; switch them on for this app:
   (the starter lists it); US transfers rely on the Data Privacy Framework's
   UK Extension. Most UK organisations that handle personal data must also
   pay the ICO's yearly data protection fee (ico.org.uk, "Do I need to pay");
-  tell the user to check, don't decide for them.
+  tell the user to check, don't decide for them. If they're exempt, suggest
+  they note the date privately (not in the repo) and re-check yearly or when
+  the business changes (a public launch, marketing, staff).
   Delete sections that don't apply. It's linked from the sign-in card, the
   menu and Settings. Update it, and its date, whenever the app starts storing
   or sharing something new. Not legal advice: for a business app, suggest
