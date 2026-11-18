@@ -169,6 +169,15 @@ nobody mistakes them for the real app.
   to its button, or to the section heading if the button has gone, never
   leave it on the page body. Found by `/code-review` (The Shortlist #59).
 
+- **Focused views get slim headings; the overview keeps its panels.** In a
+  view that already filters the list (My Day, Planned, Important), big coloured
+  group panels repeat what the view says. Small rounded "pill" headings by
+  *when* (Overdue / Today / Tonight / a date) over plain cards fit about 50%
+  more on screen. Hide the heading when there's only one group. If people
+  disagree on the look, one Settings choice (e.g. Pills / Lines / Boxes) for
+  all focused views is cheap when the styles share the same rows. (The
+  Shortlist #71, Nov 2026.)
+
 - **Switching between views of one list: a side panel, opened two ways.**
   For "My Day / Important / Planned / Completed / your own lists", a panel
   from the left (like Microsoft To Do) beat a chip row (gets crowded once
@@ -185,6 +194,12 @@ nobody mistakes them for the real app.
   it covers the banner's left-end buttons; push the page over
   (`padding-left`), and re-centre any fixed bottom bar on the space that's
   left, not the whole window. (The Shortlist #71, Nov 2026.)
+
+- **Coloured text on a tint of the same colour fails contrast.** A red
+  "Overdue" label on a 14% red tint was only 3.4:1 (needs 4.5:1). Darken the
+  text toward the body text colour, e.g. `color-mix(in srgb, var(--danger)
+  75%, var(--text))`, which works in light and dark themes. (The Shortlist
+  #71, Nov 2026.)
 
 - **Hide swipe-reveal layers at rest.** A coloured layer kept under a row for
   swipe actions (e.g. gold "Star") can show through on iPhone Safari, mostly
