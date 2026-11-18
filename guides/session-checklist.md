@@ -60,7 +60,10 @@ Why: a quick-fix session skipped the rules and invented its own issue format
       (`working-with-the-user.md`).
 
 ## 3. Build
-
+      **Change to an existing screen → run a copy of the real app as the
+      mock-up** (scratch copy, real component with an A/B bar, published with
+      `publish_files`; `working-with-the-user.md`). Never a redrawn look-alike:
+      it gets called a guess (The Shortlist #40, #60).
 - [ ] Small change on `dev`; one issue per commit, ending `Issue #<n>`
       (not "Fixes").
 - [ ] Checks pass: `node /home/user/app-playbook/tools/check-app.js --pages

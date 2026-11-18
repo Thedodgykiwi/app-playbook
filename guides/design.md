@@ -171,6 +171,12 @@ nobody mistakes them for the real app.
 
 ## Gotchas
 
+- **Toasts don't show above an open `<dialog>`.** A modal dialog sits in the
+  browser's top layer, so a page toast (e.g. "Saved · Undo") appears behind
+  it and can't be tapped. Anything that applies changes while a dialog is
+  open needs its Undo note inside the dialog. Found by testing a real-app
+  mock-up (The Shortlist #60, Nov 2026).
+
 - **Changing a title or label's length: measure it against its neighbours at
   320, 360, 375 and 390px, signed out as well as signed in.** A longer app
   name ran under the "Sign in" button on narrow phones; nothing scrolled
