@@ -175,8 +175,10 @@ nobody mistakes them for the real app.
   `viewport-fit=cover`.** Without it, an installed iPhone web app puts the
   bottom bar right against the home-bar swipe line, even though the CSS
   "allows" for it. The starter's `index.html` now includes it; add left/right
-  insets too so landscape notches don't cover content (The Shortlist #65,
-  Nov 2026).
+  insets too so landscape notches don't cover content, **added to** the
+  normal padding (`calc(1rem + env(safe-area-inset-left))`): setting
+  `padding-left: env(...)` alone wiped the side margins, since the inset is 0
+  on an upright phone (The Shortlist #65, Nov 2026).
 
 - **Toasts don't show above an open `<dialog>`.** A modal dialog sits in the
   browser's top layer, so a page toast (e.g. "Saved · Undo") appears behind
