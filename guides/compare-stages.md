@@ -56,6 +56,13 @@ In the app's root, on `dev`:
 
 ## Gotchas
 
+- **iPhone: don't load frames while they're hidden.** On a phone the Compare
+  tab shows one stage at a time. iPhone Safari lays out a hidden frame
+  (`display: none`) wrongly and keeps it when shown: rows came out far too
+  tall (at first it looked like a gold band under starred rows). So on a
+  phone only the chosen stage is loaded and switching tabs loads it fresh
+  (The Shortlist #70, Nov 2026).
+
 - **Only react to the data key.** Apps write small housekeeping values on
   every load (which hint line was shown, visit counters); reloading other
   windows on those caused an endless reload loop. compare.js only reloads

@@ -274,10 +274,14 @@ const src=s=>s.url+(s.url.includes('?')?'&':'?')+'compare=1&theme='+theme;
 fr.innerHTML=S.map(s=>`<div class="frame${s.key===cur?' on':''}" data-k="${esc(s.key)}"><p class="cap"><span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}</p><iframe title="${esc(s.name)}, compare mode"></iframe></div>`).join('');
 tabs.innerHTML=S.map(s=>`<button type="button" role="tab" data-k="${esc(s.key)}" aria-selected="${s.key===cur}"><span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}</button>`).join('');
 const frames=[...fr.querySelectorAll('iframe')];let loaded=false;
-frames.forEach((f,i)=>f.addEventListener('load',()=>{const box=f.parentNode;let ok=false;try{ok=!!f.contentWindow.COMPARE_READY;}catch(e){}
+frames.forEach((f,i)=>f.addEventListener('load',()=>{const box=f.parentNode;if(!f.getAttribute('src')||f.getAttribute('src')==='about:blank'){const n0=box.querySelector('.nosupport');if(n0)n0.remove();return;}let ok=false;try{ok=!!f.contentWindow.COMPARE_READY;}catch(e){}
  let n=box.querySelector('.nosupport');if(!ok&&!n){n=document.createElement('div');n.className='nosupport';n.textContent='Compare mode isn\'t on this stage yet. It arrives with the stage\'s next deploy.';box.append(n);}else if(ok&&n)n.remove();}));
-const load=()=>{frames.forEach((f,i)=>{f.src=src(S[i]);});loaded=true;};
-tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;cur=b.dataset.k;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x.dataset.k===cur));fr.querySelectorAll('.frame').forEach(x=>x.classList.toggle('on',x.dataset.k===cur));};
+// On a phone only the chosen stage is loaded: iPhone Safari lays out a hidden
+// frame wrongly (rows came out too tall) and doesn't fix it when it's shown.
+const phone=()=>matchMedia('(max-width:760px)').matches;
+const load=()=>{frames.forEach((f,i)=>{const want=(!phone()||S[i].key===cur)?src(S[i]):'about:blank';if(f.getAttribute('src')!==want)f.src=want;});loaded=true;};
+matchMedia('(max-width:760px)').addEventListener('change',()=>{if(loaded)load();});
+tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;cur=b.dataset.k;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x.dataset.k===cur));fr.querySelectorAll('.frame').forEach(x=>x.classList.toggle('on',x.dataset.k===cur));if(loaded)load();};
 document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;theme=b.dataset.theme;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(loaded)load();};
 document.getElementById('cmp-reset').onclick=()=>{const f=frames.find(x=>{try{return x.contentWindow.compareReset;}catch(e){return false;}});if(f)f.contentWindow.compareReset();if(loaded)setTimeout(load,150);};
 const show=t=>{const c=t==='compare';document.getElementById('compare').hidden=!c;document.getElementById('pipeline-view').hidden=c;
