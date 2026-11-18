@@ -330,8 +330,8 @@ user does that on the Dev site; tell them so honestly.
 ### 8b. Privacy page, "Download my data" and "Delete my account" (before real people sign in)
 
 The starter has all three; switch them on for this app:
-- **`privacy.html`:** written to cover what the GDPR (EU/UK) and NZ's Privacy
-  Act 2020 expect a privacy notice to say: who's responsible and how to reach
+- **`privacy.html`:** written to cover what the GDPR (UK and EU) expects a
+  privacy notice to say: who's responsible and how to reach
   them, what's collected and why (the legal basis), who else handles it
   (Google/Firebase, GitHub hosting, plus e.g. Gmail if the app sends email),
   that Google's sign-in runs in the US (covered by the EU–US Data Privacy
