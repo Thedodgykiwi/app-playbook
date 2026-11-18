@@ -57,7 +57,7 @@ async function start() {
     dot: $('sync-dot'), name: $('account-name'), email: $('account-email'),
     status: $('sync-status'), signOut: $('sign-out'), label: $('avatar-label'),
   };
-  // The menu itself (open/close, theme, Settings, version) is menu.js.
+  // The menu itself (open/close, Settings, version) is menu.js.
   const setMenu = () => window.AppMenu?.close();
   const signedOutAvatar = ui.avatar.innerHTML;   // the generic person icon
 

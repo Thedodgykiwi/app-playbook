@@ -59,6 +59,11 @@ Report issue, the stage menu and Pipeline, and the buttons overlapped.
   Signed in: a round avatar with the first initial plus a small **sync dot**
   (green saved / amber saving / grey offline / red error) that opens an
   account menu (name, email, sync status in words, Sign out).
+- **Appearance choices live together in Settings** (theme, accent colour,
+  text size), not the theme in the menu and the rest in Settings: people look
+  for them in one place, and most set the theme once (Auto). The menu stays
+  short: account, sync status, Settings, install, sign out, version.
+  (The Shortlist #77, Nov 2026.)
 - **Status in words, not only colour:** the sync dot has a matching text
   line and `aria-label`, so it works for colour-blind and screen-reader users.
 - **Toasts** (short message at the bottom, `role="status"`) for things that
