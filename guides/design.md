@@ -131,6 +131,17 @@ Shortlist #76).
   iPhone toolbars don't hide its bottom. Otherwise the buttons scroll off-screen
   and people miss it. (Found in The Shortlist, Nov 2026, after adding a calendar.)
 
+- **A growing Settings screen: fold-away sections, opening from the top.**
+  A bottom sheet grows upward, so everything in it jumps when its height
+  changes (tabs, drill-in pages and fold-away sections all did in a
+  mock-up). Anchor the Settings panel to the **top** edge instead and split it
+  into a few named sections (e.g. Look, Lists and swiping, Account and app)
+  that fold away, **one open at a time**: opening one only pushes the sections
+  below it down, nothing else moves, and a new setting just goes into the right
+  section. Tabs suit about three groups; fold-away sections scale to more.
+  Put one-off actions (Add to Home Screen) in Settings, not the account menu.
+  (The Shortlist #86, Nov 2026.)
+
 ### Lists and rows
 
 - **Focused views get slim headings; the overview keeps its panels.** In a
