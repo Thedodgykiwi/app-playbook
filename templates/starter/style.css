@@ -453,3 +453,5 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 #delete-account > p { margin: .3rem 0 .7rem; }
 .setting-help { margin: -.3rem 0 .5rem; font-size: .85rem; color: var(--muted); }
 .account-actions { gap: .5rem; flex-wrap: wrap; }
+.account-actions #download-data { background: var(--secondary); border: 1px solid var(--line); }
+.setting-help a { color: var(--accent); }
