@@ -166,6 +166,7 @@ PAGE = r"""<!DOCTYPE html>
 *{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;font-family:system-ui,sans-serif;background:#f4f5f7;color:#1d1f23}
 main{padding:1.5rem 1rem 3rem;max-width:1200px;margin:0 auto}
+a.back{display:inline-flex;align-items:center;gap:.3rem;min-height:44px;margin:-.4rem 0 .2rem;font-size:.9rem;font-weight:600;color:#3b5bdb;text-decoration:none}a.back:hover{text-decoration:underline}
 header.top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem;margin-bottom:1.2rem}
 header.top h1{margin:0;font-size:1.4rem;display:flex;align-items:center;gap:.5rem}
 header.top .sub{color:#6c757d;font-size:.82rem}
@@ -201,6 +202,7 @@ ul.items li{font-size:.88rem;line-height:1.35;padding:.45rem .55rem;border:1px s
 .legend{margin-top:1rem;font-size:.78rem;color:#6c757d}
 @media (max-width:760px){.lanes{grid-template-columns:1fr}.arrow{top:auto;bottom:-.85rem;right:50%;transform:translateX(50%) rotate(90deg)}}
 </style></head><body><main>
+<a class="back" id="back" href="../">← Back to the app</a>
 <header class="top"><h1>__TITLE__</h1><span class="sub" id="updated"></span></header>
 <div class="lanes" id="lanes"></div>
 <section class="issues" id="issues"><h2>Open issues <span class="count" id="opencount"></span></h2><ul id="open"></ul></section>
@@ -230,6 +232,10 @@ D.stages.forEach((s,idx)=>{const el=document.createElement('section');el.classNa
  el.innerHTML=`<div class="bar" style="background:${esc(s.color)}"></div><div class="head"><h2>${esc(s.name)}</h2><a class="open-site" href="${esc(s.url)}">Open ↗</a></div><div class="body">${body}</div><div class="foot">Last change ${ago(s.changed)}</div>`+(idx<D.stages.length-1?'<div class="arrow" aria-hidden="true">→</div>':'');
  const mb=el.querySelector('.more');if(mb)mb.addEventListener('click',()=>{const l=el.querySelector('.morelist');l.hidden=!l.hidden;mb.setAttribute('aria-expanded',!l.hidden);mb.textContent=(l.hidden?'▸':'▾')+mb.textContent.slice(1);});
  lanes.append(el);});
+// "Back to the app": the stage page you came from (same site, not this page), else Production.
+(function(){try{const r=document.referrer&&new URL(document.referrer);const b=document.getElementById('back');
+ if(r&&r.origin===location.origin&&!r.pathname.includes('/pipeline/')){b.href=r.href;
+  const m=r.pathname.match(/\/(dev|alpha|staging)\//);b.textContent='← Back to '+(m?m[1][0].toUpperCase()+m[1].slice(1):'the app');}}catch(e){}})();
 document.getElementById('updated').textContent='Updated '+ago(D.updated)+' · '+fmt(D.updated);
 function showOpen(list){document.getElementById('issues').hidden=!list.length;
  document.getElementById('opencount').textContent=list.length;
