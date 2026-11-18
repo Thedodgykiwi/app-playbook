@@ -30,7 +30,7 @@ secrets out.
   It's also shared by **every app** on that address (`/test-app/`,
   `/playbook-trial/` …): put the app's folder in keys too, e.g.
   `` `prefs:${location.pathname.split('/')[1]}` `` (the starter does this).
-- **Stage banner:** show "DEV environment" etc. on every stage except
+- **Stage banner:** show the stage name ("DEV", "ALPHA"…; no "environment", too long on phones) on every stage except
   `main`, coloured per stage, so nobody mistakes a test stage for Production.
   Locally it says "LOCAL".
 - **`hidden` attribute vs CSS:** a rule like `.thing { display: flex }`

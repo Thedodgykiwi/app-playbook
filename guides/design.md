@@ -32,8 +32,10 @@ would help other apps. Worked example: `Thedodgykiwi/test-app`.
 | Dev | purple `#7048e8` |
 | Local | grey `#495057` |
 
-Non-production stages always show a fixed banner ("DEV environment") so
-nobody mistakes them for the real app.
+Non-production stages always show a fixed banner with just the stage name
+("DEV", "ALPHA", "STAGING") so nobody mistakes them for the real app. Keep it
+to the name: "DEV environment" was too long on phones once the banner also held
+Report issue, the stage menu and Pipeline, and the buttons overlapped.
 
 ## Icons
 
