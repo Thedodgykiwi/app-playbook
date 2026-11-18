@@ -200,6 +200,18 @@ nobody mistakes them for the real app.
   sized boxes under 16px, so pin typing boxes to `max(16px, 1rem)` in that
   mode (the starter does). (The Shortlist #73, Nov 2026.)
 
+- **A wide colour palette that stays readable: tiles for user colours, deeper
+  shades for accents.** If every colour must carry white text on a light
+  background, they all drift to similar dark shades and look samey. Spread
+  12 hues evenly around the wheel (red, orange, yellow, lime, green, teal,
+  cyan, blue, purple, grape, pink, grey). Show user-picked colours (lists,
+  tags) as a **filled tile behind an icon**, with a white or dark icon chosen
+  per colour, so they can be bright. For the app's accent, show the bright
+  swatch but use a deeper shade of the same hue in the light theme (4.5:1 for
+  text) and the bright one with dark text in the dark theme. Lay the swatches
+  out in full rows (a fixed grid, e.g. 6 per row) so every phone shows the
+  same rows. (The Shortlist #72/#75, Nov 2026.)
+
 - **Coloured text on a tint of the same colour fails contrast.** A red
   "Overdue" label on a 14% red tint was only 3.4:1 (needs 4.5:1). Darken the
   text toward the body text colour, e.g. `color-mix(in srgb, var(--danger)
