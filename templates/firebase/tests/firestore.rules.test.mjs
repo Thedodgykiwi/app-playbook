@@ -45,7 +45,8 @@ await t('negative pos rejected', () => assertFails(setDoc(p(alice, 'dev', 'x7'),
 await t('text cannot change', () => assertFails(updateDoc(p(alice), { text: 'changed' })));
 await t('pos cannot change', () => assertFails(updateDoc(p(alice), { pos: 5 })));
 await t('done must stay bool', () => assertFails(updateDoc(p(alice), { done: 'yes' })));
-await t('delete denied', () => assertFails(deleteDoc(p(alice))));
+await t('other user cannot delete', () => assertFails(deleteDoc(p(bob))));
+await t('owner can delete (Delete my account)', () => assertSucceeds(deleteDoc(p(alice))));
 await t('parent user doc not writable', () => assertFails(setDoc(doc(alice, 'users', 'alice'), { a: 1 })));
 await t('other collections denied', () => assertFails(setDoc(doc(alice, 'other', 'x'), { a: 1 })));
 

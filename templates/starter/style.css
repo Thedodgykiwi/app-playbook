@@ -442,3 +442,13 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 
 /* "Something went wrong" (error-screen.js): covers the page if the app fails while loading */
 .error-screen { position: fixed; inset: 0; z-index: 20; background: var(--bg); display: grid; place-items: center; padding: 1.5rem; }
+
+/* Privacy links and "Delete my account" (account.js) */
+.signin-privacy { justify-self: center; font-size: .8rem; color: var(--muted); }
+.menu-privacy { display: block; text-align: center; font-size: .8rem; color: var(--muted); margin-top: .1rem; }
+.btn.danger-ghost { background: none; color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent); }
+.btn.danger-ghost:hover { background: color-mix(in srgb, var(--danger) 8%, transparent); }
+.notice.danger { border-color: color-mix(in srgb, var(--danger) 45%, transparent); color: var(--danger); }
+.delete-actions { justify-content: flex-end; gap: .5rem; flex-wrap: wrap; margin-top: .4rem; }
+#delete-account > p { margin: .3rem 0 .7rem; }
+.setting-help { margin: -.3rem 0 .5rem; font-size: .85rem; color: var(--muted); }

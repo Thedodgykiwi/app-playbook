@@ -81,7 +81,10 @@ page from then on.
    from step 0. The starter already has `account.js` and an empty
    `firebase-config.js`; the app's own data code and rules are written for
    this app (test-app's `sync.js` and `firestore.rules` are the worked
-   example). Otherwise tell them it can be switched on later ("add sign-in
+   example). Set `window.AppAccount.dataCollections` to the app's
+   collections (so "Delete my account" removes them) and fill in the
+   `{{…}}` blanks in `privacy.html` (what's saved, region, how to get in
+   touch). Otherwise tell them it can be switched on later ("add sign-in
    to this app").
    **Report issue (only if they said yes, after sign-in works):** follow
    `guides/report-issue.md` ("Switching it on"); otherwise mention it can

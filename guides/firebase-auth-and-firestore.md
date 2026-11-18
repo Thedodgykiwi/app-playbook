@@ -196,7 +196,7 @@ Start from `templates/firebase/firestore.rules`. Principles:
 - **Server time:** `createdAt == request.time` on create (the app sends
   `serverTimestamp()`), so clients can't fake it.
 - **Immutable fields:** on update, `diff(resource.data).affectedKeys().hasOnly([...])`.
-- **No delete until the app has a delete feature.** Add it when needed.
+- **Owners may delete their own data** (needed for "Delete my account"); nobody else may.
 - **Whitelist stage names** in the path (see "Stages" below).
 - **Fixed choices as lists:** `data.color in ['red', 'orange', …]` for
   anything picked from a set (colours, icons, priorities); ids that point at
@@ -326,6 +326,23 @@ Two lessons from writing it:
 
 **What can't be tested from a cloud session:** a real Google sign-in. The
 user does that on the Dev site; tell them so honestly.
+
+### 8b. Privacy page and "Delete my account" (before real people sign in)
+
+The starter has both; switch them on for this app:
+- **`privacy.html`:** fill in every `{{…}}` (what's saved, the Firestore
+  region, how to get in touch: never a personal email in a public repo).
+  It's linked from the sign-in card, the menu and Settings. Update it
+  whenever the app starts storing something new.
+- **Delete my account** (Settings → Your account, signed in only): set
+  `window.AppAccount.dataCollections = ['todos', …]`, every collection under
+  `users/{uid}/stages/{stage}/`. It deletes them on **every** stage, then the
+  sign-in (`deleteUser`; Google may ask to sign in again first:
+  `reauthenticateWithPopup`). The rules must allow the owner to delete
+  (`allow delete: if isOwner(userId) && isValidStage(stage)`), with tests.
+  Listen for `account:deleted` to clear any copy the app keeps on the device.
+- Test it with the emulators: sign in, add data on two stages, delete the
+  account, check the data and the emulator user are gone.
 
 ### 9. Push, deploy, hand over
 

@@ -117,7 +117,8 @@ service cloud.firestore {
         isValidTodo() &&
         onlyChanges(['done', 'p']);
 
-      // No deletes (the app has no delete feature yet).
+      // Owner only: delete their own data ("Delete my account" removes everything).
+      allow delete: if isOwner(userId) && isValidStage(stage);
     }
 
     function isTester() {

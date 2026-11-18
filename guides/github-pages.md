@@ -48,3 +48,14 @@ secrets out.
   code: re-run the **whole** run (`rerun_workflow_run`), not just the failed
   job, so the site package is uploaded again. (test-app, Nov 2026.)
 - Local preview: `python3 -m http.server 8080` from the repo root.
+
+## Search engines
+
+- **Test stages are hidden from search engines:** the shared deploy adds
+  `<meta name="robots" content="noindex, nofollow">` to every page on Dev,
+  Alpha and Staging, so half-finished versions never turn up in Google.
+  Production is left alone. (A `robots.txt` can't do it: it only works at the
+  very top of the domain, which a project site doesn't own.)
+- Pages that should never be indexed even on Production (the style guide, the
+  pipeline page, 404) carry their own `noindex`.
+

@@ -102,6 +102,15 @@ jobs:
               mkdir -p "$dest"
               cp -r "$tmp"/. "$dest"/
               echo "window.STAGE = '$stage';" > "$dest/stage.js"
+              # Test stages stay out of search engines: every page on Dev, Alpha and
+              # Staging gets a "noindex" tag (Production is left as it is).
+              # guides/github-pages.md "Search engines".
+              if [ "$stage" != "main" ]; then
+                for f in "$dest"/*.html; do
+                  [ -f "$f" ] || continue
+                  grep -qi 'name="robots"' "$f" || sed -i -E '0,/<head[^>]*>/s//&\n  <meta name="robots" content="noindex, nofollow">/' "$f"
+                done
+              fi
               # Compare mode + stage switcher (shared; does nothing unless opened with
               # ?compare, apart from the banner's stage menu). guides/compare-stages.md
               if [ -f "$dest/index.html" ] && grep -q 'src="stage\.js' "$dest/index.html"; then

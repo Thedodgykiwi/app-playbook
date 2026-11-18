@@ -12,6 +12,8 @@
 //   await window.AppAccount.ready   // { auth, authLib, db, fs } once Firebase has loaded (null if off)
 //   window.AppAccount.user          // current user or null
 //   window.AppAccount.setStatus({ saving, error })   // shows/updates the menu's sync status (hidden until first called)
+//   window.AppAccount.dataCollections = ['todos']   // what "Delete my account" removes, on every stage
+//   window.addEventListener('account:deleted', ...)  // clear any copies the app keeps on the device
 // Store each user's data per stage, e.g. users/{uid}/stages/{stage}/...,
 // because all stages share one web address and one sign-in.
 //
@@ -87,6 +89,45 @@ async function start() {
   });
   ui.signOut.addEventListener('click', () => { setMenu(false); authLib.signOut(auth); });
 
+  // ---- Delete my account (Settings → Your account) --------------------------
+  // Removes everything the app saved for this person on every stage (the app lists
+  // its collections in AppAccount.dataCollections), then the sign-in itself. Google
+  // may ask them to sign in again first (it only deletes after a recent sign-in).
+  let deleting = false;
+  const delDlg = $('delete-account'), delGo = $('delete-account-go'), delErr = $('delete-account-error');
+  $('delete-account-open')?.addEventListener('click', () => { $('settings')?.close(); delErr.hidden = true; delDlg.showModal(); });
+  delGo?.addEventListener('click', async () => {
+    const user = auth.currentUser; if (!user) return;
+    delGo.disabled = true; delGo.textContent = 'Deleting…'; delErr.hidden = true;
+    try {
+      for (const stage of ['local', 'dev', 'alpha', 'staging', 'main']) {
+        for (const name of window.AppAccount.dataCollections || []) {
+          const snap = await fs.getDocs(fs.collection(db, 'users', user.uid, 'stages', stage, name));
+          for (let i = 0; i < snap.docs.length; i += 400) {   // batches hold up to 500 writes
+            const batch = fs.writeBatch(db);
+            snap.docs.slice(i, i + 400).forEach((d) => batch.delete(d.ref));
+            await batch.commit();
+          }
+        }
+      }
+      deleting = true;
+      try { await authLib.deleteUser(user); } catch (err) {
+        if (err.code !== 'auth/requires-recent-login') throw err;
+        await authLib.reauthenticateWithPopup(user, new authLib.GoogleAuthProvider());
+        await authLib.deleteUser(user);
+      }
+      delDlg.close();
+      window.dispatchEvent(new CustomEvent('account:deleted'));
+      toast('Your account and everything saved in it have been deleted.', 6000);
+    } catch (err) {
+      deleting = false;
+      delErr.textContent = ['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(err.code)
+        ? "Not deleted: the sign-in check was closed. Try again when you're ready."
+        : `Couldn't finish deleting (${err.code || err.message}). Check your connection and try again.`;
+      delErr.hidden = false;
+    } finally { delGo.disabled = false; delGo.textContent = 'Delete my account'; }
+  });
+
   // ---- Sync status (the app reports saving/errors via AppAccount.setStatus) ----
   // Hidden until the app first reports saving (setStatus), so an app that
   // stores nothing doesn't claim "All changes saved".
@@ -129,6 +170,7 @@ async function start() {
     ui.box.classList.toggle('signed-in', !!user);
     document.getElementById('signin-box').hidden = !!user;   // sign-in lives at the top of the menu
     ui.signOut.hidden = !user;
+    const acct = $('account-setting'); if (acct) acct.hidden = !user;
     ui.who.hidden = !user;
     window.AppAccount.user = user;
     if (user) {
@@ -149,7 +191,7 @@ async function start() {
       ui.label.textContent = 'Menu';
       ui.status.hidden = ui.dot.hidden = true;
       ui.button.setAttribute('aria-label', 'Menu'); ui.button.title = 'Menu';
-      if (localStorage.getItem(SIGNED_IN_KEY)) toast('Signed out.');
+      if (localStorage.getItem(SIGNED_IN_KEY) && !deleting) toast('Signed out.');
       localStorage.removeItem(SIGNED_IN_KEY);
     }
     window.dispatchEvent(new CustomEvent('account:change', { detail: { user } }));
