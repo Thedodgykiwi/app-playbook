@@ -339,6 +339,15 @@ The starter has all three; switch them on for this app:
   complain. Ask the user for `{{RESPONSIBLE}}` (a person or trading name) and
   `{{CONTACT}}` (a business/app address they choose to publish, never a
   personal one), and fill in the rest (what's saved, the Firestore region).
+  For a company, add its legal name, where it's registered and its number,
+  linked to the public register (e.g. Companies House), rather than typing
+  an address. **Never copy private details** from company papers (home
+  address, date of birth, security answers) into a repo.
+  **UK company:** the UK GDPR applies and the ICO is the complaints authority
+  (the starter lists it); US transfers rely on the Data Privacy Framework's
+  UK Extension. Most UK organisations that handle personal data must also
+  pay the ICO's yearly data protection fee (ico.org.uk, "Do I need to pay");
+  tell the user to check, don't decide for them.
   Delete sections that don't apply. It's linked from the sign-in card, the
   menu and Settings. Update it, and its date, whenever the app starts storing
   or sharing something new. Not legal advice: for a business app, suggest
