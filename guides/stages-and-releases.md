@@ -42,6 +42,24 @@ deploy, `pipeline_page.py`):
   can't be built, the run shows a warning and the site still publishes.
 - Apps can link to it, e.g. a "Pipeline" link in the footer.
 
+## How often to promote (batch size)
+
+- **Release one finished "story" at a time:** a feature plus its follow-up
+  tweaks (e.g. a new view, its layout fix, its setting). Not every commit
+  (lots of near-empty releases and notes), and not weeks of mixed work (hard to
+  test, and hard to tell which change broke something).
+- **Alpha often, Production calmly:** promote to Alpha whenever a story is
+  done on Dev. Let Staging collect a few Alpha batches, try them together for
+  a day or so, then release to Production.
+- **Promote sooner when** a change touches stored data or security rules
+  (rules are shared by every stage, so the code should follow quickly), it's
+  a bug fix people are waiting for, or the next story builds on this one.
+- **Hold back when** it's half-finished, or a related tweak is about to land:
+  one release with both is clearer than two.
+- **Too big?** If the release notes need more than about 8 bullets, or the
+  "what to try" list more than 5 steps, the batch is too big to test well.
+  Split the next one sooner. (test-app, Nov 2026)
+
 ## The promote skill (shared: `.claude/skills/promote/` in this repo)
 
 There's **one copy**, here in the playbook, used by every app; apps don't
