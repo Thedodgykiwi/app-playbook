@@ -157,6 +157,18 @@ nobody mistakes them for the real app.
   quiet reference that a reported issue was dealt with. Code:
   test-app's `whats-new.js` (`pill()`).
 
+- **Small, quiet buttons with a full-size tap area.** A section tool that
+  shouldn't compete with its heading (e.g. "Tidy up" next to "Done") can look
+  about 30px tall but still be easy to tap: `position: relative` plus
+  `::before { content: ""; position: absolute; inset: -7px 0; }` gives a 44px
+  tap area without changing the look. Show such tools only while their
+  section is open (The Shortlist #59).
+- **Pop-up menus tied to a section:** close the menu whenever its section
+  folds or its button stops showing (data changed, synced away), not just
+  hide it, or it pops back open by itself later. When it closes, return focus
+  to its button, or to the section heading if the button has gone, never
+  leave it on the page body. Found by `/code-review` (The Shortlist #59).
+
 ## Gotchas
 
 - **Changing a title or label's length: measure it against its neighbours at
