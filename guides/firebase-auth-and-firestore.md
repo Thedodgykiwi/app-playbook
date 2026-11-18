@@ -456,6 +456,13 @@ Most setup gotchas are in the steps above (network hosts, support email in
 `firebase_deploy` reporting success without releasing). These are the rest.
 
 **Code and loading**
+
+- **Always show Google's account chooser.** By default the sign-in popup signs
+  straight in with the account already on the device (no way to pick another).
+  Set `provider.setCustomParameters({ prompt: 'select_account' })` on the
+  `GoogleAuthProvider` used for **sign-in** (the templates do). Leave the
+  re-check before "Delete my account" (`reauthenticateWithPopup`) alone: it
+  must be the same account. (The Shortlist #85, Nov 2026.)
 - **Module vs. classic script order:** `account.js`/data modules are
   `type="module"` (deferred), so a plain `<script>` after them runs **first**
   and finds `window.MyCloud` undefined. Give the plain script `defer`:
