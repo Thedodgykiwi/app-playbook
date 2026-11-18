@@ -462,6 +462,12 @@ Most setup gotchas are in the steps above (network hosts, support email in
   get(.../access/x).data.emails`, plus `email_verified`), and no read,
   update or delete; the server side reads them with admin access.
 
+**Exporting data**
+- **`JSON.stringify` turns Firestore dates into `{seconds, nanoseconds}`
+  before a replacer function sees them** (the Timestamp's own `toJSON` runs
+  first). Convert dates (`v.toDate().toISOString()`) while copying the data,
+  then stringify. Found building "Download my data" (The Shortlist #80).
+
 **Data and money**
 - Never delete users' device or cloud data without asking; migrate formats instead.
 - Billing stays off (Spark). Anything that needs Blaze (Cloud Functions,
