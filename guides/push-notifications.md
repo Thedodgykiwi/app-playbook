@@ -76,6 +76,14 @@ account and a data processor for no real gain if Firebase is already in use.
    "send a test" function for the Settings screen.
 6. **Deploy:** `npx -y firebase-tools@latest deploy --only firestore:rules,functions --project <id> --force --non-interactive`.
 
+## Where a tap on the notification lands
+
+Open an **action card** for that item (Done / Snooze / Change date, with the
+item's name opening the full edit panel), not the edit panel itself: an edit
+panel's "Done" (= close) reads as "mark it done". Save **Snooze** on the item
+(e.g. `snooze: <ms>`), not just on the device, so the server can send a fresh
+notification and other devices remind again too. (The Shortlist #51, Nov 2026.)
+
 ## Gotchas
 
 - **First functions deploy enables several Google Cloud services**; one
