@@ -324,6 +324,12 @@ Shortlist #76).
 
 ### Behaviour
 
+- **One owner for saved preferences.** If one script keeps the settings object
+  in memory and writes the whole thing back, another script writing its own key
+  to the same storage gets overwritten on the next change. Let the owner
+  (e.g. `menu.js`) expose `get` / `set` (`window.AppPrefs`) and have everything
+  else go through it. (The Shortlist #91, Nov 2026.)
+
 - **A screen tied to something that can disappear must fall back.** If the
   open view is a list (or project, folder…) that's been deleted, on this
   device, another one, or with the account, show the overview instead of an

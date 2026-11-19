@@ -135,6 +135,19 @@ An every-minute schedule is about 43,000 runs a month: inside Cloud Functions'
 free allowance, and Cloud Scheduler's 3 free jobs. Each run reads a few
 documents. Expected bill £0; the £1 budget alert is the safety net.
 
+## A daily summary (once a day, at a chosen time)
+
+Same sender, same device record: add optional `sumOn / sumTime / sumDays /
+sumSkip` to the device, and in the every-minute run send it when the
+device's chosen time (in its time zone) falls since the last run; log it as
+sent once per local day. Wording that worked on the Lock Screen: title
+"☀️ Today: 5 to do", body one line each, overdue first ("⚠️ … (overdue)",
+"⏰ 9:30am …", "🌙 …", "• …"), at most 3 lines + "+2 more" (title ~40 and body
+~150 characters are visible before "more"; emoji display fine). Offer
+"Skip days with nothing due" (on by default) and a "Send me today's summary
+now" button (a callable function) for testing. Tapping it should open the
+overview (e.g. All to-dos), carried as a `view` in the push. (The Shortlist #91.)
+
 ## Where a tap on the notification lands
 
 Open an **action card** for that item (Done / Snooze / Change date, with the
