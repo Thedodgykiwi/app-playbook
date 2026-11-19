@@ -142,11 +142,22 @@ sumSkip` to the device, and in the every-minute run send it when the
 device's chosen time (in its time zone) falls since the last run; log it as
 sent once per local day. Wording that worked on the Lock Screen: title
 "☀️ Today: 5 to do", body one line each, overdue first ("⚠️ … (overdue)",
-"⏰ 9:30am …", "🌙 …", "• …"), at most 3 lines + "+2 more" (title ~40 and body
-~150 characters are visible before "more"; emoji display fine). Offer
+"⏰ 9:30am …", "🌙 …", "• …"), at most 3 lines + "+2 more" (titles: keep to
+about 30 characters with an emoji, or a narrower iPhone cuts them off; body
+~150 characters before "more"; emoji display fine). Offer
 "Skip days with nothing due" (on by default) and a "Send me today's summary
 now" button (a callable function) for testing. Tapping it should open the
 overview (e.g. All to-dos), carried as a `view` in the push. (The Shortlist #91.)
+
+## A bit of personality
+
+Each kind of notification can pick a random line from a small set (an
+app-specific `LINES` list on the server, like the add box's hint lines): the
+**joke goes in the title only**; the item's name and time stay plain in the
+body ("Call the venue · 4pm (in 15 min)"). Draft the lines as rendered
+notification previews for the user to approve, check none get cut off at
+375px, and handle singulars ("1 nominee"). It's server-only wording: changing
+it is a functions deploy, live on every stage at once. (The Shortlist #92.)
 
 ## Where a tap on the notification lands
 
