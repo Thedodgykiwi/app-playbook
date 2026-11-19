@@ -330,6 +330,10 @@ Shortlist #76).
 
 ### Colour
 
+- **An icon or emoji on a background of its own colour disappears.** A gold 🏆 on a
+  solid gold pill showed only as an outline; on a pale gold tint with a gold edge it
+  stood out. Put colourful emoji and coloured icons on a pale tint (or white), and keep
+  strong fills for plain text. (The Shortlist "Winner!" chip, Nov 2026.)
 - **Dark-theme rules must cover "Auto" as well as "Dark".** A fix written only
   for `:root[data-theme="dark"]` leaves anyone on Auto with a dark phone on the
   light-theme version (white text on a bright red pill, 2.8:1). Write each dark
