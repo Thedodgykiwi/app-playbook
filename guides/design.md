@@ -277,6 +277,13 @@ Shortlist #76).
   `min-width: 0` on flex children). Test with the **longest real content**
   (e.g. a long release headline), not just sample data: found on a real
   iPhone in The Shortlist.
+- **Option buttons in a row (segmented control) with labels of different
+  lengths: size them to their words, not equal widths.** With `flex: 1`
+  each gets the same width, so the longest label wraps onto two lines
+  (worse when it's the selected, bold one) while shorter ones have room
+  spare. Use `flex: 1 1 auto` and keep the labels short enough to fit one
+  line at 375px; let them wrap only with Large text on a small phone, then
+  check that case too. ("15 min before" in The Shortlist, Nov 2026.)
 - **Cards that hide overflow and hold an input: use `overflow: clip`, not
   `hidden`.** A `hidden` box is still a scroll container, so focusing an
   input inside (or `scrollIntoView`) can shift its content sideways and
