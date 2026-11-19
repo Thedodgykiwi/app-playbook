@@ -94,5 +94,10 @@ notification and other devices remind again too. (The Shortlist #51, Nov 2026.)
   with the CLI's token) and the function's `lastRun` doc updates each minute.
   "Request was not authenticated" log lines right after a deploy are health
   checks, not the scheduler.
+- **A tap while the app is open in the background can get lost on iPhone:**
+  `WindowClient.focus()` may be refused, and code after it (e.g. `postMessage`)
+  never runs. Note the tapped item first (e.g. in the worker's cache), post the
+  message before focusing, wrap `focus()` in try/catch, and have the app check
+  for the note on load and on `visibilitychange`. (The Shortlist #51.)
 - Pushing to `dev` before the rules are deployed would break signed-in saves:
   rules first, then code.
