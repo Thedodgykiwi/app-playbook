@@ -195,6 +195,30 @@ Shortlist #76).
   While one shows, the install tip and "new version" bar step aside. Apps
   with a fixed bottom bar set `--toast-bottom`. Use an action for anything
   undoable ("moved to Done · Undo") instead of asking "are you sure?".
+- **Gold strip: one quiet nudge above the list** (The Shortlist, Nov 2026). A soft
+  gold-tinted line under the page summary: icon, a **bold opener** plus a few
+  words, usually one button, and × ("Not now"). It suits moments where the app
+  has something useful to say and one tap can act on it: "**Just examples.**
+  Clear examples", "**3 overdue.** Fresh start? Move to today", "**Only on this
+  phone.** Sign in", "**Nudge before 4pm?** Turn on", "**12 done over a month
+  ago.** Tidy up", "**2 due today.** Add them to My Day", or no button as a
+  little reward ("**That's a wrap.** Take a bow."). Rules that keep it special:
+  - **One at a time**, in a fixed order of importance per screen; two strips
+    cancel each other out.
+  - **Only with one clear action** (the reward is the one exception);
+    anything else is a toast or a setting.
+  - **× puts it away for a sensible while**, remembered on the device: until
+    the count or day changes, a week, a month. Never nag the next open.
+  - **Bulk actions get one Undo** (a toast), not "are you sure?".
+  - **Short enough for a 375px phone on one or two lines**, button included:
+    "Want a nudge before 4pm? Turn on reminders" squashed to seven lines on an
+    iPhone SE; "Nudge before 4pm? Turn on" fits.
+  - When it offers the same thing as an existing small button, hide that
+    button while the strip shows, so the screen doesn't say it twice.
+  - Buttons that need the browser's "user tap" (sign-in pop-up, notification
+    permission) can click the real button (`#sign-in`, `#push-on`) inside the
+    strip's own click handler: the tap still counts.
+  Code: test-app `GoldStrip` / `stripFor()` in `app/main.js`, `.ex-strip` in `style.css`.
 - **Status in words, not only colour:** the sync dot has a matching text
   line and `aria-label`, so it works for colour-blind and screen-reader users.
 - **Friendly error messages** that say what to do ("Allow pop-ups for this
