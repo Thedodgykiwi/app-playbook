@@ -44,6 +44,7 @@ something that changed), add it to the right guide in the same session; see
 | [upgrading-an-app.md](guides/upgrading-an-app.md) | Bringing an older app up to the current starter and CLAUDE.md template |
 | [issues.md](guides/issues.md) | Logging bugs, feature requests and tweaks as GitHub issues ("log it" = record only) |
 | [report-issue.md](guides/report-issue.md) | Optional "Report issue" button for testers: reports become GitHub issues, with receipt and "now live" emails |
+| [push-notifications.md](guides/push-notifications.md) | Reminders / notifications in the phone's Notification Centre (iPhone Home Screen app), via Firebase Cloud Messaging |
 | [compare-stages.md](guides/compare-stages.md) | Pipeline page's Compare tab: every stage side by side with the same sample data; stage switcher in the banner |
 
 ## Templates
