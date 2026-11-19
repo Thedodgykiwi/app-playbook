@@ -449,6 +449,12 @@ for every new field):
 5. Existing records without the field: handle "missing" in the app (e.g. show
    under "Older") rather than inventing values.
 
+## Notifications
+
+Reminders / phone notifications on top of this set-up: `push-notifications.md`
+(Blaze plan, Cloud Functions, Firebase Cloud Messaging). Remember that
+functions and rules are live for every stage at once.
+
 ## Gotchas
 
 Most setup gotchas are in the steps above (network hosts, support email in

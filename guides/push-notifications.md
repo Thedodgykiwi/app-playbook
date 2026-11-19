@@ -1,9 +1,12 @@
 # Push notifications (reminders) for a web app, including iPhone
 
-Last verified: Nov 2026 (The Shortlist #51: reminders at a to-do's time).
+Last verified: 19 Nov 2026 (The Shortlist #51: reminders at a to-do's time, tested on an iPhone).
 
 How to get notifications into the phone's Notification Centre from a plain
 HTML/JS app on GitHub Pages, using the Firebase project the app already has.
+**Worked example:** `Thedodgykiwi/test-app` (reminders, Issue #51); the code to
+copy is listed at the end. Built in this order: in-app reminders first (no
+billing, works everywhere), then phone notifications on top.
 
 ## What's possible (say this to the user first)
 
@@ -27,6 +30,29 @@ card while the app is open. Store the choice per stage on the device
 (`push-on-<stage>`). Tag each notification with the item's id so a newer one
 replaces it and the app can close it when the item is ticked off
 (`registration.getNotifications({ tag })`).
+
+## What the user sees (the pattern that worked)
+
+- **Settings → Reminders:** a default ("Remind me: at the time / 15 min / 1
+  hour before") and a **Phone notifications** part whose text changes with the
+  state: not supported · iPhone Safari tab ("add it to your Home Screen and open
+  it from there") · signed out ("sign in to get notifications") · blocked
+  ("Settings → Notifications → <app>") · off ("Turn on phone notifications") ·
+  on ("Send a test notification", "Turn off on this device").
+- **Each item:** its own choice (Off / at the time / 15 min / 1 hour). Store
+  only overrides: `remind` null = follow the default, so changing the default
+  moves every item that never chose. Items with a reminder show a small bell.
+- **The in-app card** (devices without phone notifications, and every tap on a
+  notification): the item, "Due in 15 min · 4pm", **Done / 10 min (snooze) /
+  Date**, ✕, and the name opens the edit panel. Put it in a `popover`
+  (`showPopover()`, top layer) so it shows above open modal dialogs. Show each
+  reminder once (remember what was shown or snoozed per stage on the device,
+  prune after a few days); check every ~20 s and on `visibilitychange`.
+- **Snooze** keeps the item's own time and saves a separate `snooze` time on
+  the item (so the server and other devices remind again); show it on the row
+  ("🔔 4:10pm") with Cancel in the edit panel; a new date or time clears it.
+- **Expect up to about a minute's delay** (an every-minute sender plus Apple's
+  delivery); tell the user before they test.
 
 ## The pieces
 
@@ -63,9 +89,15 @@ account and a data processor for no real gain if Firebase is already in use.
    "turn off" and account deletion; include it (token shortened) in "Download
    my data"; mention it on the privacy page.
 4. **Service worker:** handle `push` yourself (send **data-only** messages, so
-   the worker controls the look): `showNotification(title, { body, tag, data })`;
-   handle `notificationclick`: focus an open window and `postMessage` the item
-   id, or `openWindow(url + '?todo=<id>')`.
+   the worker controls the look; FCM wraps it, so read `json.data || json`):
+   `showNotification(title, { body, tag, data })`; handle `notificationclick`
+   (see the gotcha below: note the tap first, `postMessage`, then try
+   `focus()`, else `openWindow(url + '?todo=<id>')`). Each stage has its own
+   worker; Production's scope contains the test stages' folders, so skip
+   windows from `/dev/`, `/alpha/`, `/staging/` when matching.
+   Bookkeeping in the repo: `firebase.json` gets a `functions` entry (source
+   `functions`, runtime `nodejs22`), `functions/node_modules/` goes in
+   `.gitignore`, `functions/package-lock.json` is committed.
 5. **Server (`functions/`, Cloud Functions v2, region near the data, e.g.
    europe-west2):** a scheduled function every minute sends what fell due
    since its last run (store `lastRun`; cap the look-back, e.g. 30 min),
@@ -74,7 +106,34 @@ account and a data processor for no real gain if Firebase is already in use.
    skip if it exists; prune after a few days), and deletes device records whose
    token comes back `registration-token-not-registered`. Add a callable
    "send a test" function for the Settings screen.
-6. **Deploy:** `npx -y firebase-tools@latest deploy --only firestore:rules,functions --project <id> --force --non-interactive`.
+6. **Deploy:** Claude needs a Firebase sign-in in the session
+   (`firebase-auth-and-firestore.md` step 1), then
+   `npx -y firebase-tools@latest deploy --only firestore:rules,functions --project <id> --force --non-interactive`
+   (`--force` also sets the container-image clean-up policy; without one,
+   old images slowly build up a small bill).
+7. **Test on the phone** (Claude can't): add the stage to the Home Screen,
+   open it from there, sign in, Turn on → Allow, **Send a test notification**;
+   then an item with a time ~20 minutes ahead, app **closed**, tap the
+   notification; repeat with the app **in the background**; try Snooze.
+   Headless, Claude can still test the rules, the time-zone maths, the card
+   (open `?todo=<id>`) and the "tap noted while in the background" path (write
+   the note into the worker's cache, fire `visibilitychange`).
+
+## Server code and rules are not staged
+
+The Cloud Functions and the security rules live in the **one Firebase project
+every stage uses**, so a deploy is live for Dev, Alpha, Staging **and
+Production at once**, whatever branch the app code is on. So: keep server and
+rules changes **backwards compatible** (old app versions on other stages keep
+working: new fields optional, nothing removed), deploy them **before** the app
+code that needs them, and say in the release notes that the server side was
+already live. Promotions only move the app code.
+
+## Cost (small app)
+
+An every-minute schedule is about 43,000 runs a month: inside Cloud Functions'
+free allowance, and Cloud Scheduler's 3 free jobs. Each run reads a few
+documents. Expected bill £0; the £1 budget alert is the safety net.
 
 ## Where a tap on the notification lands
 
@@ -100,4 +159,21 @@ notification and other devices remind again too. (The Shortlist #51, Nov 2026.)
   message before focusing, wrap `focus()` in try/catch, and have the app check
   for the note on load and on `visibilitychange`. (The Shortlist #51.)
 - Pushing to `dev` before the rules are deployed would break signed-in saves:
-  rules first, then code.
+  rules first, then code. If the session can't deploy yet (no Firebase
+  sign-in), push the work to a `wip/` branch, not `dev`.
+
+## Code to copy (from the worked example, `Thedodgykiwi/test-app`)
+
+| What | Where |
+|---|---|
+| Settings section (Reminders, Phone notifications) | `index.html` (`#st-reminders`, `#push-setting`) |
+| Turn on / off, token, device record, test button, states | `sync.js` ("Phone notifications" section) |
+| Per-item reminder, in-app card, snooze, tap handling | `app/main.js` (`remOf`, `RemindCard`, `remCheck`, `openWantedTodo`, `checkTapped`) |
+| Showing pushes, tap → app | `sw.js` (end: `push`, `notificationclick`) |
+| Sender + test function | `functions/index.js` (`sendReminders`, `sendTestReminder`, `zonedMs`) |
+| Rules and tests | `firestore.rules` (`isValidDevice`, `remind`, `snooze`), `tests/firestore.rules.test.mjs` |
+
+These are app-owned (they depend on the app's data), so copy and adapt them
+rather than linking; rename `todo` to the app's item. Privacy page: say what's
+stored for notifications (device code, time zone, default time) and that
+Google delivers them (Apple for iPhone).

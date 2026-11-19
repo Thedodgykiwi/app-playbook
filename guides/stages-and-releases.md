@@ -63,8 +63,10 @@ deploy, `pipeline_page.py`):
 - **Alpha often, Production calmly:** promote to Alpha whenever a story is
   done on Dev. Let Staging collect a few Alpha batches, try them together for
   a day or so, then release to Production.
-- **Promote sooner when** a change touches stored data or security rules
-  (rules are shared by every stage, so the code should follow quickly), it's
+- **Promote sooner when** a change touches stored data, security rules or
+  Cloud Functions (one Firebase project serves every stage, so a rules or
+  functions deploy is live everywhere at once and the code should follow
+  quickly; keep those changes backwards compatible), it's
   a bug fix people are waiting for, or the next story builds on this one.
 - **Hold back when** it's half-finished, or a related tweak is about to land:
   one release with both is clearer than two.
