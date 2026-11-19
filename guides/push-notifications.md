@@ -20,6 +20,10 @@ billing, works everywhere), then phone notifications on top.
   "stay quiet because it's open".
 - **No buttons** on iPhone web notifications: a tap opens the app; put Done /
   Snooze in the app.
+- **iOS adds a "from <app name>" line** between the title and the body (the
+  Home Screen app's short name, e.g. "from Shortlist Dev"). It can't be hidden
+  or moved; keep titles short so the three lines stay compact, and remember the
+  test stages show their stage word there.
 
 ## Design that avoids double reminders
 
