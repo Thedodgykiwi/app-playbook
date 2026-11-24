@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment2.outputs.page_url }}
     steps:
       - name: Check out shared deploy scripts (app-playbook)
         uses: actions/checkout@v4
@@ -165,7 +165,16 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      # GitHub sometimes can't see the just-uploaded files for a moment ("No artifacts
+      # named github-pages were found", seen several times in a row, Nov 2026): try once
+      # more after 30 s instead of failing the release.
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
 
   # Every Production release (promotion into main) gets a GitHub release named

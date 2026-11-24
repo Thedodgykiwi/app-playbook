@@ -45,8 +45,10 @@ secrets out.
   a deploy is still going.
 - **"No artifacts named github-pages were found"** in the deploy step (with
   "Is githubstatus.com reporting issues…") is a GitHub hiccup, not your
-  code: re-run the **whole** run (`rerun_workflow_run`), not just the failed
-  job, so the site package is uploaded again. (test-app, Nov 2026.)
+  code. The shared deploy now tries the publish step a second time after 30 s
+  by itself (it failed three runs in a row on test-app's Alpha, Nov 2026). If
+  it still fails, start a fresh run on the branch (`run_workflow`) a few
+  minutes later.
 - Local preview: `python3 -m http.server 8080` from the repo root.
 
 ## Search engines
