@@ -281,6 +281,12 @@ Shortlist #76).
 
 ### Layout and checking it
 
+- **A drawn line (animated strikethrough or underline) across a wrapped title needs an
+  inline span.** A `background` line growing from 0% to 100% runs across each wrapped
+  line in turn only on an inline element. A span directly inside a flex container is
+  forced to act as a block (flex items are "blockified"), so the line sat under the
+  first line and missed the second. Wrap the words in an inner `<span>` and draw on that.
+  (The Shortlist "Just a tick", Nov 2026.)
 - **Changing a title or label's length: measure it against its neighbours at
   320, 360, 375 and 390px, signed out as well as signed in.** A longer app
   name ran under the "Sign in" button on narrow phones; nothing scrolled
