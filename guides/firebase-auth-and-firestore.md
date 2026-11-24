@@ -250,8 +250,19 @@ version; rename collections/fields for your app). Key decisions in it:
   own offline cache until then either. So an app that shows "Loading…" until
   the first snapshot pauses on every open, however few items there are.
   Keep a copy of the last list shown in localStorage, show it at once, and
-  swap in the live list when it arrives (block edits until then). Measure
-  it with Playwright before guessing. (The Shortlist #36, Nov 2026.)
+  swap in the live list when it arrives. Measure it with Playwright before
+  guessing. (The Shortlist #36, Nov 2026.)
+- **Don't pause edits while that check runs: queue them.** On a weak or no
+  connection, Auth's check can hang for a long time, and phones often restart a
+  Home Screen app in the background, so "edits paused until connected" means
+  the user can't tick anything offline (The Shortlist #104). Instead, apply
+  changes to the shown copy at once, keep them in a small queue in
+  localStorage (`add` with a temporary id / `update` / `remove` by id; survives
+  restarts; also save the updated copy), and send the queue when the Firestore
+  API is ready. Drop the queue on sign-out. Test it with the emulators by
+  making their requests hang (`page.route(url, () => {})`), restarting the page,
+  editing, then un-hanging; check the emulator's data (it's stored under the
+  app's **real** project id from the config, not the `--project` name).
 - **Edits target the current record, not a captured copy.** Lists get
   re-read (sign-in check after load, live updates from other devices), which
   replaces the objects in memory; an editor holding "the item being edited"
@@ -444,6 +455,8 @@ for every new field):
    back).
 4. **Deploy the rules first**, check them live (`firebase_get_security_rules`),
    then push the app change. Old app versions keep working with the new rules.
+   And only **write the field when it's used** (don't send `field: null` on every
+   save), so other stages running older code are never caught out.
    Waiting on something (e.g. a Firebase sign-in)? Push the work to
    `wip/<issue>-<name>`, which doesn't deploy, not to `dev` (The Shortlist #50).
 5. Existing records without the field: handle "missing" in the app (e.g. show
